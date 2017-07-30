@@ -1,0 +1,92 @@
+﻿using System;
+using System.IO;
+
+namespace KaisenLib
+{
+    /// <summary>
+    /// Open(), Close()メソッドを必ず呼び出してください。
+    /// </summary>
+    public static class Logger
+    {
+        private static StreamWriter sw;
+        private static string logDirectory = "log";
+        private static string logFileName;
+
+        public static void Open(string caller)
+        {
+            if (!Directory.Exists(logDirectory))
+            {
+                Directory.CreateDirectory(logDirectory);
+            }
+            logFileName = logDirectory + Path.DirectorySeparatorChar + caller + DateTime.Now.ToString("_yy_MM_dd_HH_mm_ss_fff") + ".txt";
+            var fs = File.Create(logFileName);
+
+            sw = new StreamWriter(fs);
+
+        }
+
+        /// <summary>
+        /// This is  vey important!!
+        /// </summary>
+        public static void Close()
+        {
+            if (sw != null)
+            {
+                sw.Dispose();
+                sw = null;
+            }
+        }
+
+        public static void WriteLine(DateTime time, string data)
+        {
+            Logging(time, data);
+        }
+        public static void WriteAndDisplay(DateTime time, string data)
+        {
+            var logString = MakeLogString(time, data);
+            Console.WriteLine(logString);
+            Logging(logString);
+        }
+
+        public static void WriteLine(string data)
+        {
+            Logging(DateTime.Now, data);
+        }
+        public static void WriteAndDisplay(string data)
+        {
+            var logString = MakeLogString(DateTime.Now, data);
+            Console.WriteLine(logString);
+            Logging(logString);
+        }
+
+        //ファイルに書き込む。
+        private static void Logging(DateTime time, string data)
+        {
+            try
+            {
+                sw.WriteLine(MakeLogString(time, data));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private static void Logging(string data)
+        {
+            try
+            {
+                sw.WriteLine(data);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("次のログをファイルに記録できませんでした！: " + data);
+            }
+        }
+
+        private static string MakeLogString(DateTime time, string data)
+        {
+            return $"[{time}, {data}]";
+        }
+    }
+}
