@@ -5,6 +5,7 @@ namespace GameCore
     public class Game
     {
         private BattleArea battleArea;
-        private bool myTurn;
+
+        internal void 
     }
 }

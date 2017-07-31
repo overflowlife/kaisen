@@ -12,10 +12,10 @@ namespace GameCore
         internal List<Ship> ships;//本作登場の艦船リスト
         internal Dictionary<Ship, int> deployShips;//艦船ごとの配置数
 
-        internal BattleArea(int width, int height)
+        internal BattleArea()
         {
-            Width = width;
-            Height = height;
+            Width = 5;
+            Height = 5;
             map = new List<Point>();
             for(int y = 0; y < Height; ++y)
             {
@@ -23,7 +23,8 @@ namespace GameCore
                 {
                     map[Width * y + x] = new Point(x, y, null, null);
                 }
-            }      
+            }
+            initShip();
         }
 
         internal void initShip()
