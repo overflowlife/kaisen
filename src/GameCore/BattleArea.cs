@@ -61,7 +61,7 @@ namespace GameCore
         }
 
         /// <summary>
-        /// Single()内効率悪すぎでは？
+        /// マップ上の特定点を返却します。
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -70,7 +70,7 @@ namespace GameCore
         {
             if( 0 <= x && x <= Width && 0<= y && y <= Height)
             {
-                return map.Single(point => (point.x == x && point.y == y));
+                return map[x + Width * y];
             }
             throw new ArgumentOutOfRangeException();
         }
