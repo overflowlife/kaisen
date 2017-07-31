@@ -1,22 +1,45 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GameCore
 {
-    public class KaisenMsg : IKaisenSerializable
+    internal abstract class KaisenMsg
     {
-        internal string[] internalMessage { get; private set; }
+        internal KaisenMsgId msgId { get; set; }
 
-        public void FromString(string str)
+        internal abstract void FromString(string msg);
+        internal new abstract string ToString();
+    }
+
+    internal enum KaisenMsgId
+    {
+        None = 0,
+        Firing = 1,
+        Moving = 2,
+        Exiting = 9,
+    }
+
+    internal class FiringMsg : KaisenMsg
+    {
+        int x;
+        int y;
+        string sType;
+        
+        internal FiringMsg(int x, int y, Ship shooter)
         {
-            internalMessage = str.Split(',');
+            msgId = KaisenMsgId.Firing;
+            this.x = x;
+            this.y = y;
+            this.sType = shooter.Stype;
         }
 
-        public override string ToString()
+        internal override void FromString(string msg)
         {
-            return string.Join(",", internalMessage);
+            throw new NotImplementedException();
+        }
+
+        internal override string ToString()
+        {
+            return "";
         }
     }
 }

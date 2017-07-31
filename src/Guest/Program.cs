@@ -12,6 +12,7 @@ namespace Guest
         static void Main(string[] args)
         {
             Console.OutputEncoding = AppSet.enc;
+            new Game();
             Logger.Open(nameof(Guest));
             Logger.WriteAndDisplay("海戦ゲーム：ゲストサイドを起動します。");
             string input;

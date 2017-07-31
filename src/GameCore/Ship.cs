@@ -2,20 +2,32 @@
 {
     internal class Ship
     {
-        internal string Type;
-        internal string Stype;
-        internal int AttackRange;
-        internal int AttackSpan;
-        internal int MoveSpeed;
+        internal string Type { get; set; }
+        internal string Stype { get; set; }
+        internal int AttackRange { get; set; }
+        internal int AttackSpan { get; set; }
+        internal int MoveSpeed { get; set; }
 
-
-        internal Ship(string type, int attackRange, int attackSpan, int moveSpeed)
+        internal Ship(string type, string sType, int attackRange, int attackSpan, int moveSpeed)
         {
             Type = type;
-            Stype = this.Type.Substring(0, 1); //重複は取り除く必要がある
+            Stype = sType;
             AttackRange = attackRange;
             AttackSpan = attackSpan;
             MoveSpeed = moveSpeed;
+        }
+
+        public override string ToString()
+        {
+            return $"{Type},{Stype},{AttackRange},{AttackSpan},{MoveSpeed}";
+        }
+
+        internal Ship FromString(string str)
+        {
+            string[] split = str.Split(',');
+            if (split.Length != 5)
+                return null;
+            return new Ship(split[0],split[1], int.Parse(split[2]), int.Parse(split[3]), int.Parse(split[4]));
         }
     }
 }

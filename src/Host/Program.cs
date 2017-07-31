@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using KaisenLib;
-using GameCore;
 
 namespace Host
 {

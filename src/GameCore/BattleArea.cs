@@ -6,7 +6,7 @@ namespace GameCore
 {
     internal class BattleArea
     {
-        private readonly List<Point> map;
+        internal List<Point> map;
         internal int Width { get; private set; }
         internal int Height { get; private set; }
         internal List<Ship> ships;//本作登場の艦船リスト
@@ -16,12 +16,13 @@ namespace GameCore
         {
             Width = 5;
             Height = 5;
-            map = new List<Point>();
+            map = new List<Point>(Width * Height);
             for(int y = 0; y < Height; ++y)
             {
                 for(int x = 0; x < Width; ++x)
                 {
-                    map[Width * y + x] = new Point(x, y, null, null);
+                    int i = Width * y + x;
+                    map.Add(new Point(x, y, null, null));
                 }
             }
             initShip();
@@ -29,7 +30,7 @@ namespace GameCore
 
         internal void initShip()
         {
-            ships = new List<Ship> { new Ship("戦艦", 1, 1, int.MaxValue), new Ship("駆逐艦", 1, 1, int.MaxValue), new Ship("潜水艦", 1, 1, int.MaxValue) };
+            ships = new List<Ship> { new Ship("戦艦", "BB", 1, 1, int.MaxValue), new Ship("駆逐艦", "DD", 1, 1, int.MaxValue), new Ship("潜水艦", "SS", 1, 1, int.MaxValue) };
             deployShips = new Dictionary<Ship, int>
             {
                 {ships.Single( ship => ship.Type == "戦艦" ), 1 },
