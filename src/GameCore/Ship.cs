@@ -1,4 +1,7 @@
-﻿namespace GameCore
+﻿using System;
+using KaisenLib;
+
+namespace GameCore
 {
     internal class Ship
     {
@@ -17,17 +20,27 @@
             MoveSpeed = moveSpeed;
         }
 
-        public override string ToString()
+        /// <summary>
+        /// 形式：{Type}{AppSet.delimiter}{Stype}{AppSet.delimiter}{AttackRange}{AppSet.delimiter}{AttackSpan}{AppSet.delimiter}{MoveSpeed}
+        /// </summary>
+        /// <param name="str"></param>
+        internal Ship(string str)
         {
-            return $"{Type},{Stype},{AttackRange},{AttackSpan},{MoveSpeed}";
+            string[] split = str.Split(AppSet.delimiter);
+            if (split.Length != 5)
+                throw new ArgumentException();
+            this.Type = split[0];
+            this.Stype = split[1];
+            this.AttackRange = int.Parse(split[2]);
+            this.AttackSpan = int.Parse(split[3]);
+            this.MoveSpeed = int.Parse(split[4]);
         }
 
-        internal Ship FromString(string str)
+        public override string ToString()
         {
-            string[] split = str.Split(',');
-            if (split.Length != 5)
-                return null;
-            return new Ship(split[0],split[1], int.Parse(split[2]), int.Parse(split[3]), int.Parse(split[4]));
+            return $"{Type}{AppSet.delimiter}{Stype}{AppSet.delimiter}{AttackRange}{AppSet.delimiter}{AttackSpan}{AppSet.delimiter}{MoveSpeed}";
         }
+
+
     }
 }
