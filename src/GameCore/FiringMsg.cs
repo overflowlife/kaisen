@@ -13,6 +13,7 @@ namespace GameCore
         string sType;
 
         internal FiringMsg(int x, int y, Ship shooter)
+
         {
             msgId = KaisenMsgId.Firing;
             this.x = x;
@@ -21,9 +22,9 @@ namespace GameCore
         }
 
         /// <summary>
-        /// 形式：{msgId}{AppSet.delimiter}{x}{AppSet.delimiter}{y}{AppSet.delimiter}{sType}
+        /// 
         /// </summary>
-        /// <param name="msg"></param>
+        /// <param name="msg">形式：{msgId}{AppSet.delimiter}{x}{AppSet.delimiter}{y}{AppSet.delimiter}{sType}</param>
         internal FiringMsg(string msg)
         {
             string[] splited = msg.Split(AppSet.delimiter);
@@ -38,7 +39,7 @@ namespace GameCore
 
         internal override string ToString()
         {
-            return $"{msgId}{AppSet.delimiter}{x}{AppSet.delimiter}{y}{AppSet.delimiter}{sType}";
+            return $"{(int)msgId}{AppSet.delimiter}{x}{AppSet.delimiter}{y}{AppSet.delimiter}{sType}";
         }
     }
 }

@@ -1,22 +1,23 @@
-﻿using System;
+﻿using KaisenLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace GameCore
 {
-    public class MovingMsg : KaisenMsg
+   internal class MovingMsg : KaisenMsg
     {
-        int x;
-        int y;
+        int direction;
+        int distance;
         string sType;
 
-        internal MovingMsg(int x, int y, Ship shooter)
+        internal MovingMsg(int direction, int distance, Ship mover)
         {
             msgId = KaisenMsgId.Moving;
-            this.x = x;
-            this.y = y;
-            this.sType = shooter.Stype;
+            this.direction = direction;
+            this.distance = distance;
+            this.sType = mover.Stype;
         }
 
         /// <summary>
@@ -25,12 +26,13 @@ namespace GameCore
         /// <param name="str"></param>
         internal MovingMsg(string str)
         {
+            string[] splited = str.Split(AppSet.delimiter);
 
         }
 
         internal override string ToString()
         {
-            throw new NotImplementedException();
+            return $"{(int)msgId}{AppSet.delimiter}"
         }
     }
 }

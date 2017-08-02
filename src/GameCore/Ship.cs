@@ -21,9 +21,9 @@ namespace GameCore
         }
 
         /// <summary>
-        /// 形式：{Type}{AppSet.delimiter}{Stype}{AppSet.delimiter}{AttackRange}{AppSet.delimiter}{AttackSpan}{AppSet.delimiter}{MoveSpeed}
+        /// 
         /// </summary>
-        /// <param name="str"></param>
+        /// <param name="str">形式：{Type}{AppSet.delimiter}{Stype}{AppSet.delimiter}{AttackRange}{AppSet.delimiter}{AttackSpan}{AppSet.delimiter}{MoveSpeed}</param>
         internal Ship(string str)
         {
             string[] split = str.Split(AppSet.delimiter);
