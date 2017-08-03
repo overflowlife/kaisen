@@ -1,8 +1,5 @@
-﻿using KaisenLib;
+﻿using static KaisenLib.AppSet;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GameCore
 {
@@ -27,7 +24,7 @@ namespace GameCore
         /// <param name="msg">形式：{msgId}{AppSet.delimiter}{x}{AppSet.delimiter}{y}{AppSet.delimiter}{sType}</param>
         internal FiringMsg(string msg)
         {
-            string[] splited = msg.Split(AppSet.delimiter);
+            string[] splited = msg.Split(delimiter);
             if ((KaisenMsgId)int.Parse(splited[0]) != KaisenMsgId.Firing || splited.Length != 4)
             {
                 throw new ArgumentException();
@@ -39,7 +36,7 @@ namespace GameCore
 
         internal override string ToString()
         {
-            return $"{(int)msgId}{AppSet.delimiter}{x}{AppSet.delimiter}{y}{AppSet.delimiter}{sType}";
+            return $"{(int)msgId}{delimiter}{x}{delimiter}{y}{delimiter}{sType}";
         }
     }
 }

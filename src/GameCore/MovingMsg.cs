@@ -1,12 +1,9 @@
-﻿using KaisenLib;
+﻿using static KaisenLib.AppSet;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GameCore
 {
-   internal class MovingMsg : KaisenMsg
+    internal class MovingMsg : KaisenMsg
     {
         int direction;
         int distance;
@@ -23,16 +20,22 @@ namespace GameCore
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="str"></param>
+        /// <param name="str">形式：{(int)msgId}{delimiter}{direction}{delimiter}{distance}{delimiter}{sType}</param>
         internal MovingMsg(string str)
         {
-            string[] splited = str.Split(AppSet.delimiter);
-
+            string[] splited = str.Split(delimiter);
+            if((KaisenMsgId)int.Parse(splited[0]) != KaisenMsgId.Moving || splited.Length != 4)
+            {
+                throw new ArgumentException();
+            }
+            direction = int.Parse (splited[1]);
+            distance = int.Parse(splited[2]);
+            sType = splited[3];
         }
 
         internal override string ToString()
         {
-            return $"{(int)msgId}{AppSet.delimiter}"
+            return $"{(int)msgId}{delimiter}{direction}{delimiter}{distance}{delimiter}{sType}";
         }
     }
 }

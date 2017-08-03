@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GameCore
+﻿namespace GameCore
 {
     internal abstract class KaisenMsg
     {

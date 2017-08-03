@@ -13,15 +13,6 @@ namespace KaisenLib
         private bool disconnected;
         private byte[] recBytes;
 
-        public Messenger()
-        {
-            Enc = null;
-            ns = null;
-            ms = null;
-            disconnected = false;
-            recBytes = new byte[256];
-        }
-
         public Messenger(Encoding enc, NetworkStream ns)
         {
             this.Enc = enc;

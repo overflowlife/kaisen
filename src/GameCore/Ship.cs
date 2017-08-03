@@ -1,17 +1,17 @@
 ﻿using System;
-using KaisenLib;
+using static KaisenLib.AppSet;
 
 namespace GameCore
 {
-    internal class Ship
+     public class Ship
     {
-        internal string Type { get; set; }
-        internal string Stype { get; set; }
-        internal int AttackRange { get; set; }
-        internal int AttackSpan { get; set; }
-        internal int MoveSpeed { get; set; }
+        public string Type { get; set; }
+        public string Stype { get; set; }
+        public int AttackRange { get; set; }
+        public int AttackSpan { get; set; }
+        public int MoveSpeed { get; set; }
 
-        internal Ship(string type, string sType, int attackRange, int attackSpan, int moveSpeed)
+        public Ship(string type, string sType, int attackRange, int attackSpan, int moveSpeed)
         {
             Type = type;
             Stype = sType;
@@ -23,10 +23,10 @@ namespace GameCore
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="str">形式：{Type}{AppSet.delimiter}{Stype}{AppSet.delimiter}{AttackRange}{AppSet.delimiter}{AttackSpan}{AppSet.delimiter}{MoveSpeed}</param>
-        internal Ship(string str)
+        /// <param name="str">形式：{Type}{delimiter}{Stype}{delimiter}{AttackRange}{delimiter}{AttackSpan}{delimiter}{MoveSpeed}</param>
+        public Ship(string str)
         {
-            string[] split = str.Split(AppSet.delimiter);
+            string[] split = str.Split(delimiter);
             if (split.Length != 5)
                 throw new ArgumentException();
             this.Type = split[0];
@@ -38,7 +38,7 @@ namespace GameCore
 
         public override string ToString()
         {
-            return $"{Type}{AppSet.delimiter}{Stype}{AppSet.delimiter}{AttackRange}{AppSet.delimiter}{AttackSpan}{AppSet.delimiter}{MoveSpeed}";
+            return $"{Type}{delimiter}{Stype}{delimiter}{AttackRange}{delimiter}{AttackSpan}{delimiter}{MoveSpeed}";
         }
 
 

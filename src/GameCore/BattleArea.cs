@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace GameCore
 {
@@ -10,8 +9,6 @@ namespace GameCore
         internal List<Point> map;
         internal int Width { get; private set; }
         internal int Height { get; private set; }
-        internal List<Ship> ships;//本作登場の艦船リスト
-        internal Dictionary<Ship, int> deployShips;//艦船ごとの配置数
 
         internal BattleArea()
         {
@@ -26,18 +23,6 @@ namespace GameCore
                     map.Add(new Point(x, y, null, null));
                 }
             }
-            initShip();
-        }
-
-        internal void initShip()
-        {
-            ships = new List<Ship> { new Ship("戦艦", "BB", 1, 1, int.MaxValue), new Ship("駆逐艦", "DD", 1, 1, int.MaxValue), new Ship("潜水艦", "SS", 1, 1, int.MaxValue) };
-            deployShips = new Dictionary<Ship, int>
-            {
-                {ships.Single( ship => ship.Type == "戦艦" ), 1 },
-                {ships.Single( ship => ship.Type == "駆逐艦"), 1 },
-                {ships.Single( ship => ship.Type == "潜水艦"), 1 },
-            };
         }
 
         /// <summary>
