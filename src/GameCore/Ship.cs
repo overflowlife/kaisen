@@ -28,7 +28,7 @@ namespace GameCore
         {
             string[] split = str.Split(delimiter);
             if (split.Length != 5)
-                throw new ArgumentException();
+                throw new ArgumentException("引数チェックでの例外です。");
             this.Type = split[0];
             this.Stype = split[1];
             this.AttackRange = int.Parse(split[2]);
@@ -39,6 +39,12 @@ namespace GameCore
         public override string ToString()
         {
             return $"{Type}{delimiter}{Stype}{delimiter}{AttackRange}{delimiter}{AttackSpan}{delimiter}{MoveSpeed}";
+        }
+
+        public override bool Equals(object obj)
+        {
+            bool equal = false;
+            return equal;
         }
 
 

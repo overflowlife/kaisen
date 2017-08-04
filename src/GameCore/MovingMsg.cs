@@ -26,7 +26,7 @@ namespace GameCore
             string[] splited = str.Split(delimiter);
             if((KaisenMsgId)int.Parse(splited[0]) != KaisenMsgId.Moving || splited.Length != 4)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("引数チェックでの例外です。");
             }
             direction = int.Parse (splited[1]);
             distance = int.Parse(splited[2]);

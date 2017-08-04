@@ -27,7 +27,7 @@ namespace GameCore
             string[] splited = msg.Split(delimiter);
             if ((KaisenMsgId)int.Parse(splited[0]) != KaisenMsgId.Firing || splited.Length != 4)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("引数チェックでの例外です。");
             }
             this.x = int.Parse(splited[1]);
             this.y = int.Parse(splited[2]);
