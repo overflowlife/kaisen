@@ -105,6 +105,7 @@ namespace Host
                         //初期通信：相互確認
                         if (messenger.Recieve() != initRequestMsg)
                         {
+                            Logger.WriteAndDisplay("通信相手を信頼することができませんでした。");
                             Environment.Exit(1);
                         }
                         else

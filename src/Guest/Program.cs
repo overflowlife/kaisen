@@ -69,6 +69,7 @@ namespace Guest
                         messenger.Send(initRequestMsg);
                         if (messenger.Recieve() != initResponseMsg)
                         {
+                            Logger.WriteAndDisplay("通信相手を信頼することができませんでした。");
                             Environment.Exit(1);
                         }
                         Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
