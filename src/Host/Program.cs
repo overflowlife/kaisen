@@ -64,7 +64,8 @@ namespace Host
             return;
         }
 
-        private async static void WaitForAccept()
+        
+        private async static void WaitForAccept() //ignore this warning
         {
             ClientTask = Listener.AcceptTcpClientAsync();
             var cnt = 0;

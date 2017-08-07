@@ -2,7 +2,7 @@
 {
     internal class KaisenObject
     {
-        internal string Type;
+        //internal string Type;
 
     }
 }

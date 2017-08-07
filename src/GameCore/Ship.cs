@@ -11,15 +11,6 @@ namespace GameCore
         public int AttackSpan { get; set; }
         public int MoveSpeed { get; set; }
 
-        public Ship(string type, string sType, int attackRange, int attackSpan, int moveSpeed)
-        {
-            Type = type;
-            Stype = sType;
-            AttackRange = attackRange;
-            AttackSpan = attackSpan;
-            MoveSpeed = moveSpeed;
-        }
-
         public Ship(string type, int attackRange, int attackSpan, int moveSpeed)
         {
             Type = type;
