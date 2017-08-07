@@ -63,8 +63,6 @@ namespace Guest
                         Environment.Exit(1);
                     }
                     Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
-                    var game = new Game();
-                    var navi = new Navigator();
                     
                 }
             }

@@ -113,9 +113,6 @@ namespace Host
                         messenger.Send(AppSet.initResponseMsg);
                     }
                     Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
-
-                   
-
                 }
             }
         }
