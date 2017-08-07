@@ -20,6 +20,15 @@ namespace GameCore
             MoveSpeed = moveSpeed;
         }
 
+        public Ship(string type, int attackRange, int attackSpan, int moveSpeed)
+        {
+            Type = type;
+            Stype = type.Substring(0, 1); //重複耐性なし
+            AttackRange = attackRange;
+            AttackSpan = attackSpan;
+            MoveSpeed = moveSpeed;
+        }
+
         /// <summary>
         /// 
         /// </summary>

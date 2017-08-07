@@ -1,6 +1,6 @@
 ﻿namespace GameCore
 {
-    internal abstract class KaisenMsg
+    public abstract class KaisenMsg
     {
         internal KaisenMsgId msgId { get; set; }
         internal new abstract string ToString();
