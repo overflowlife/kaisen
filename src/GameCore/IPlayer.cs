@@ -1,6 +1,6 @@
 ﻿namespace GameCore
 {
-    public interface IPlayer
+    internal interface IPlayer
     {
         void DoTurn();
         void Recieve(string msg);

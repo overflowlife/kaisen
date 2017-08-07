@@ -7,9 +7,9 @@ using static KaisenLib.AppSet;
 
 namespace GameCore
 {
-    public class ExitingMsg : KaisenMsg
+    internal class ExitingMsg : KaisenMsg
     {
-        public ExitingMsg()
+        internal ExitingMsg()
         {
             msgId = KaisenMsgId.Exiting;
         }
@@ -18,7 +18,7 @@ namespace GameCore
         /// 
         /// </summary>
         /// <param name="msg">形式："{(int)kaisenMsgId.Exiting}"</param>
-        public ExitingMsg(string msg)
+         internal ExitingMsg(string msg)
         {
             string[] splited = msg.Split(delimiter);
             int msgId;

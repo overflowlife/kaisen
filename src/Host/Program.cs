@@ -78,13 +78,13 @@ namespace Host
                 Console.SetCursorPosition(0, Console.CursorTop);
                 Console.Write("　　　　　　　　　　　　　　　　　　");//空白埋め
                 Console.CursorLeft = 0;
-                cnt++;
                 Console.Write("接続待受中");
                 for (int i = 0; i < cnt % 3; ++i)
                 {
                     Console.Write('.');
                 }
-                System.Threading.Thread.Sleep(1000);
+                cnt++;
+                System.Threading.Thread.Sleep(1500);
             }
             Console.WriteLine();
             var client = ClientTask.Result;

@@ -4,9 +4,9 @@ using static KaisenLib.AppSet;
 
 namespace GameCore
 {
-    public class MsgFactory
+    internal class MsgFactory
     {
-        public static KaisenMsg Manufact(string msg)
+        internal static KaisenMsg Manufact(string msg)
         {
             int msgId;
             string[] splited = msg.Split(delimiter);
