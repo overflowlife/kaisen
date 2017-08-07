@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using KaisenLib;
+using static KaisenLib.AppSet;
 using GameCore;
 
 namespace Guest
@@ -20,14 +21,22 @@ namespace Guest
             var validateInput = false;
             do
             {
-                Console.Write("接続先サーバアドレス、ポート番号を入力して下さい（127.0.0.1:19690）。\n->");
+                Console.Write($"接続先サーバアドレス、ポート番号を入力して下さい（{loopbackAddress}:{defaultPort}）。\n->");
                 input = Console.ReadLine();
                 var addressandPort = input.Split(':');
-                if (addressandPort.Length != 2)
+                if (addressandPort.Length != 2  && input.ToLower() == "default")
+                {
+                    remoteAddress = IPAddress.Parse(loopbackAddress);
+                    remotePort = defaultPort;
+                    validateInput = true;
+                    continue;
+
+                } else if(addressandPort.Length != 2)
                 {
                     Console.WriteLine("入力形式が間違っています。");
                     continue;
                 }
+
                 validateInput = IPAddress.TryParse(addressandPort[0], out remoteAddress);
                 validateInput &= int.TryParse(addressandPort[1], out remotePort) && (IPEndPoint.MinPort <= remotePort && remotePort <= IPEndPoint.MaxPort);
                 if (!validateInput)
