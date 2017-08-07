@@ -101,18 +101,19 @@ namespace Host
                 using (NetworkStream ns = client.GetStream())
                 {
                     var enc = AppSet.enc;
-                    var messenger = new Messenger(enc, ns);
-
-                    //初期通信：相互確認
-                    if (messenger.Recieve() != AppSet.initRequestMsg)
+                    using (var messenger = new Messenger(enc, ns))
                     {
-                        Environment.Exit(1);
+                        //初期通信：相互確認
+                        if (messenger.Recieve() != AppSet.initRequestMsg)
+                        {
+                            Environment.Exit(1);
+                        }
+                        else
+                        {
+                            messenger.Send(AppSet.initResponseMsg);
+                        }
+                        Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
                     }
-                    else
-                    {
-                        messenger.Send(AppSet.initResponseMsg);
-                    }
-                    Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
                 }
             }
         }

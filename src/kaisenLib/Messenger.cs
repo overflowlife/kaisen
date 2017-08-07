@@ -5,7 +5,7 @@ using System.Net.Sockets;
 
 namespace KaisenLib
 {
-    public class Messenger
+    public class Messenger : IDisposable
     {
         public Encoding Enc { get; private set; }
         private NetworkStream ns;
@@ -23,16 +23,7 @@ namespace KaisenLib
 
         ~Messenger()
         {
-            if (ns != null)
-            {
-                ns.Dispose();
-                ns = null;
-            }
-            if (ms != null)
-            {
-                ms.Dispose();
-                ms = null;
-            }
+
         }
 
         public string Recieve()
@@ -78,6 +69,20 @@ namespace KaisenLib
             }
 
             return;
+        }
+
+        public void Dispose()
+        {
+            if (ns != null)
+            {
+                ns.Dispose();
+                ns = null;
+            }
+            if (ms != null)
+            {
+                ms.Dispose();
+                ms = null;
+            }
         }
     }
 }
