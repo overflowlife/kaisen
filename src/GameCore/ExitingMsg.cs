@@ -22,14 +22,14 @@ namespace GameCore
         {
             string[] splited = msg.Split(delimiter);
             int msgId;
-            if( !(splited.Length == 0 && int.TryParse(splited[0], out msgId) && (KaisenMsgId)msgId == KaisenMsgId.Exiting))
+            if( !(splited.Length == 1 && int.TryParse(splited[0], out msgId) && (KaisenMsgId)msgId == KaisenMsgId.Exiting))
             {
                 throw new ArgumentException("引数チェックの例外です");
             }
             this.msgId = KaisenMsgId.Exiting;
         }
 
-        internal override string ToString()
+        public override string ToString()
         {
             return $"{(int)msgId}";
         }

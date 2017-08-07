@@ -34,7 +34,7 @@ namespace GameCore
             this.sType = splited[3];
         }
 
-        internal override string ToString()
+        public override string ToString()
         {
             return $"{(int)msgId}{delimiter}{x}{delimiter}{y}{delimiter}{sType}";
         }

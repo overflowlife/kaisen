@@ -6,11 +6,7 @@ using KaisenLib;
 
 namespace Host
 {
-    class Program
-    {
-        static TcpListener listener;
-        static Task<TcpClient> clientTask;
-
+    class Program {
         public static Task<TcpClient> ClientTask;
         public static TcpListener Listener;
 

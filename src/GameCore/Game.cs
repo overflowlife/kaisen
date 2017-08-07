@@ -24,7 +24,6 @@ namespace GameCore
 
         public void Start()
         {
-            
         }
     }
 }

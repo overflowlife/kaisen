@@ -3,7 +3,7 @@
     public abstract class KaisenMsg
     {
         internal KaisenMsgId msgId { get; set; }
-        internal new abstract string ToString();
+        public override abstract string ToString();
     }
 
     internal enum KaisenMsgId

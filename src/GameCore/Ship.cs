@@ -50,12 +50,10 @@ namespace GameCore
             return $"{Type}{delimiter}{Stype}{delimiter}{AttackRange}{delimiter}{AttackSpan}{delimiter}{MoveSpeed}";
         }
 
-        public override bool Equals(object obj)
+        public override int GetHashCode()
         {
-            bool equal = false;
-            return equal;
+            return Stype[0];
         }
-
 
     }
 }
