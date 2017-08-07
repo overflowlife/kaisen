@@ -16,9 +16,9 @@ namespace GameCore
             ships = new List<Ship> { new Ship("戦艦", 1, 1, int.MaxValue), new Ship("駆逐艦", 1, 1, int.MaxValue), new Ship("潜水艦", 1, 1, int.MaxValue) };
             deployShips = new Dictionary<Ship, int>
             {
-                {ships.Single( ship => ship.Type == "戦艦" ), 1 },
-                {ships.Single( ship => ship.Type == "駆逐艦"), 1 },
-                {ships.Single( ship => ship.Type == "潜水艦"), 1 },
+                {ships.Single( ship => ship.Stype == "戦"), 1 },
+                {ships.Single( ship => ship.Stype == "駆"), 1 },
+                {ships.Single( ship => ship.Stype == "潜"), 1 },
             };
         }
 

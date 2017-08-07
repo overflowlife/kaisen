@@ -24,16 +24,17 @@ namespace Guest
                 Console.Write($"接続先サーバアドレス、ポート番号を入力して下さい（{loopbackAddress}:{defaultPort}）。\n->");
                 input = Console.ReadLine();
                 var addressandPort = input.Split(':');
-                if (addressandPort.Length != 2  && input.ToLower() == "default")
+                if (addressandPort.Length != 2)
                 {
-                    remoteAddress = IPAddress.Parse(loopbackAddress);
-                    remotePort = defaultPort;
-                    validateInput = true;
-                    continue;
-
-                } else if(addressandPort.Length != 2)
-                {
-                    Console.WriteLine("入力形式が間違っています。");
+                    if(input == "default")
+                    {
+                        remoteAddress = IPAddress.Parse(loopbackAddress);
+                        remotePort = defaultPort;
+                        validateInput = true;
+                    } else
+                    {
+                        Console.WriteLine("入力形式が間違っています。");
+                    }
                     continue;
                 }
 
@@ -65,8 +66,8 @@ namespace Guest
                     using (var messenger = new Messenger(enc, ns))
                     {
                         //初期通信：相互確認
-                        messenger.Send(AppSet.initRequestMsg);
-                        if (messenger.Recieve() != AppSet.initResponseMsg)
+                        messenger.Send(initRequestMsg);
+                        if (messenger.Recieve() != initResponseMsg)
                         {
                             Environment.Exit(1);
                         }

@@ -3,6 +3,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using KaisenLib;
+using static KaisenLib.AppSet;
+using GameCore;
 
 namespace Host
 {
@@ -12,7 +14,7 @@ namespace Host
 
         static void Main(string[] args)
         {
-            Console.OutputEncoding = AppSet.enc;
+            Console.OutputEncoding = enc;
             Logger.Open(nameof(Host));
             Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを起動します。");
 
@@ -27,7 +29,7 @@ namespace Host
                 resultParse = int.TryParse(input, out listenPort);
                 if (resultParse && listenPort == 0)
                 {
-                    listenPort = AppSet.defaultPort;
+                    listenPort = defaultPort;
                     resultParse = true;
                 }
                 else
@@ -101,15 +103,16 @@ namespace Host
                     using (var messenger = new Messenger(enc, ns))
                     {
                         //初期通信：相互確認
-                        if (messenger.Recieve() != AppSet.initRequestMsg)
+                        if (messenger.Recieve() != initRequestMsg)
                         {
                             Environment.Exit(1);
                         }
                         else
                         {
-                            messenger.Send(AppSet.initResponseMsg);
+                            messenger.Send(initResponseMsg);
                         }
                         Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
+                        new Game().Start();
                     }
                 }
             }
