@@ -3,16 +3,16 @@ using System;
 
 namespace GameCore
 {
-    internal class FiringMsg : KaisenMsg
+    internal class FiringRequestMsg : KaisenMsg
     {
         int x;
         int y;
         string sType;
 
-        internal FiringMsg(int x, int y, Ship shooter)
+        internal FiringRequestMsg(int x, int y, Ship shooter)
 
         {
-            msgId = KaisenMsgId.Firing;
+            msgId = KaisenMsgId.FiringRequest;
             this.x = x;
             this.y = y;
             this.sType = shooter.Stype;
@@ -22,10 +22,10 @@ namespace GameCore
         /// 
         /// </summary>
         /// <param name="msg">形式：{msgId}{AppSet.delimiter}{x}{AppSet.delimiter}{y}{AppSet.delimiter}{sType}</param>
-        internal FiringMsg(string msg)
+        internal FiringRequestMsg(string msg)
         {
             string[] splited = msg.Split(delimiter);
-            if ((KaisenMsgId)int.Parse(splited[0]) != KaisenMsgId.Firing || splited.Length != 4)
+            if ((KaisenMsgId)int.Parse(splited[0]) != KaisenMsgId.FiringRequest || splited.Length != 4)
             {
                 throw new ArgumentException("引数チェックでの例外です。");
             }

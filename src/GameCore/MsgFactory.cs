@@ -20,12 +20,12 @@ namespace GameCore
             }
             switch ((KaisenMsgId)msgId)
             {
-                case KaisenMsgId.Firing:
-                    return new FiringMsg(msg);
-                case KaisenMsgId.Moving:
-                    return new MovingMsg(msg);
-                case KaisenMsgId.Exiting:
-                    return new ExitingMsg(msg);
+                case KaisenMsgId.FiringRequest:
+                    return new FiringRequestMsg(msg);
+                case KaisenMsgId.MovingRequest:
+                    return new MovingRequestMsg(msg);
+                case KaisenMsgId.ExitingRequest:
+                    return new ExitingRequestMsg(msg);
                 case KaisenMsgId.None:
                 default:
                     throw new ArgumentException("適切なメッセージIDではありません。");

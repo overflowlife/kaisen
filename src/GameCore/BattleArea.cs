@@ -10,10 +10,10 @@ namespace GameCore
         internal int Width { get; private set; }
         internal int Height { get; private set; }
 
-        internal BattleArea()
+        internal BattleArea(int width, int height)
         {
-            Width = 5;
-            Height = 5;
+            Width = width;
+            Height = height;
             map = new List<Point>(Width * Height);
             for(int y = 0; y < Height; ++y)
             {

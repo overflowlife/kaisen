@@ -9,8 +9,12 @@
     internal enum KaisenMsgId
     {
         None = 0,
-        Firing = 1,
-        Moving = 2,
-        Exiting = 9,
+        FiringRequest = 1,
+        FiringResponse = 2,
+        MovingRequest = 3,
+        MovingResponse = 4,
+        ExitingRequest = 98,
+        ExitingResponse = 99,
+
     }
 }

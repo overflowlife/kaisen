@@ -113,7 +113,11 @@ namespace Host
                             messenger.Send(initResponseMsg);
                         }
                         Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
-                        new Game().Start();
+                        //new Game().Start();
+                        while (true)
+                        {
+                            Logger.WriteAndDisplay(messenger.Recieve());
+                        }
                     }
                 }
             }
