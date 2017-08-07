@@ -10,11 +10,18 @@ namespace GameCore
         /// 本作登場の艦船リストです。リストからの検索にはEnumerable.Single(Func<ship, bool> pred)を利用します。
         /// </summary>
         internal List<Ship> ships { get; }
-
+        /// <summary>
+        /// 本作登場の設置物リストです。
+        /// </summary>
+        internal List<KaisenObject> objs {get;}
         /// <summary>
         /// 艦船ごとの配置数です。
         /// </summary>
         internal Dictionary<Ship, int> deployShips { get; }
+        /// <summary>
+        /// 設置物ごとの配置数です。
+        /// </summary>
+        internal Dictionary<KaisenObject, int> deployObjs { get; }
         internal List<IPlayer> players { get; }
         internal string BB = "戦艦";
         internal string DD = "駆逐艦";
@@ -35,8 +42,15 @@ namespace GameCore
                 {ships.Single( ship => ship.Type == DD), 1 },
                 {ships.Single( ship => ship.Type == SS), 1 },
             };
+            objs = new List<KaisenObject> { new KaisenObject(mine, -1), new KaisenObject(Null, 0) };
+            deployObjs = new Dictionary<KaisenObject, int>
+            {
+                {objs.Single( obj=> obj.Type==mine), 1 },
+            };
             //NullなShipObjを配置します
             battleArea.map.ForEach(p => p.ship = ships.Single(s => s.Type == Null));
+            //NullなKaisenObjを配置します。
+            battleArea.map.ForEach(p => p.obj = objs.Single(o => o.Type == Null));
 
         }
 
