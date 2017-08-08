@@ -7,6 +7,7 @@ namespace GameCore
     public class Game
     {
         internal Messenger messenger;
+        internal Logger logger;
         internal BattleArea battleArea;
         /// <summary>
         /// 本作登場の艦船リストです。リストからの検索にはEnumerable.Single(Func<ship, bool> pred)を利用します。
@@ -32,9 +33,10 @@ namespace GameCore
         internal string Null = "Null";
 
 
-        public Game(Messenger messenger)
+        public Game(Messenger messenger, Logger logger)
         {
             this.messenger = messenger;
+            this.logger = logger;
             battleArea = new BattleArea(5, 5);
             //登場艦船を生成します。
             ships = new List<Ship> {
@@ -65,7 +67,7 @@ namespace GameCore
             //NullなKaisenObjを配置します。
             battleArea.map.ForEach(p => p.obj = objs.Single(o => o.Type == Null));
 
-            //me = new SomePlayer();
+            me = new ConsolePlayer(messenger, logger);
         }
 
         public void Start(bool isGuest)

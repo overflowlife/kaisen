@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KaisenLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,15 @@ namespace GameCore
 {
     public class ConsolePlayer : IPlayer
     {
+        internal Messenger messenger;
+        internal Logger logger;
+
+        internal ConsolePlayer(Messenger messenger, Logger logger)
+        {
+            this.messenger = messenger;
+            this.logger = logger;
+        }
+
         public bool DoTurn()
         {
             int cmd;

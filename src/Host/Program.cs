@@ -15,39 +15,40 @@ namespace Host
         static void Main(string[] args)
         {
             Console.OutputEncoding = enc;
-            Logger.Open(nameof(Host));
-            Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを起動します。");
-
-            string input;
-            int listenPort;
-            var resultParse = false;
-            do
+            using(var logger = new Logger(nameof(Host)))
             {
-                Console.Write("待ち受けポート番号（1～65535）を入力してください。デフォルト値を使用する場合には0を入力してください。\n->");
-                input = Console.ReadLine();
-                //入力が0ならデフォルト番号を使用
-                resultParse = int.TryParse(input, out listenPort);
-                if (resultParse && listenPort == 0)
-                {
-                    listenPort = defaultPort;
-                    resultParse = true;
-                }
-                else
-                {
-                    resultParse = resultParse && (IPEndPoint.MinPort <= listenPort && listenPort <= IPEndPoint.MaxPort);
-                }
+                logger.WriteAndDisplay("海戦ゲーム：ホストサイドを起動します。");
 
-            } while (!resultParse);
+                string input;
+                int listenPort;
+                var resultParse = false;
+                do
+                {
+                    Console.Write("待ち受けポート番号（1～65535）を入力してください。デフォルト値を使用する場合には0を入力してください。\n->");
+                    input = Console.ReadLine();
+                    //入力が0ならデフォルト番号を使用
+                    resultParse = int.TryParse(input, out listenPort);
+                    if (resultParse && listenPort == 0)
+                    {
+                        listenPort = defaultPort;
+                        resultParse = true;
+                    }
+                    else
+                    {
+                        resultParse = resultParse && (IPEndPoint.MinPort <= listenPort && listenPort <= IPEndPoint.MaxPort);
+                    }
 
-            ListenHelper listenHelper;
-            listenHelper = new ListenHelper(listenPort);
+                } while (!resultParse);
+
+                ListenHelper listenHelper;
+                listenHelper = new ListenHelper(listenPort);
                 try
                 {
                     try
                     {
                         Listener = listenHelper.Listener;
                         Listener.Start();
-                        Logger.WriteAndDisplay($"ポート番号[{listenPort}]を使用して接続要求待ち受けを開始します。");
+                        logger.WriteAndDisplay($"ポート番号[{listenPort}]を使用して接続要求待ち受けを開始します。");
                     }
                     catch (Exception)
                     {
@@ -60,9 +61,9 @@ namespace Host
                 {
                     Listener.Stop();
                 }
-            
-            Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを終了します。");
-            Logger.Close();
+
+                logger.WriteAndDisplay("海戦ゲーム：ホストサイドを終了します。");
+            }
             return;
         }
 
@@ -88,7 +89,7 @@ namespace Host
             }
             Console.WriteLine();
             var client = ClientTask.Result;
-            Logger.WriteAndDisplay($"{((IPEndPoint)client.Client.RemoteEndPoint).Address}:{((IPEndPoint)client.Client.RemoteEndPoint).Port}と接続しました。");
+            logger.WriteAndDisplay($"{((IPEndPoint)client.Client.RemoteEndPoint).Address}:{((IPEndPoint)client.Client.RemoteEndPoint).Port}と接続しました。");
             Console.CursorVisible = true;
 
         }
@@ -105,14 +106,14 @@ namespace Host
                         //初期通信：相互確認
                         if (messenger.Recieve() != initRequestMsg)
                         {
-                            Logger.WriteAndDisplay("通信相手を信頼することができませんでした。");
+                            logger.WriteAndDisplay("通信相手を信頼することができませんでした。");
                             Environment.Exit(1);
                         }
                         else
                         {
                             messenger.Send(initResponseMsg);
                         }
-                        Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
+                        logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
                         new Game(messenger).Start(false);
                     }
                 }
