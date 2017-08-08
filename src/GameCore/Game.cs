@@ -25,7 +25,6 @@ namespace GameCore
         /// </summary>
         internal Dictionary<KaisenObject, int> deployObjs { get; }
         internal IPlayer me;
-        internal IPlayer him;
         internal string BB = "戦艦";
         internal string DD = "駆逐艦";
         internal string SS = "潜水艦";
@@ -65,20 +64,24 @@ namespace GameCore
             };
             //NullなKaisenObjを配置します。
             battleArea.map.ForEach(p => p.obj = objs.Single(o => o.Type == Null));
+
+            //me = new SomePlayer();
         }
 
         public void Start(bool isGuest)
         {
             bool myturn = isMyInitiative(isGuest);
+            bool isEnd = false;
             //to fix : infinity loop is dangerous
-            while (true)
+            while (!isEnd)
             {
                 if (myturn)
                 {
-                    me.DoTurn();
-                }else
+                    isEnd = me.DoTurn();
+                }
+                else
                 {
-
+                    isEnd = me.Recieve(messenger.Recieve());
                 }
             }
 
@@ -95,7 +98,8 @@ namespace GameCore
             if (isGuest)
             {
                 return true;
-            } else
+            }
+            else
             {
                 return false;
             }

@@ -10,7 +10,6 @@ namespace GameCore
         string sType;
 
         internal FiringRequestMsg(int x, int y, Ship shooter)
-
         {
             msgId = KaisenMsgId.FiringRequest;
             this.x = x;
@@ -21,7 +20,7 @@ namespace GameCore
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="msg">形式：{msgId}{AppSet.delimiter}{x}{AppSet.delimiter}{y}{AppSet.delimiter}{sType}</param>
+        /// <param name="msg">形式：{(int)msgId}{delimiter}{x}{delimiter}{y}{delimiter}{sType}</param>
         internal FiringRequestMsg(string msg)
         {
             string[] splited = msg.Split(delimiter);

@@ -13,8 +13,8 @@
         FiringResponse = 2,
         MovingRequest = 3,
         MovingResponse = 4,
-        ExitingRequest = 98,
-        ExitingResponse = 99,
+        ExitingRequest = 8,
+        ExitingResponse = 9,
 
     }
 }

@@ -20,6 +20,7 @@ namespace GameCore
             AttackRange = attackRange;
             AttackSpan = attackSpan;
             MoveSpeed = moveSpeed;
+            
         }
 
         /// <summary>
