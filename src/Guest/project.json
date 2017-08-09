@@ -8,14 +8,23 @@
     "GameCore": "1.0.0-*",
     "kaisenLib": "1.0.0-*",
     "Microsoft.NETCore.App": {
-      "type": "platform",
+      "type": "default",
       "version": "1.0.1"
     }
   },
 
   "frameworks": {
     "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore": {
+          "type": "default",
+          "version": "5.0.0"
+        }
+      },
       "imports": "dnxcore50"
     }
+  },
+  "runtimes": {
+    "win7-x64": {}
   }
 }
