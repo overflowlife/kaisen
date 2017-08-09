@@ -1,8 +1,14 @@
-﻿namespace GameCore
+﻿using System.Collections.Generic;
+namespace GameCore
 {
     internal interface IPlayer
     {
         string Name { get; set; }
+        /// <summary>
+        /// 艦船を配置し、配置したあとの座標リストを返却します。
+        /// </summary>
+        /// <returns></returns>
+        List<Point> deployShips();
         /// <summary>
         /// こちら側のコマンドを発信し、相手側の応答を受け取ります。
         /// </summary>

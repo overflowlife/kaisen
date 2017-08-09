@@ -14,6 +14,6 @@ namespace KaisenLib
         static public string initResponseMsg = "JHfzfNnJFmiWPnZ48bknXMjzEpMHdikNk3rgWSjNY49p9PDSDT";
         static public char delimiter = ',';
 
-        static public void outputArrow() => System.Console.Write("->");
+        static public void outputArrow(string fmt = "") => System.Console.Write($"{fmt}->");
     }
 }

@@ -7,6 +7,8 @@ namespace GameCore
     public class Game
     {
         internal BattleArea battleArea;
+        internal int height;
+        internal int width;
         /// <summary>
         /// 本作登場の艦船リストです。リストからの検索にはEnumerable.Single(Func<ship, bool> pred)を利用します。
         /// </summary>
@@ -33,7 +35,9 @@ namespace GameCore
 
         public Game()
         {
-            battleArea = new BattleArea(5, 5);
+            height = 5;
+            width = 5;
+            
             //登場艦船を生成します。
             ships = new List<Ship> {
                 new Ship(BB, 3, 1, 1, int.MaxValue), //戦艦
@@ -48,8 +52,6 @@ namespace GameCore
                 {ships.Single( ship => ship.Type == DD), 1 },
                 {ships.Single( ship => ship.Type == SS), 1 },
             };
-            //NullなShipObjを配置します
-            battleArea.map.ForEach(p => p.ship = ships.Single(s => s.Type == Null));
 
             //登場設置物を生成します。
             objs = new List<KaisenObject> {
@@ -60,14 +62,14 @@ namespace GameCore
             {
                 {objs.Single( obj=> obj.Type==mine), 1 },
             };
-            //NullなKaisenObjを配置します。
-            battleArea.map.ForEach(p => p.obj = objs.Single(o => o.Type == Null));
 
-            me = new ConsolePlayer("You");
+            battleArea = new BattleArea(height, width, this);//登場艦船を生成する前に呼び出してはいけない/悪い設計
+            me = new ConsolePlayer("You", this);//登場艦船を生成する前に呼び出してはいけない/悪い設計
         }
 
         public void Start(bool isGuest)
         {
+            battleArea.map = me.deployShips(); //プレイヤに艦船を配置させます。
             bool myturn = isMyInitiative(isGuest);
             bool isEnd = false;
             //to fix : infinity loop is dangerous

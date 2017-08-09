@@ -7,20 +7,22 @@ namespace GameCore
     internal class BattleArea
     {
         internal List<Point> map;
+        internal Game game;
         internal int Width { get; private set; }
         internal int Height { get; private set; }
 
-        internal BattleArea(int width, int height)
+        internal BattleArea(int width, int height, Game game)
         {
             Width = width;
             Height = height;
+            this.game = game;
             map = new List<Point>(Width * Height);
             for(int y = 0; y < Height; ++y)
             {
                 for(int x = 0; x < Width; ++x)
                 {
                     int i = Width * y + x;
-                    map.Add(new Point(x, y, null, null));
+                    map.Add(new Point(x, y, game.ships.Single(ship=>ship.Type==game.Null)  , game.objs.Single(obj=>obj.Type==game.Null) ));
                 }
             }
         }
@@ -31,20 +33,27 @@ namespace GameCore
         /// <param name="ship"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        internal void SetShipPoint(Ship ship, int x, int y)
+        internal bool SetShipPointAndSuccess(Ship ship, int x, int y)
         {
-            GetPoint(x, y).ship = ship;
+            if (GetPoint(x, y).ship != game.ships.Single(s=>s.Type==game.Null))
+                return false; //すでに艦船が存在している座標には配置しない。
+            else
+            {
+                GetPoint(x, y).ship = ship;
+                return true;
+            }
         }
 
         /// <summary>
-        /// 指定座標にオブジェクトを設置します。
+        /// 指定座標にオブジェクトを設置します。既存チェックを実施すること
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        internal void SetObjectPoint(KaisenObject obj, int x ,int y)
+        internal bool SetObjectPoint(KaisenObject obj, int x ,int y)
         {
             GetPoint(x, y).obj = obj;
+            return true;
         }
 
         /// <summary>

@@ -10,58 +10,155 @@ namespace GameCore
     internal class ConsolePlayer : IPlayer
     {
         public string Name { get; set; }
-        internal ConsolePlayer(string name)
+        public Game Game { get; set; }
+        internal ConsolePlayer(string name, Game game)
         {
             Name = name;
+            Game = game;
+        }
+
+        public List<Point> deployShips()
+        {
+            BattleArea ba = new BattleArea(Game.width, Game.height, Game);
+            Logger.WriteAndDisplay("艦船配置オペレーション");
+            do
+            {
+                foreach (var item in Game.ships.Where(ship => ship.Type != Game.Null))
+                {
+                    for (int i = 0; i < Game.deployShips[item]; ++i)
+                    {
+                        bool validateInput;
+                        do
+                        {
+                            Console.WriteLine($"{item.Type}の配置位置(x, y)を指定してください。");
+                            outputArrow("x");
+                            string usX = Console.ReadLine();
+                            outputArrow("y");
+                            string usY = Console.ReadLine();
+                            int x, y;
+                            bool validateX = int.TryParse(usX, out x) && 0 <= x && x < Game.width;
+                            bool validateY = int.TryParse(usY, out y) && 0 <= y && y < Game.height;
+                            bool validatePoint = ba.SetShipPointAndSuccess(item, x, y);
+                            validateInput = validateX && validateY && validatePoint;
+                            if (!validateInput)
+                            {
+                                if (!validateX)
+                                    Console.WriteLine("X座標に誤りがあります。");
+                                if (!validateY)
+                                    Console.WriteLine("Y座標に誤りがあります。");
+                                if (!validatePoint)
+                                    Console.WriteLine("指定座標にすでに艦船が配置されています。");
+                            }
+                        } while (!validateInput);
+                    }
+                }
+                Console.WriteLine("配置を最初からやり直しますか？");
+                outputArrow("yes: y");
+            } while (Console.ReadLine().Trim().ToLower() == "y");
+
+            foreach (var item in ba.map.Where(p => p.ship.Type != Game.Null))
+            {
+                Logger.WriteAndDisplay($"({item.x}, {item.y})に{item.ship.Type}を配置しました。");
+            }
+
+            return ba.map;
         }
 
         public bool DoTurn()
         {
-            int cmd;
-            Action test;
-            bool validateInput;
             //発行可能なメッセージの定義と、メッセージを発行するメソッドの対応付け
-            Dictionary<int, Action> MsgBinding = new Dictionary<int, Action>
+            Dictionary<int, Func<bool>> MsgBinding = new Dictionary<int, Func<bool>>
             {//Dictionary.Keyにenumを使うと遅いらしい
                 { (int)KaisenMsgId.FiringRequest, FiringRequest },
                 { (int)KaisenMsgId.MovingRequest, MovingRequest },
                 { (int)KaisenMsgId.ExitingRequest, ExitingRequest },
             };
+
+            int usCmd;
             do
             {
-                Console.WriteLine("コマンドを選択してください。");
-                outputArrow();
-                foreach (var item in MsgBinding)
+                Func<bool> test;
+                bool validateInput;
+                do
                 {
-                    Console.WriteLine($"{(int)item.Key}: {item.Key}");
-                }
+                    Console.WriteLine("コマンドを選択してください。");
+                    foreach (var item in MsgBinding)
+                    {
+                        Console.WriteLine($"{item.Key}: {(KaisenMsgId)item.Key}");
+                    }
+                    outputArrow();
+
+                    string input = Console.ReadLine();
+                    validateInput = (int.TryParse(input, out usCmd) && MsgBinding.TryGetValue(usCmd, out test));
+                    if (!validateInput)
+                    {
+                        Console.WriteLine("入力に誤りがあります。");
+                    }
+                } while (!validateInput);
+
                 
-                string input = Console.ReadLine();
-                validateInput = (int.TryParse(input, out cmd) && MsgBinding.TryGetValue(cmd, out test) );
+            } while (MsgBinding[usCmd].Invoke()); // return if cancelled
+
+            return usCmd == (int)KaisenMsgId.ExitingRequest;//微妙
+        }
+
+        private bool ExitingRequest()
+        {
+            bool cancel = false;
+
+            string usX;
+            string usY;
+            int x;
+            int y;
+            bool validateX;
+            bool validateY;
+            bool validateShip;
+            bool validateInput = false;
+            do
+            {
+                Console.WriteLine("砲撃位置を入力してください。");
+                outputArrow("x");
+                usX = Console.ReadLine();
+                outputArrow("y");
+                usY = Console.ReadLine();
+                validateX = int.TryParse(usX, out x) && 0 <= x && x <= Game.width;
+                validateY = int.TryParse(usY, out y) && 0 <= y && y <= Game.height;
+                validateShip = CanShoot(x, y);
+                
+
+                validateInput = validateX && validateY && validateShip;
                 if (!validateInput)
                 {
-                    Console.WriteLine("入力に誤りがあります。");
+                    if(!validateX)
+                        Console.WriteLine("xの入力が不正です。");
+                    if(!validateY)
+                        Console.WriteLine("yの入力が不正です。");
+                    if(!validateShip)
+                        Console.WriteLine("指定座標は射撃可能範囲外です。");
                 }
+                
             } while (!validateInput);
-
-            MsgBinding[cmd].Invoke();//信頼済み
-
-            return (KaisenMsgId)cmd == KaisenMsgId.ExitingRequest;//ここ微妙？
+            
+            return cancel;
         }
 
-        private void ExitingRequest()
+        private bool CanShoot(int x, int y)
         {
-            Console.WriteLine(nameof(ExitingRequest));
+            BattleArea shootingRange = new BattleArea(Game.width, Game.height, Game);
+
+            return true;
         }
 
-        private void MovingRequest()
+        private bool MovingRequest()
         {
             Console.WriteLine(nameof(MovingRequest));
+            return false;
         }
 
-        private void FiringRequest()
+        private bool FiringRequest()
         {
             Console.WriteLine(nameof(FiringRequest));
+            return false;
         }
 
         public bool Recieve(string msg)
