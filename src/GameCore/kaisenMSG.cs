@@ -15,6 +15,5 @@
         MovingResponse = 4,
         ExitingRequest = 8,
         ExitingResponse = 9,
-
     }
 }

@@ -21,11 +21,11 @@ namespace GameCore
             Action test;
             bool validateInput;
             //発行可能なメッセージの定義と、メッセージを発行するメソッドの対応付け
-            Dictionary<KaisenMsgId, Action> MsgBinding = new Dictionary<KaisenMsgId, Action>
-            {
-                { KaisenMsgId.FiringRequest, FiringRequest },
-                { KaisenMsgId.MovingRequest, MovingRequest },
-                { KaisenMsgId.ExitingRequest, ExitingRequest },
+            Dictionary<int, Action> MsgBinding = new Dictionary<int, Action>
+            {//Dictionary.Keyにenumを使うと遅いらしい
+                { (int)KaisenMsgId.FiringRequest, FiringRequest },
+                { (int)KaisenMsgId.MovingRequest, MovingRequest },
+                { (int)KaisenMsgId.ExitingRequest, ExitingRequest },
             };
             do
             {
@@ -37,14 +37,14 @@ namespace GameCore
                 }
                 
                 string input = Console.ReadLine();
-                validateInput = (int.TryParse(input, out cmd) && MsgBinding.TryGetValue((KaisenMsgId)cmd, out test) );
+                validateInput = (int.TryParse(input, out cmd) && MsgBinding.TryGetValue(cmd, out test) );
                 if (!validateInput)
                 {
                     Console.WriteLine("入力に誤りがあります。");
                 }
             } while (!validateInput);
 
-            MsgBinding[(KaisenMsgId)cmd].Invoke();//信頼済み
+            MsgBinding[cmd].Invoke();//信頼済み
 
             return (KaisenMsgId)cmd == KaisenMsgId.ExitingRequest;//ここ微妙？
         }
