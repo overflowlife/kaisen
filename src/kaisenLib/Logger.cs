@@ -3,13 +3,13 @@ using System.IO;
 
 namespace KaisenLib
 {
-    public class Logger : IDisposable
+    public static class Logger
     {
-        private StreamWriter sw;
-        private string logDirectory = "log";
-        private string logFileName;
+        private static StreamWriter sw;
+        private static string logDirectory = "log";
+        private static string logFileName;
 
-        public Logger(string caller)
+        public static void Open(string caller)
         {
             if (!Directory.Exists(logDirectory))
             {
@@ -25,7 +25,7 @@ namespace KaisenLib
         /// <summary>
         /// This is  vey important!!
         /// </summary>
-        public void Dispose()
+        public static void Close()
         {
             if (sw != null)
             {
@@ -34,22 +34,22 @@ namespace KaisenLib
             }
         }
 
-        public void WriteLine(DateTime time, string data)
+        public static void WriteLine(DateTime time, string data)
         {
             Logging(time, data);
         }
-        public void WriteAndDisplay(DateTime time, string data)
+        public static void WriteAndDisplay(DateTime time, string data)
         {
             var logString = MakeLogString(time, data);
             Console.WriteLine(logString);
             Logging(logString);
         }
 
-        public void WriteLine(string data)
+        public static void WriteLine(string data)
         {
             Logging(DateTime.Now, data);
         }
-        public void WriteAndDisplay(string data)
+        public static void WriteAndDisplay(string data)
         {
             var logString = MakeLogString(DateTime.Now, data);
             Console.WriteLine(logString);
@@ -57,7 +57,7 @@ namespace KaisenLib
         }
 
         //ファイルに書き込む。
-        private void Logging(DateTime time, string data)
+        private static void Logging(DateTime time, string data)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace KaisenLib
             }
         }
 
-        private void Logging(string data)
+        private static void Logging(string data)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace KaisenLib
             }
         }
 
-        private string MakeLogString(DateTime time, string data)
+        private static string MakeLogString(DateTime time, string data)
         {
             return $"[{time}, {data}]";
         }

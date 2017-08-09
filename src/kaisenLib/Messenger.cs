@@ -5,45 +5,40 @@ using System.Net.Sockets;
 
 namespace KaisenLib
 {
-    public class Messenger : IDisposable
+    public static class Messenger
     {
-        public Encoding Enc { get; private set; }
-        private NetworkStream ns;
-        private MemoryStream ms;
-        private bool disconnected;
-        private byte[] recBytes;
+        internal static Encoding Enc { get; private set; }
+        internal static NetworkStream Ns { get; private set; }
+        internal static MemoryStream Ms { get; private set; }
+        public static bool disconnected;
+        public static byte[] recBytes;
 
-        public Messenger(Encoding enc, NetworkStream ns)
+        public static void Open(Encoding enc, NetworkStream ns)
         {
-            this.Enc = enc;
-            this.ns = ns;
+            Enc = enc;
+            Ns = ns;
             disconnected = false;
             recBytes = new byte[256];
         }
 
-        ~Messenger()
+        public static string Recieve()
         {
-
-        }
-
-        public string Recieve()
-        {
-            using (ms = new MemoryStream())
+            using (Ms = new MemoryStream())
             {
                 var recSize = 0;
                 do
                 {
-                    recSize = ns.Read(recBytes, 0, recBytes.Length);
+                    recSize = Ns.Read(recBytes, 0, recBytes.Length);
                     if (recSize == 0)
                     {
                         disconnected = true;
                         Logger.WriteAndDisplay("相手が切断しました。");
                         break;
                     }
-                    ms.Write(recBytes, 0, recSize);
-                } while (ns.DataAvailable || recBytes[recSize - 1] != '\n');
+                    Ms.Write(recBytes, 0, recSize);
+                } while (Ns.DataAvailable || recBytes[recSize - 1] != '\n');
 
-                var recMsg = Enc.GetString(ms.ToArray());
+                var recMsg = Enc.GetString(Ms.ToArray());
                 recMsg = recMsg.TrimEnd('\n');
                 Logger.WriteLine($"受信メッセージ：{recMsg}");
                 return recMsg;
@@ -51,14 +46,14 @@ namespace KaisenLib
 
         }
 
-        public void Send(string sendMsg)
+        public static void Send(string sendMsg)
         {
             try
             {
                 if (!disconnected)
                 {
                     var sendBytes = Enc.GetBytes(sendMsg + '\n');
-                    ns.Write(sendBytes, 0, sendBytes.Length);
+                    Ns.Write(sendBytes, 0, sendBytes.Length);
                     Logger.WriteLine($"送信メッセージ：{sendMsg}");
                 }
             }
@@ -71,17 +66,20 @@ namespace KaisenLib
             return;
         }
 
-        public void Dispose()
+        /// <summary>
+        /// This is very important
+        /// </summary>
+        public static void Close()
         {
-            if (ns != null)
+            if (Ns != null)
             {
-                ns.Dispose();
-                ns = null;
+                Ns.Dispose();
+                Ns = null;
             }
-            if (ms != null)
+            if (Ms != null)
             {
-                ms.Dispose();
-                ms = null;
+                Ms.Dispose();
+                Ms = null;
             }
         }
     }

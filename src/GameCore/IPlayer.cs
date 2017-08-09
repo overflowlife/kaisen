@@ -2,6 +2,7 @@
 {
     internal interface IPlayer
     {
+        string Name { get; set; }
         /// <summary>
         /// こちら側のコマンドを発信し、相手側の応答を受け取ります。
         /// </summary>

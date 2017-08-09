@@ -10,8 +10,8 @@ namespace KaisenLib
         static public Encoding enc = Encoding.UTF8;
         static public int defaultPort = 19690;
         static public string loopbackAddress = "127.0.0.1";
-        static public string initRequestMsg = "BnEYPXCjA5x93QiHZZb7StXYHt5nxemQV2hnJSpBZpsaX";
-        static public string initResponseMsg = "JHfzfNnJFmiWPnZ48bknXMjzEpMHdikNk3rgWSjNY49p9";
+        static public string initRequestMsg = "BnEYPXCjA5x93QiHZZb7StXYHt5nxemQV2hnJSpBZpsaXPlzDntSpyDisThx";
+        static public string initResponseMsg = "JHfzfNnJFmiWPnZ48bknXMjzEpMHdikNk3rgWSjNY49p9PDSDT";
         static public char delimiter = ',';
     }
 }

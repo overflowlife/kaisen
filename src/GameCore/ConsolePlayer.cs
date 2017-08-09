@@ -6,68 +6,61 @@ using System.Threading.Tasks;
 
 namespace GameCore
 {
-    public class ConsolePlayer : IPlayer
+    internal class ConsolePlayer : IPlayer
     {
-        internal Messenger messenger;
-        internal Logger logger;
-
-        internal ConsolePlayer(Messenger messenger, Logger logger)
+        public string Name { get; set; }
+        internal ConsolePlayer(string name)
         {
-            this.messenger = messenger;
-            this.logger = logger;
+            Name = name;
         }
 
         public bool DoTurn()
         {
             int cmd;
+            Action test;
             bool validateInput;
+            //発行可能なメッセージの定義と、メッセージを発行するメソッドの対応付け
+            Dictionary<KaisenMsgId, Action> MsgBinding = new Dictionary<KaisenMsgId, Action>
+            {
+                { KaisenMsgId.FiringRequest, FiringRequest },
+                { KaisenMsgId.MovingRequest, MovingRequest },
+                { KaisenMsgId.ExitingRequest, ExitingRequest },
+            };
             do
             {
-                Console.Write("コマンドを選択してください。\n1: Fire..\n3: Move..\n8: Exit..\n->");
+                Console.WriteLine("コマンドを選択してください。");
+                foreach (var item in MsgBinding)
+                {
+                    Console.WriteLine($"{(int)item.Key}: {item.Key}");
+                }
                 string input = Console.ReadLine();
-                validateInput = (int.TryParse(input, out cmd) && (KaisenMsgId)cmd == KaisenMsgId.FiringRequest || (KaisenMsgId)cmd == KaisenMsgId.MovingRequest || (KaisenMsgId)cmd == KaisenMsgId.ExitingRequest);
+                validateInput = (int.TryParse(input, out cmd) && MsgBinding.TryGetValue((KaisenMsgId)cmd, out test) );
             } while (!validateInput);
 
-            switch ((KaisenMsgId)cmd)
-                {
-                    case KaisenMsgId.FiringRequest:
-                        FiringRequest();
-                        break;
-                    case KaisenMsgId.MovingRequest:
-                        MovingRequest();
-                        break;
-                    case KaisenMsgId.ExitingRequest:
-                        ExitingRequest();
-                        break;
-                    case KaisenMsgId.None:
-                    case KaisenMsgId.FiringResponse:
-                    case KaisenMsgId.MovingResponse:
-                    case KaisenMsgId.ExitingResponse:
-                    default:
-                        throw new Exception("異常発生");
-                }
+            MsgBinding[(KaisenMsgId)cmd].Invoke();
 
-            return false;
+            return (KaisenMsgId)cmd == KaisenMsgId.ExitingRequest;
         }
 
         private void ExitingRequest()
         {
-            throw new NotImplementedException();
+            Console.WriteLine(nameof(ExitingRequest));
         }
 
         private void MovingRequest()
         {
-            throw new NotImplementedException();
+            Console.WriteLine(nameof(MovingRequest));
         }
 
         private void FiringRequest()
         {
-            throw new NotImplementedException();
+            Console.WriteLine(nameof(FiringRequest));
         }
 
         public bool Recieve(string msg)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(nameof(Recieve));
+            return false;
         }
     }
 }
