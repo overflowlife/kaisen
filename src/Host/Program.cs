@@ -23,7 +23,8 @@ namespace Host
             var resultParse = false;
             do
             {
-                Console.Write("待ち受けポート番号（1～65535）を入力してください。デフォルト値を使用する場合には0を入力してください。\n->");
+                Console.WriteLine("待ち受けポート番号（1～65535）を入力してください。デフォルト値を使用する場合には0を入力してください。");
+                outputArrow();
                 input = Console.ReadLine();
                 //入力が0ならデフォルト番号を使用
                 resultParse = int.TryParse(input, out listenPort);

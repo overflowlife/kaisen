@@ -5,20 +5,26 @@ namespace KaisenLib
 {
     public static class Logger
     {
+        internal static bool isOpened { get; set; }
         private static StreamWriter sw;
         private static string logDirectory = "log";
         private static string logFileName;
 
         public static void Open(string caller)
         {
-            if (!Directory.Exists(logDirectory))
+            if (!isOpened)
             {
-                Directory.CreateDirectory(logDirectory);
-            }
-            logFileName = logDirectory + Path.DirectorySeparatorChar + caller + DateTime.Now.ToString("_yy_MM_dd_HH_mm_ss_fff") + ".txt";
-            var fs = File.Create(logFileName);
+                isOpened = true;
+                if (!Directory.Exists(logDirectory))
+                {
+                    Directory.CreateDirectory(logDirectory);
+                }
+                logFileName = logDirectory + Path.DirectorySeparatorChar + caller + DateTime.Now.ToString("_yy_MM_dd_HH_mm_ss_fff") + ".txt";
+                var fs = File.Create(logFileName);
 
-            sw = new StreamWriter(fs);
+                sw = new StreamWriter(fs);
+            }
+
 
         }
 
@@ -27,11 +33,16 @@ namespace KaisenLib
         /// </summary>
         public static void Close()
         {
-            if (sw != null)
+            if (isOpened)
             {
-                sw.Dispose();
-                sw = null;
+                isOpened = false;
+                if (sw != null)
+                {
+                    sw.Dispose();
+                    sw = null;
+                }
             }
+
         }
 
         public static void WriteLine(DateTime time, string data)
@@ -77,7 +88,7 @@ namespace KaisenLib
             }
             catch (Exception)
             {
-                Console.WriteLine("次のログをファイルに記録できませんでした！: " + data);
+                Console.WriteLine("次のデータをファイルに記録できませんでした！: " + data);
             }
         }
 

@@ -7,6 +7,7 @@ namespace KaisenLib
 {
     public static class Messenger
     {
+        internal static bool isOpen { get; private set; }
         internal static Encoding Enc { get; private set; }
         internal static NetworkStream Ns { get; private set; }
         internal static MemoryStream Ms { get; private set; }
@@ -15,10 +16,14 @@ namespace KaisenLib
 
         public static void Open(Encoding enc, NetworkStream ns)
         {
-            Enc = enc;
-            Ns = ns;
-            disconnected = false;
-            recBytes = new byte[256];
+            if (!isOpen)
+            {
+                isOpen = true;
+                Enc = enc;
+                Ns = ns;
+                disconnected = false;
+                recBytes = new byte[256];
+            }
         }
 
         public static string Recieve()
@@ -71,16 +76,21 @@ namespace KaisenLib
         /// </summary>
         public static void Close()
         {
-            if (Ns != null)
+            if (isOpen)
             {
-                Ns.Dispose();
-                Ns = null;
+                isOpen = false;
+                if (Ns != null)
+                {
+                    Ns.Dispose();
+                    Ns = null;
+                }
+                if (Ms != null)
+                {
+                    Ms.Dispose();
+                    Ms = null;
+                }
             }
-            if (Ms != null)
-            {
-                Ms.Dispose();
-                Ms = null;
-            }
+
         }
     }
 }

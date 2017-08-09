@@ -12,16 +12,17 @@ namespace Guest
         static NetworkStream ns;
         static void Main(string[] args)
         {
-            Console.OutputEncoding = AppSet.enc;
+            Console.OutputEncoding = enc;
             Logger.Open(nameof(Guest));
             Logger.WriteAndDisplay("海戦ゲーム：ゲストサイドを起動します。");
             string input;
             IPAddress remoteAddress = null;
-            var remotePort = -1;
-            var validateInput = false;
+            int remotePort = -1;
+            bool validateInput = false;
             do
             {
-                Console.Write($"接続先サーバアドレス、ポート番号を入力して下さい（{loopbackAddress}:{defaultPort}）。\n->");
+                Console.WriteLine($"接続先サーバアドレス、ポート番号を入力して下さい（{loopbackAddress}:{defaultPort}）。");
+                outputArrow();
                 input = Console.ReadLine();
                 var addressandPort = input.Split(':');
                 if (addressandPort.Length != 2)
@@ -63,7 +64,7 @@ namespace Guest
                     $"({((IPEndPoint)tcpClient.Client.LocalEndPoint).Address}:{((IPEndPoint)tcpClient.Client.LocalEndPoint).Port})。");
                 using (ns = tcpClient.GetStream())
                 {
-                    Messenger.Open(AppSet.enc, ns);
+                    Messenger.Open(enc, ns);
                     //初期通信：相互確認
                     Messenger.Send(initRequestMsg);
                     if (Messenger.Recieve() != initResponseMsg)

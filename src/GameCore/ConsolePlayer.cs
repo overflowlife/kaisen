@@ -1,4 +1,5 @@
 ﻿using KaisenLib;
+using static KaisenLib.AppSet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,17 +30,23 @@ namespace GameCore
             do
             {
                 Console.WriteLine("コマンドを選択してください。");
+                outputArrow();
                 foreach (var item in MsgBinding)
                 {
                     Console.WriteLine($"{(int)item.Key}: {item.Key}");
                 }
+                
                 string input = Console.ReadLine();
                 validateInput = (int.TryParse(input, out cmd) && MsgBinding.TryGetValue((KaisenMsgId)cmd, out test) );
+                if (!validateInput)
+                {
+                    Console.WriteLine("入力に誤りがあります。");
+                }
             } while (!validateInput);
 
-            MsgBinding[(KaisenMsgId)cmd].Invoke();
+            MsgBinding[(KaisenMsgId)cmd].Invoke();//信頼済み
 
-            return (KaisenMsgId)cmd == KaisenMsgId.ExitingRequest;
+            return (KaisenMsgId)cmd == KaisenMsgId.ExitingRequest;//ここ微妙？
         }
 
         private void ExitingRequest()
