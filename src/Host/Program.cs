@@ -63,6 +63,7 @@ namespace Host
             }
 
             Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを終了します。");
+            Logger.Close();
             return;
         }
 
