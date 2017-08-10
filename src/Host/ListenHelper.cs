@@ -45,7 +45,7 @@ namespace Host
         }
 
         /// <summary>
-        /// listenAddress:listenPortでListen開始します。あああ
+        /// listenAddress:listenPortでListen開始します。
         /// </summary>
         /// <param name="listenAddress"></param>
         /// <param name="listenPort"></param>
