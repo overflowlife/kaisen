@@ -117,7 +117,8 @@ namespace GameCore
             {
                 Messenger.Send(new ExitingRequestMsg().ToString());
                 Logger.WriteAndDisplay("終了通知を発行しました。");
-                if (MsgFactory.Manufact(Messenger.Recieve()).msgId == KaisenMsgId.ExitingResponse)
+                var manufactedMsg = MsgFactory.Manufact(Messenger.Recieve());
+                if (manufactedMsg.msgId == KaisenMsgId.ExitingResponse)
                 {
                     Logger.WriteAndDisplay("応答を受け取りました。終了します。");
                     return true;
