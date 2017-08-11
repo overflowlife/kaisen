@@ -85,6 +85,7 @@ namespace KaisenLib
             try
             {
                 sw.WriteLine(data);
+                sw.Flush();
             }
             catch (Exception)
             {

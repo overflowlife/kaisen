@@ -28,7 +28,7 @@ namespace GameCore
         }
 
         /// <summary>
-        /// 指定座標に感染を配置します。
+        /// 指定座標に感染を配置します。すでに艦船が配置してある場合にはfalseを返却します。
         /// </summary>
         /// <param name="ship"></param>
         /// <param name="x"></param>
@@ -64,11 +64,16 @@ namespace GameCore
         /// <returns></returns>
         internal Point GetPoint(int x, int y)
         {
-            if( 0 <= x && x <= Width && 0<= y && y <= Height)
+            if( 0 <= x && x < Width && 0<= y && y < Height)
             {
                 return map[x + Width * y];
             }
             throw new ArgumentOutOfRangeException();
+        }
+
+        public static implicit operator List<object>(BattleArea v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

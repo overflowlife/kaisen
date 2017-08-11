@@ -27,7 +27,7 @@ namespace GameCore
                 {
                     for (int i = 0; i < Game.deployShips[item]; ++i)
                     {
-                        bool validateInput;
+                        bool validateInput = false;
                         do
                         {
                             Console.WriteLine($"{item.Type}の配置位置(x, y)を指定してください。");
@@ -36,23 +36,26 @@ namespace GameCore
                             outputArrow("y");
                             string usY = Console.ReadLine();
                             int x, y;
+
                             bool validateX = int.TryParse(usX, out x) && 0 <= x && x < Game.width;
                             bool validateY = int.TryParse(usY, out y) && 0 <= y && y < Game.height;
-                            bool validatePoint = ba.SetShipPointAndSuccess(item, x, y);
-                            validateInput = validateX && validateY && validatePoint;
-                            if (!validateInput)
+                            if(!validateX || !validateY)
                             {
-                                if (!validateX)
-                                    Console.WriteLine("X座標に誤りがあります。");
-                                if (!validateY)
-                                    Console.WriteLine("Y座標に誤りがあります。");
-                                if (!validatePoint)
-                                    Console.WriteLine("指定座標にすでに艦船が配置されています。");
+                                Console.WriteLine($"指定位置がマップ境界(0, 0)～（{Game.width}, {Game.height}）を超えています。");
+                                continue;
                             }
+
+                            bool validateOverlap = ba.SetShipPointAndSuccess(item, x, y);
+                            if (!validateOverlap)
+                            {
+                                Console.WriteLine($"指定座標にはすでに{ba.GetPoint(x, y).ship.Type}が配置されています。");
+                            }
+
+                            validateInput = validateX && validateY && validateOverlap;
                         } while (!validateInput);
                     }
                 }
-                Console.WriteLine("配置を最初からやり直しますか？");
+                Console.WriteLine("配置完了しました。最初からやり直しますか？");
                 outputArrow("yes: y");
             } while (Console.ReadLine().Trim().ToLower() == "y");
 
@@ -64,6 +67,10 @@ namespace GameCore
             return ba.map;
         }
 
+        /// <summary>
+        /// どうもコマンドキャンセル周りの設計が悪い気がする。cancellationTokenとか使うべき？
+        /// </summary>
+        /// <returns></returns>
         public bool DoTurn()
         {
             //発行可能なメッセージの定義と、メッセージを発行するメソッドの対応付け
@@ -74,7 +81,7 @@ namespace GameCore
                 { (int)KaisenMsgId.ExitingRequest, ExitingRequest },
             };
 
-            int usCmd;
+            int cmd;
             do
             {
                 Func<bool> test;
@@ -89,7 +96,7 @@ namespace GameCore
                     outputArrow();
 
                     string input = Console.ReadLine();
-                    validateInput = (int.TryParse(input, out usCmd) && MsgBinding.TryGetValue(usCmd, out test));
+                    validateInput = (int.TryParse(input, out cmd) && MsgBinding.TryGetValue(cmd, out test));
                     if (!validateInput)
                     {
                         Console.WriteLine("入力に誤りがあります。");
@@ -97,12 +104,48 @@ namespace GameCore
                 } while (!validateInput);
 
                 
-            } while (MsgBinding[usCmd].Invoke()); // return if cancelled
+            } while (MsgBinding[cmd].Invoke()); // return if cancelled
 
-            return usCmd == (int)KaisenMsgId.ExitingRequest;//微妙
+            return cmd == (int)KaisenMsgId.ExitingRequest;//微妙
         }
 
         private bool ExitingRequest()
+        {
+            Console.WriteLine("ゲームから退出します。よろしいですか？");
+            outputArrow("yes: y");
+            if(Console.ReadLine().ToLower() == "y")
+            {
+                Messenger.Send(new ExitingRequestMsg().ToString());
+                Logger.WriteAndDisplay("終了通知を発行しました。");
+                if (MsgFactory.Manufact(Messenger.Recieve()).msgId == KaisenMsgId.ExitingResponse)
+                {
+                    Logger.WriteAndDisplay("応答を受け取りました。終了します。");
+                    return true;
+                }
+                else
+                    throw new Exception("終了通知に対して異常な応答が返却されました。");
+            }
+            else
+            {
+                return false;
+            }
+            
+        }
+
+        private bool CanShoot(int x, int y)
+        {
+            BattleArea shootingRange = new BattleArea(Game.width, Game.height, Game);
+
+            return true;
+        }
+
+        private bool MovingRequest()
+        {
+            Console.WriteLine(nameof(MovingRequest));
+            return false;
+        }
+
+        private bool FiringRequest()
         {
             bool cancel = false;
 
@@ -124,47 +167,56 @@ namespace GameCore
                 validateX = int.TryParse(usX, out x) && 0 <= x && x <= Game.width;
                 validateY = int.TryParse(usY, out y) && 0 <= y && y <= Game.height;
                 validateShip = CanShoot(x, y);
-                
+
 
                 validateInput = validateX && validateY && validateShip;
                 if (!validateInput)
                 {
-                    if(!validateX)
+                    if (!validateX)
                         Console.WriteLine("xの入力が不正です。");
-                    if(!validateY)
+                    if (!validateY)
                         Console.WriteLine("yの入力が不正です。");
-                    if(!validateShip)
+                    if (!validateShip)
                         Console.WriteLine("指定座標は射撃可能範囲外です。");
                 }
-                
+
             } while (!validateInput);
-            
+
             return cancel;
-        }
-
-        private bool CanShoot(int x, int y)
-        {
-            BattleArea shootingRange = new BattleArea(Game.width, Game.height, Game);
-
-            return true;
-        }
-
-        private bool MovingRequest()
-        {
-            Console.WriteLine(nameof(MovingRequest));
-            return false;
-        }
-
-        private bool FiringRequest()
-        {
-            Console.WriteLine(nameof(FiringRequest));
-            return false;
         }
 
         public bool Recieve(string msg)
         {
             Console.WriteLine(nameof(Recieve));
-            return false;
+            KaisenMsgId cmd = MsgFactory.Manufact(msg).msgId;
+            switch (cmd)
+            {
+                case KaisenMsgId.None:
+                    break;
+                case KaisenMsgId.FiringRequest:
+                    break;
+
+                case KaisenMsgId.MovingRequest:
+                    break;
+
+                case KaisenMsgId.ExitingRequest:
+                    ExitingResponse(msg);
+                    break;
+
+                case KaisenMsgId.FiringResponse:
+                case KaisenMsgId.MovingResponse:
+                case KaisenMsgId.ExitingResponse:
+                default:
+                    break;
+            }
+
+            return cmd == KaisenMsgId.ExitingRequest;
+        }
+
+        private void ExitingResponse(string msg)
+        {
+            Logger.WriteAndDisplay("終了通知を受け取りました。");
+            Messenger.Send(new ExitingResponseMsg().ToString());
         }
     }
 }

@@ -9,7 +9,7 @@ namespace GameCore
     {
         internal ExitingResponseMsg()
         {
-            msgId = KaisenMsgId.MovingResponse;
+            msgId = KaisenMsgId.ExitingResponse;
         }
 
         internal ExitingResponseMsg(string msg)
@@ -19,7 +19,7 @@ namespace GameCore
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return $"{(int)msgId}";
         }
     }
 }
