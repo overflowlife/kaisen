@@ -104,7 +104,7 @@ namespace GameCore
                 } while (!validateInput);
 
                 
-            } while (MsgBinding[cmd].Invoke()); // return if cancelled
+            } while (!MsgBinding[cmd].Invoke()); // return true if cancelled
 
             return cmd == (int)KaisenMsgId.ExitingRequest;//微妙
         }

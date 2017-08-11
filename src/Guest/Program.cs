@@ -10,11 +10,15 @@ namespace Guest
     class Program
     {
         static NetworkStream ns;
+        static Game game;
         static void Main(string[] args)
         {
             Console.OutputEncoding = enc;
             Logger.Open(nameof(Guest));
             Logger.WriteAndDisplay("海戦ゲーム：ゲストサイドを起動します。");
+            game = new Game();
+            game.DeployShips();
+
             string input;
             IPAddress remoteAddress = null;
             int remotePort = -1;
@@ -56,8 +60,8 @@ namespace Guest
                 }
                 catch (Exception)
                 {
-
-                    throw;
+                    Console.WriteLine("接続確立に失敗しました。終了します。");
+                    Environment.Exit(1);
                 }
 
                 Logger.WriteAndDisplay($"ホスト({((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address}:{((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port})と接続しました" +
@@ -73,7 +77,7 @@ namespace Guest
                         Environment.Exit(1);
                     }
                     Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
-                    new Game().Start(true);
+                    game.Start(true);
                     Messenger.Close();
                 }
             }

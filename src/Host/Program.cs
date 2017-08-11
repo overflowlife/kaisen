@@ -11,12 +11,15 @@ namespace Host
     class Program {
         public static Task<TcpClient> ClientTask;
         public static TcpListener Listener;
+        public static Game game;
 
         static void Main(string[] args)
         {
             Console.OutputEncoding = enc;
             Logger.Open(nameof(Host));
             Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを起動します。");
+            game = new Game();
+            game.DeployShips();
 
             string input;
             int listenPort;
@@ -112,7 +115,7 @@ namespace Host
                         Messenger.Send(initResponseMsg);
                     }
                     Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
-                    new Game().Start(false);
+                    game.Start(false);
                 }
             }
         }

@@ -13,6 +13,7 @@ namespace GameCore
         /// 本作登場の艦船リストです。リストからの検索にはEnumerable.Single(Func<ship, bool> pred)を利用します。
         /// </summary>
         internal List<Ship> ships { get; }
+
         /// <summary>
         /// 本作登場の設置物リストです。
         /// </summary>
@@ -67,9 +68,13 @@ namespace GameCore
             me = new ConsolePlayer("You", this);//登場艦船を生成する前に呼び出してはいけない/悪い設計
         }
 
-        public void Start(bool isGuest)
+        public void DeployShips()
         {
             battleArea.map = me.deployShips(); //プレイヤに艦船を配置させます。
+        }
+
+        public void Start(bool isGuest)
+        {
             bool myturn = isMyInitiative(isGuest);
             bool isEnd = false;
             //to fix : infinity loop is dangerous
@@ -83,6 +88,7 @@ namespace GameCore
                 {
                     isEnd = me.Recieve(Messenger.Recieve());
                 }
+                myturn = !myturn;
             }
 
         }
