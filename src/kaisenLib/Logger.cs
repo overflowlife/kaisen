@@ -3,6 +3,9 @@ using System.IO;
 
 namespace KaisenLib
 {
+    /// <summary>
+    /// Open()→Write*()→Close()
+    /// </summary>
     public static class Logger
     {
         internal static bool isOpened { get; set; }
@@ -24,8 +27,6 @@ namespace KaisenLib
 
                 sw = new StreamWriter(fs);
             }
-
-
         }
 
         /// <summary>
@@ -67,25 +68,19 @@ namespace KaisenLib
             Logging(logString);
         }
 
-        //ファイルに書き込む。
+        
         private static void Logging(DateTime time, string data)
         {
-            try
-            {
-                sw.WriteLine(MakeLogString(time, data));
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            Logging(MakeLogString(time, data));
         }
 
+        //ファイルに書き込む。
         private static void Logging(string data)
         {
             try
             {
                 sw.WriteLine(data);
-                sw.Flush();
+                sw.Flush(); //パフォーマンス問題ないかな？
             }
             catch (Exception)
             {

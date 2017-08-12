@@ -19,6 +19,6 @@ namespace GameCore
         /// </summary>
         /// <param name="msg"></param>
         /// <returns>終了フラグ</returns>
-        bool Recieve(string msg);
+        bool Recieve();
     }
 }

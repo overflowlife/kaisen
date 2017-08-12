@@ -86,7 +86,7 @@ namespace GameCore
                 }
                 else
                 {
-                    isEnd = me.Recieve(Messenger.Recieve());
+                    isEnd = me.Recieve();
                 }
                 myturn = !myturn;
             }
@@ -109,6 +109,16 @@ namespace GameCore
             {
                 return false;
             }
+        }
+
+        internal bool ValidateX(int x)
+        {
+            return 0 <= x  && x< width;
+        }
+
+        internal bool ValidateY(int y)
+        {
+            return 0 <= y && y < height;
         }
     }
 }

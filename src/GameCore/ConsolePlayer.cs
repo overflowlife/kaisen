@@ -68,7 +68,7 @@ namespace GameCore
         }
 
         /// <summary>
-        /// どうもコマンドキャンセル周りの設計が悪い気がする。cancellationTokenとか使うべき？
+        /// どうもコマンドキャンセル周りの設計が悪い気がする。
         /// </summary>
         /// <returns></returns>
         public bool DoTurn()
@@ -104,7 +104,7 @@ namespace GameCore
                 } while (!validateInput);
 
                 
-            } while (!MsgBinding[cmd].Invoke()); // return true if cancelled
+            } while (MsgBinding[cmd].Invoke()); // return true if cancelled
 
             return cmd == (int)KaisenMsgId.ExitingRequest;//微妙
         }
@@ -148,8 +148,6 @@ namespace GameCore
 
         private bool FiringRequest()
         {
-            bool cancel = false;
-
             string usX;
             string usY;
             int x;
@@ -165,8 +163,8 @@ namespace GameCore
                 usX = Console.ReadLine();
                 outputArrow("y");
                 usY = Console.ReadLine();
-                validateX = int.TryParse(usX, out x) && 0 <= x && x <= Game.width;
-                validateY = int.TryParse(usY, out y) && 0 <= y && y <= Game.height;
+                validateX = int.TryParse(usX, out x) && Game.ValidateX(x);
+                validateY = int.TryParse(usY, out y) && Game.ValidateX(y);
                 validateShip = CanShoot(x, y);
 
 
@@ -183,25 +181,40 @@ namespace GameCore
 
             } while (!validateInput);
 
-            return cancel;
+            Console.WriteLine("砲撃をキャンセルしますか？");
+            outputArrow("yes: y");
+            if(Console.ReadLine().ToLower() == "y")
+            {
+                return true;
+            }
+
+            var req = new FiringRequestMsg(x, y);
+            Messenger.Send(req.ToString());
+            FiringRequestMsg converted = (FiringRequestMsg)MsgFactory.Manufact(req.ToString());
+            Logger.WriteAndDisplay($"地点({converted.x}, {converted.y})への砲撃通知を行いました。");
+
+
+            return false;
         }
 
-        public bool Recieve(string msg)
+        public bool Recieve()
         {
             Console.WriteLine(nameof(Recieve));
-            KaisenMsgId cmd = MsgFactory.Manufact(msg).msgId;
-            switch (cmd)
+            string msg = Messenger.Recieve();
+            KaisenMsg recieved = MsgFactory.Manufact(msg);
+            switch (recieved.msgId)
             {
                 case KaisenMsgId.None:
                     break;
                 case KaisenMsgId.FiringRequest:
+                    FiringResponse((FiringRequestMsg)recieved);
                     break;
 
                 case KaisenMsgId.MovingRequest:
                     break;
 
                 case KaisenMsgId.ExitingRequest:
-                    ExitingResponse(msg);
+                    ExitingResponse( (ExitingRequestMsg)recieved);
                     break;
 
                 case KaisenMsgId.FiringResponse:
@@ -211,13 +224,27 @@ namespace GameCore
                     break;
             }
 
-            return cmd == KaisenMsgId.ExitingRequest;
+            return recieved.msgId == KaisenMsgId.ExitingRequest;
         }
 
-        private void ExitingResponse(string msg)
+        private void FiringResponse(FiringRequestMsg msg)
+        {
+            
+            if(Game.ValidateX(msg.x) && Game.ValidateY(msg.y))
+            {
+                Logger.WriteAndDisplay($"砲撃通知({msg.x}, {msg.y})を受け取りました。");
+            }
+            else
+            {
+                //
+            }
+        }
+
+        private void ExitingResponse(ExitingRequestMsg msg)
         {
             Logger.WriteAndDisplay("終了通知を受け取りました。");
             Messenger.Send(new ExitingResponseMsg().ToString());
+            Logger.WriteAndDisplay("終了応答を送信しました。");
         }
     }
 }

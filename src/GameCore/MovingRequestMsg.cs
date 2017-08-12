@@ -28,6 +28,7 @@ namespace GameCore
             {
                 throw new ArgumentException("引数チェックでの例外です。");
             }
+            msgId = KaisenMsgId.MovingRequest;
             direction = int.Parse (splited[1]);
             distance = int.Parse(splited[2]);
             sType = splited[3];
