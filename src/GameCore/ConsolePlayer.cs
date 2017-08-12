@@ -190,8 +190,8 @@ namespace GameCore
 
             var req = new FiringRequestMsg(x, y);
             Messenger.Send(req.ToString());
-            FiringRequestMsg converted = (FiringRequestMsg)MsgFactory.Manufact(req.ToString());
-            Logger.WriteAndDisplay($"地点({converted.x}, {converted.y})への砲撃通知を行いました。");
+            Logger.WriteAndDisplay($"地点({x}, {y})への砲撃通知を行いました。");
+            
 
 
             return false;
