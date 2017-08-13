@@ -135,8 +135,6 @@ namespace GameCore
 
         private bool CanShoot(int x, int y)
         {
-            BattleArea shootingRange = new BattleArea(Game.width, Game.height, Game);
-
             return true;
         }
 
@@ -229,10 +227,10 @@ namespace GameCore
 
         private void FiringResponse(FiringRequestMsg msg)
         {
-            
-            if(Game.ValidateX(msg.x) && Game.ValidateY(msg.y))
+            Logger.WriteAndDisplay($"砲撃通知({msg.x}, {msg.y})を受け取りました。");
+            if (Game.ValidateX(msg.x) && Game.ValidateY(msg.y))
             {
-                Logger.WriteAndDisplay($"砲撃通知({msg.x}, {msg.y})を受け取りました。");
+
             }
             else
             {
