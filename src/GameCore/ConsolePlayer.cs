@@ -4,6 +4,7 @@ using static System.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace GameCore
@@ -14,16 +15,14 @@ namespace GameCore
     internal class ConsolePlayer : IPlayer
     {
         public string Name { get; set; }
-        public Game Game { get; set; }
-        internal ConsolePlayer(string name, Game game)
+        internal ConsolePlayer(string name)
         {
             Name = name;
-            Game = game;
         }
 
         public List<Point> deployShips()
         {
-            BattleArea ba = new BattleArea(Game.width, Game.height, Game);
+            BattleArea ba = new BattleArea(Game.width, Game.height);
             Logger.WriteAndDisplay("艦船配置オペレーション");
             do
             {
@@ -125,13 +124,9 @@ namespace GameCore
                 Messenger.Send(new ExitingRequestMsg().ToString());
                 Logger.WriteAndDisplay("終了通知を発行しました。");
                 var manufactedMsg = MsgFactory.Manufact(Messenger.Recieve());
-                if (manufactedMsg.msgId == KaisenMsgId.ExitingResponse)
-                {
-                    Logger.WriteAndDisplay("応答を受け取りました。終了します。");
-                    return true;
-                }
-                else
-                    throw new Exception("終了通知に対して異常な応答が返却されました。");
+                Debug.Assert(manufactedMsg.msgId == KaisenMsgId.ExitingResponse, "終了通知に対して異常な応答が返却されました。");
+                Logger.WriteAndDisplay("応答を受け取りました。終了します。");
+                return true;
             }
             else
             {
@@ -187,6 +182,29 @@ namespace GameCore
             var req = new FiringRequestMsg(x, y);
             Messenger.Send(req.ToString());
             Logger.WriteAndDisplay($"地点({x}, {y})への砲撃通知を行いました。");
+            var msg = MsgFactory.Manufact(Messenger.Recieve());
+            Debug.Assert(msg.msgId == KaisenMsgId.FiringResponse, "砲撃通知に対して異常な応答が返却されました。");
+            FiringResponseMsg res = (FiringResponseMsg)msg;
+            switch (res.summary)
+            {
+                case FiringResponseSummary.Hit:
+                    if(res.destroyedName != Game.Null){
+                        Logger.WriteAndDisplay($"{res.destroyedName}を撃沈しました！");
+                    }else{
+                        Logger.WriteAndDisplay("敵艦船に直撃しました。");
+                    }
+                    break;
+                case FiringResponseSummary.Nearmiss:
+                    Logger.WriteAndDisplay("ニアミスでした。");
+                    break;
+                case FiringResponseSummary.Water:
+                    Logger.WriteAndDisplay("海に落ちました。");
+                    break;
+                default:
+                    break;
+            }
+
+
             return false;
         }
 
@@ -226,7 +244,30 @@ namespace GameCore
             Logger.WriteAndDisplay($"砲撃通知({msg.x}, {msg.y})を受け取りました。");
             if (Game.ValidateX(msg.x) && Game.ValidateY(msg.y))
             {
-
+                Ship hit;
+                var send = Game.ShootFromOther(msg.x, msg.y, out hit);
+                Messenger.Send(send.ToString());
+                switch (send.summary)
+                {
+                    case FiringResponseSummary.Hit:
+                        if(send.destroyedName != Game.Null)
+                        {
+                            Logger.WriteAndDisplay($"{send.destroyedName}が撃沈されました..");
+                        }
+                        else
+                        {
+                            Logger.WriteAndDisplay($"秘匿情報：{hit.Type}に命中しました。");
+                        }
+                        break;
+                    case FiringResponseSummary.Nearmiss:
+                        Logger.WriteAndDisplay("ニアミスでした。");
+                        break;
+                    case FiringResponseSummary.Water:
+                        Logger.WriteAndDisplay("海に落ちました。");
+                        break;
+                    default:
+                        break;
+                }
             }
             else
             {

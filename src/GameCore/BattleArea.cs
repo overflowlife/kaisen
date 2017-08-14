@@ -10,22 +10,20 @@ namespace GameCore
     internal class BattleArea
     {
         internal List<Point> map;
-        internal Game game;
         internal int Width { get; private set; }
         internal int Height { get; private set; }
 
-        internal BattleArea(int width, int height, Game game)
+        internal BattleArea(int width, int height)
         {
             Width = width;
             Height = height;
-            this.game = game;
             map = new List<Point>(Width * Height);
             for(int y = 0; y < Height; ++y)
             {
                 for(int x = 0; x < Width; ++x)
                 {
                     int i = Width * y + x;
-                    map.Add(new Point(x, y, game.ships.Single(ship=>ship.Type==game.Null)  , game.objs.Single(obj=>obj.Type==game.Null) ));
+                    map.Add(new Point(x, y, Game.ships.Single(ship=>ship.Type==Game.Null)  , Game.objs.Single(obj=>obj.Type==Game.Null) ));
                 }
             }
         }
@@ -38,7 +36,7 @@ namespace GameCore
         /// <param name="y"></param>
         internal bool SetShipPointAndSuccess(Ship ship, int x, int y)
         {
-            if (GetPoint(x, y).ship != game.ships.Single(s=>s.Type==game.Null))
+            if (GetPoint(x, y).ship != Game.ships.Single(s=>s.Type==Game.Null))
                 return false; //すでに艦船が存在している座標には配置しない。
             else
             {
