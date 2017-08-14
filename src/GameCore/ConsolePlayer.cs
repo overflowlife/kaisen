@@ -85,10 +85,13 @@ namespace GameCore
                 { (int)KaisenMsgId.ExitingRequest, ExitingRequest },
             };
 
-            int cmd;
+            
+            bool cancel;
+            bool exit;
             do
             {
-                Func<bool> test;
+                int cmdId;
+                Func<bool> cmd = () => false;
                 bool validateInput;
                 do
                 {
@@ -100,17 +103,17 @@ namespace GameCore
                     outputArrow();
 
                     string input = Console.ReadLine();
-                    validateInput = (int.TryParse(input, out cmd) && MsgBinding.TryGetValue(cmd, out test));
+                    validateInput = (int.TryParse(input, out cmdId) && MsgBinding.TryGetValue(cmdId, out cmd));
                     if (!validateInput)
                     {
                         Console.WriteLine("入力に誤りがあります。");
                     }
                 } while (!validateInput);
+                cancel = cmd.Invoke();// return true if cancelled
+                exit = (KaisenMsgId)cmdId == KaisenMsgId.ExitingRequest;
+            } while (cancel); 
 
-                
-            } while (MsgBinding[cmd].Invoke()); // return true if cancelled
-
-            return cmd == (int)KaisenMsgId.ExitingRequest;//微妙
+            return exit;
         }
 
         private bool ExitingRequest()
@@ -134,44 +137,12 @@ namespace GameCore
             {
                 return false;
             }
-            
-        }
-
-        private bool CanShoot(int x, int y)
-        {
-            List<Point> lp = new List<Point>();
-            return ;
-        }
-
-        private IEnumerable<Point> PointsaroundPoint(int x, int y)
-        {
-            return PointsaroundPoint(x, y, 1);
-        }
-
-        private IEnumerable<Point> PointsaroundPoint(int x, int y, int area)
-        {
-            return PointsaroundPoint(new Point(x, y, null, null));
-        }
-
-        private IEnumerable<Point> PointsaroundPoint(Point p)
-        {
-            return PointsaroundPoint(p, 1);
-        }
-
-        private IEnumerable<Point> PointsaroundPoint(Point target, int area)
-        {
-            foreach (var item in Game.battleArea.map)
-            {
-                var d = Pow(item.x - target.x, 2) + Pow(item.y - target.y, 2);
-                if (d <= Pow(area, 2))
-                    yield return item;
-            }
         }
 
         private bool MovingRequest()
         {
             Console.WriteLine(nameof(MovingRequest));
-            return false;
+            return true; //未実装
         }
 
         private bool FiringRequest()
@@ -182,7 +153,7 @@ namespace GameCore
             int y;
             bool validateX;
             bool validateY;
-            bool validateShip;
+            bool validateRange;
             bool validateInput = false;
             do
             {
@@ -193,20 +164,17 @@ namespace GameCore
                 usY = Console.ReadLine();
                 validateX = int.TryParse(usX, out x) && Game.ValidateX(x);
                 validateY = int.TryParse(usY, out y) && Game.ValidateX(y);
-                validateShip = CanShoot(x, y);
-
-
-                validateInput = validateX && validateY && validateShip;
+                validateRange = Game.IsInRange(x, y);
+                validateInput = validateX && validateY && validateRange;
                 if (!validateInput)
                 {
                     if (!validateX)
                         Console.WriteLine("xの入力が不正です。");
                     if (!validateY)
                         Console.WriteLine("yの入力が不正です。");
-                    if (!validateShip)
+                    if (!validateRange)
                         Console.WriteLine("指定座標は射撃可能範囲外です。");
                 }
-
             } while (!validateInput);
 
             Console.WriteLine("砲撃をキャンセルしますか？");
@@ -219,12 +187,10 @@ namespace GameCore
             var req = new FiringRequestMsg(x, y);
             Messenger.Send(req.ToString());
             Logger.WriteAndDisplay($"地点({x}, {y})への砲撃通知を行いました。");
-            
-
-
             return false;
         }
 
+        //invalid castが起きたら？
         public bool Recieve()
         {
             Console.WriteLine(nameof(Recieve));

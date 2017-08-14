@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using KaisenLib;
+using static System.Math;
 namespace GameCore
 {
     public class Game
@@ -90,7 +91,6 @@ namespace GameCore
                 }
                 myturn = !myturn;
             }
-
         }
 
         /// <summary>
@@ -119,6 +119,58 @@ namespace GameCore
         internal bool ValidateY(int y)
         {
             return 0 <= y && y < height;
+        }
+
+        /// <summary>
+        /// 指定地点が射程範囲内であるかを判断します。
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+       internal bool IsInRange(int x, int y)
+        {
+            List<Point> lp = new List<Point>();
+            foreach (var p in battleArea.map.Where(p => p.ship.Type != Null))
+            {
+                var points = PointsShipInPointCanShoot(p);
+                //全ての艦船の射程範囲を結合します
+                lp.AddRange(points);
+            }
+            //そのうちいずれかなら射程範囲内とみなします。
+            bool canShoot = lp.Any(p => p.x == x && p.y == y);
+
+            return canShoot;
+        }
+
+        /// <summary>
+        /// target上の艦船が射程範囲とする地点のリストを返却します。
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        internal IEnumerable<Point> PointsShipInPointCanShoot(Point target)
+        {
+            foreach (var item in battleArea.map)
+            {
+                var d = Pow(item.x - target.x, 2) + Pow(item.y - target.y, 2);
+                if (d < Pow(target.ship.AttackRange + 1, 2))
+                    yield return item;
+            }
+        }
+
+        /// <summary>
+        /// target周辺の地点を返却します。
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="area"></param>
+        /// <returns></returns>
+        internal IEnumerable<Point> PointsaroundPoint(Point target, int area)
+        {
+            foreach (var item in battleArea.map)
+            {
+                var d = Pow(item.x - target.x, 2) + Pow(item.y - target.y, 2);
+                if (d < Pow(area+1, 2))
+                   yield return item;
+            }
         }
     }
 }

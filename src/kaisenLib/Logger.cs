@@ -61,6 +61,7 @@ namespace KaisenLib
         {
             Logging(DateTime.Now, data);
         }
+
         public static void WriteAndDisplay(string data)
         {
             var logString = MakeLogString(DateTime.Now, data);
@@ -90,7 +91,7 @@ namespace KaisenLib
 
         private static string MakeLogString(DateTime time, string data)
         {
-            return $"[{time}, {data}]";
+            return $"[{time}] {data}";
         }
     }
 }
