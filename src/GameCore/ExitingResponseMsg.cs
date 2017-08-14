@@ -7,6 +7,9 @@ using static KaisenLib.AppSet;
 
 namespace GameCore
 {
+    /// <summary>
+    /// ゲーム終了に対する応答メッセージです。
+    /// </summary>
     internal class ExitingResponseMsg : KaisenMsg
     {
         internal ExitingResponseMsg()

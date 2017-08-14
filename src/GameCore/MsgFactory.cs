@@ -26,6 +26,8 @@ namespace GameCore
                     return new FiringResponseMsg(msg);*/
                 case KaisenMsgId.MovingRequest:
                     return new MovingRequestMsg(msg);
+                /*case KaisenMsgId.MovingResponse:
+                    return new MovingResponseMsg(msg);*/
                 case KaisenMsgId.ExitingRequest:
                     return new ExitingRequestMsg(msg);
                 case KaisenMsgId.ExitingResponse:

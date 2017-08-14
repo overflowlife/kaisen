@@ -3,6 +3,9 @@ using System;
 
 namespace GameCore
 {
+    /// <summary>
+    /// ある地点への砲撃を相手に通知するメッセージ形式です。
+    /// </summary>
     internal class FiringRequestMsg : KaisenMsg
     {
         internal int x { get; private set; }

@@ -4,6 +4,9 @@ using static KaisenLib.AppSet;
 
 namespace GameCore
 {
+    /// <summary>
+    /// 機雷・デコイなど、設置物を表現します。
+    /// </summary>
     internal class KaisenObject
     {
         internal string Type;

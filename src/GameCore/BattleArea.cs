@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace GameCore
 {
+    /// <summary>
+    /// 幅と高さを持ち、それぞれの座標情報を持った戦闘エリアを表現します。
+    /// </summary>
     internal class BattleArea
     {
         internal List<Point> map;

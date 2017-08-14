@@ -1,5 +1,6 @@
 ﻿using KaisenLib;
 using static KaisenLib.AppSet;
+using static System.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace GameCore
 {
+    /// <summary>
+    /// コンソールからの入力によりゲームを進行するプレイヤーです。
+    /// </summary>
     internal class ConsolePlayer : IPlayer
     {
         public string Name { get; set; }
@@ -135,7 +139,33 @@ namespace GameCore
 
         private bool CanShoot(int x, int y)
         {
-            return true;
+            List<Point> lp = new List<Point>();
+            return ;
+        }
+
+        private IEnumerable<Point> PointsaroundPoint(int x, int y)
+        {
+            return PointsaroundPoint(x, y, 1);
+        }
+
+        private IEnumerable<Point> PointsaroundPoint(int x, int y, int area)
+        {
+            return PointsaroundPoint(new Point(x, y, null, null));
+        }
+
+        private IEnumerable<Point> PointsaroundPoint(Point p)
+        {
+            return PointsaroundPoint(p, 1);
+        }
+
+        private IEnumerable<Point> PointsaroundPoint(Point target, int area)
+        {
+            foreach (var item in Game.battleArea.map)
+            {
+                var d = Pow(item.x - target.x, 2) + Pow(item.y - target.y, 2);
+                if (d <= Pow(area, 2))
+                    yield return item;
+            }
         }
 
         private bool MovingRequest()

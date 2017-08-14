@@ -31,7 +31,7 @@ namespace GameCore
         internal string DD = "駆逐艦";
         internal string SS = "潜水艦";
         internal string mine = "機雷";
-        internal string Null = "Null";
+        internal string Null = "Null";//Nullオブジェクトは必要か？
 
 
         public Game()
