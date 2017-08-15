@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,6 +48,7 @@ namespace GameCore
 
         public override string ToString()
         {
+            Debug.Assert(msgId == KaisenMsgId.FiringResponse);
             return $"{(int)msgId}{delimiter}{(int)summary}{delimiter}{destroyedName}";
         }
     }

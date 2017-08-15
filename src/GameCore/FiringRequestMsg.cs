@@ -1,5 +1,6 @@
 ﻿using static KaisenLib.AppSet;
 using System;
+using System.Diagnostics;
 
 namespace GameCore
 {
@@ -36,6 +37,7 @@ namespace GameCore
 
         public override string ToString()
         {
+            Debug.Assert(msgId == KaisenMsgId.FiringRequest);
             return $"{(int)msgId}{delimiter}{x}{delimiter}{y}";
         }
     }

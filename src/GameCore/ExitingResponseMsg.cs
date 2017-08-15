@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using KaisenLib;
 using static KaisenLib.AppSet;
+using System.Diagnostics;
 
 namespace GameCore
 {
@@ -30,6 +31,7 @@ namespace GameCore
 
         public override string ToString()
         {
+            Debug.Assert(msgId == KaisenMsgId.ExitingResponse);
             return $"{(int)msgId}";
         }
     }

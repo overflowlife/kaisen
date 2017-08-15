@@ -181,7 +181,7 @@ namespace GameCore
 
             var req = new FiringRequestMsg(x, y);
             Messenger.Send(req.ToString());
-            Logger.WriteAndDisplay($"地点({x}, {y})への砲撃通知を行いました。");
+            Logger.WriteAndDisplay($"地点({x}, {y})を砲撃しました。");
             var msg = MsgFactory.Manufact(Messenger.Recieve());
             Debug.Assert(msg.msgId == KaisenMsgId.FiringResponse, "砲撃通知に対して異常な応答が返却されました。");
             FiringResponseMsg res = (FiringResponseMsg)msg;
@@ -241,7 +241,7 @@ namespace GameCore
 
         private void FiringResponse(FiringRequestMsg msg)
         {
-            Logger.WriteAndDisplay($"砲撃通知({msg.x}, {msg.y})を受け取りました。");
+            Logger.WriteAndDisplay($"地点({msg.x}, {msg.y})が砲撃されました。");
             if (Game.ValidateX(msg.x) && Game.ValidateY(msg.y))
             {
                 Ship hit;
