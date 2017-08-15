@@ -20,7 +20,7 @@ namespace GameCore
             Name = name;
         }
 
-        public List<Point> deployShips()
+        internal override List<Point> deployShips()
         {
             BattleArea ba = new BattleArea(Game.width, Game.height);
             Logger.WriteAndDisplay("艦船配置オペレーション");
@@ -74,7 +74,7 @@ namespace GameCore
         /// どうもコマンドキャンセル周りの設計が悪い気がする。
         /// </summary>
         /// <returns></returns>
-        public bool DoTurn()
+        internal override bool DoTurn()
         {
             //発行可能なメッセージの定義と、メッセージを発行するメソッドの対応付け
             Dictionary<int, Func<bool>> MsgBinding = new Dictionary<int, Func<bool>>
@@ -209,7 +209,7 @@ namespace GameCore
         }
 
         //invalid castが起きたら？
-        public bool Recieve()
+        internal override bool Recieve()
         {
             Console.WriteLine(nameof(Recieve));
             string msg = Messenger.Recieve();
@@ -242,36 +242,30 @@ namespace GameCore
         private void FiringResponse(FiringRequestMsg msg)
         {
             Logger.WriteAndDisplay($"地点({msg.x}, {msg.y})が砲撃されました。");
-            if (Game.ValidateX(msg.x) && Game.ValidateY(msg.y))
+            Debug.Assert(Game.ValidateX(msg.x) && Game.ValidateY(msg.y));
+            Ship hit;
+            var send = Game.ShootFromOther(msg.x, msg.y, out hit);
+            Messenger.Send(send.ToString());
+            switch (send.summary)
             {
-                Ship hit;
-                var send = Game.ShootFromOther(msg.x, msg.y, out hit);
-                Messenger.Send(send.ToString());
-                switch (send.summary)
-                {
-                    case FiringResponseSummary.Hit:
-                        if(send.destroyedName != Game.Null)
-                        {
-                            Logger.WriteAndDisplay($"{send.destroyedName}が撃沈されました..");
-                        }
-                        else
-                        {
-                            Logger.WriteAndDisplay($"秘匿情報：{hit.Type}に命中しました。");
-                        }
-                        break;
-                    case FiringResponseSummary.Nearmiss:
-                        Logger.WriteAndDisplay("ニアミスでした。");
-                        break;
-                    case FiringResponseSummary.Water:
-                        Logger.WriteAndDisplay("海に落ちました。");
-                        break;
-                    default:
-                        break;
-                }
-            }
-            else
-            {
-                //
+                case FiringResponseSummary.Hit:
+                    if(send.destroyedName != Game.Null)
+                    {
+                        Logger.WriteAndDisplay($"{send.destroyedName}が撃沈されました..");
+                    }
+                    else
+                    {
+                        Logger.WriteAndDisplay($"秘匿情報：{hit.Type}に命中しました。");
+                    }
+                    break;
+                case FiringResponseSummary.Nearmiss:
+                    Logger.WriteAndDisplay("ニアミスでした。");
+                    break;
+                case FiringResponseSummary.Water:
+                    Logger.WriteAndDisplay("海に落ちました。");
+                    break;
+                default:
+                    break;
             }
         }
 
