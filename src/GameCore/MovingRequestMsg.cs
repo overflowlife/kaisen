@@ -1,26 +1,27 @@
 ﻿using static KaisenLib.AppSet;
 using System;
+using System.Diagnostics;
 
 namespace GameCore
 {
     internal class MovingRequestMsg : KaisenMsg
     {
-        int direction;
-        int distance;
-        string sType;
+        internal int direction;
+        internal int distance;
+        internal string mover;
 
-        internal MovingRequestMsg(int direction, int distance, Ship mover)
+        internal MovingRequestMsg(int direction, int distance, string mover)
         {
             msgId = KaisenMsgId.MovingRequest;
             this.direction = direction;
             this.distance = distance;
-            this.sType = mover.Stype;
+            this.mover = mover;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="str">形式：{(int)msgId}{delimiter}{direction}{delimiter}{distance}{delimiter}{sType}</param>
+        /// <param name="str">形式：{(int)msgId}{delimiter}{direction}{delimiter}{distance}{delimiter}{mover}</param>
         internal MovingRequestMsg(string str)
         {
             string[] splited = str.Split(delimiter);
@@ -31,12 +32,13 @@ namespace GameCore
             msgId = KaisenMsgId.MovingRequest;
             direction = int.Parse (splited[1]);
             distance = int.Parse(splited[2]);
-            sType = splited[3];
+            mover = splited[3];
         }
 
         public override string ToString()
         {
-            return $"{(int)msgId}{delimiter}{direction}{delimiter}{distance}{delimiter}{sType}";
+            Debug.Assert(msgId == KaisenMsgId.MovingRequest);
+            return $"{(int)msgId}{delimiter}{direction}{delimiter}{distance}{delimiter}{mover}";
         }
     }
 }

@@ -5,12 +5,12 @@ namespace GameCore
 {
     internal class Ship
     {
-        public string Type { get; set; }
-        public string Stype { get; set; }
-        public int Durable { get; set; }
-        public int AttackRange { get; set; }
-        public int AttackSpan { get; set; }
-        public int MoveSpeed { get; set; }
+        internal string Type { get; set; }
+        internal string Stype { get; set; }
+        internal int Durable { get; set; }
+        internal int AttackRange { get; set; }
+        internal int AttackSpan { get; set; }
+        internal int MoveSpeed { get; set; }
 
         internal Ship(string type, int durable, int attackRange, int attackSpan, int moveSpeed)
         {
@@ -21,6 +21,16 @@ namespace GameCore
             AttackSpan = attackSpan;
             MoveSpeed = moveSpeed;
             
+        }
+
+        internal Ship(Ship src)
+        {
+            Type = src.Type;
+            Stype = src.Stype;
+            Durable = src.Durable;
+            AttackRange = src.AttackRange;
+            AttackSpan = src.AttackSpan;
+            MoveSpeed = src.MoveSpeed;
         }
 
         /// <summary>

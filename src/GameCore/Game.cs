@@ -201,5 +201,34 @@ namespace GameCore
             }
             return new FiringResponseMsg(summary, destroyed);
         }
+
+        internal static bool MoveShip(int x, int y, int dir, int dis)
+        {
+            Point now = GetPoint(x, y);
+            if (now.ship.Type == Null || now.ship.Durable == 0 || now.ship.MoveSpeed < dis)
+            {//移動元に艦船が存在しないか、HPが0、もしくは艦船の移動能力を超えた移動量
+                return false;
+            }
+
+            Point moved;
+            if(dir == 4 || dir ==  6)
+            {
+                int movedX = dir == 4 ? x - dis :x + dis;
+                moved = GetPoint(movedX, y);
+            }
+            else
+            {
+                int movedY = dir == 2 ? y - dis : y + dis;
+                moved = GetPoint(x, movedY);
+            }
+            if(!ValidateX(moved.x) || !ValidateY(moved.y) || moved.ship.Type != Null)
+            {//移動先がマップ範囲を超えている、もしくは移動先にすでに艦船がある
+                return false;
+            }
+
+            moved.ship = new Ship(now.ship);
+            now.ship = ships.Single(s => s.Type == Null);
+            return true;
+        }
     }
 }

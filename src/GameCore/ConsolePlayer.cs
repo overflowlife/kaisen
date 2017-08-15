@@ -2,6 +2,7 @@
 using static KaisenLib.AppSet;
 using static System.Math;
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
@@ -92,6 +93,7 @@ namespace GameCore
                 int cmdId;
                 Func<bool> cmd = () => false;
                 bool validateInput;
+                dispMap();
                 do
                 {
                     Console.WriteLine("コマンドを選択してください。");
@@ -136,8 +138,100 @@ namespace GameCore
 
         private bool MovingRequest()
         {
-            Console.WriteLine(nameof(MovingRequest));
-            return true; //未実装
+            string usX;
+            string usY;
+            int x;
+            int y;
+            bool validateX;
+            bool validateY;
+            bool validateShip;
+            bool validateInput = false;
+            do
+            {
+                Console.WriteLine("移動させる艦船の現在座標を指示して下さい。");
+                outputArrow("x");
+                usX = Console.ReadLine();
+                outputArrow("y");
+                usY = Console.ReadLine();
+                validateX = int.TryParse(usX, out x) && Game.ValidateX(x);
+                validateY = int.TryParse(usY, out y) && Game.ValidateX(y);
+                validateShip = Game.GetPoint(x, y).ship.Type != Game.Null;
+                validateInput = validateX && validateY && validateShip;
+                if (!validateInput)
+                {
+                    if (!validateX)
+                        Console.WriteLine("xの入力が不正です。");
+                    if (!validateY)
+                        Console.WriteLine("yの入力が不正です。");
+                    if (!validateShip)
+                        Console.WriteLine("指定座標に艦船が存在しません。");
+                }
+            } while (!validateInput);
+
+            string usDir;
+            string usDis;
+            int dir;
+            int dis;
+            bool validateDir;
+            bool validateDis;
+            bool validateOverlap;
+            do
+            {
+                Console.WriteLine("移動方向、移動距離（>0）を指示してください。");
+                outputArrow("Dir:2,4,6or8");
+                usDir = Console.ReadLine();
+                outputArrow("Dis");
+                usDis = Console.ReadLine();
+                validateDir = int.TryParse(usDir, out dir) && dir == 2 || dir == 4 || dir == 6 || dir == 8;
+                validateDis = int.TryParse(usDis, out dis) && dis <= Game.GetPoint(x, y).ship.MoveSpeed &&
+                    (dir == 4 || dir == 6) ?
+                    (0 < dis &&  dis < Game.width ) :
+                    (0 < dis &&  dis <Game.height );
+
+                if(dir == 4 || dis == 6)
+                {
+                    int moved = dir == 4 ? (x - dis) : (x + dis);
+                    validateShip =Game.ValidateX(moved);
+                    validateOverlap = Game.GetPoint(moved, y).ship.Type == Game.Null;
+                }
+                else
+                {
+                    int moved = dir == 2 ? (y - dis) : (y + dis);
+                    validateShip = Game.ValidateY(moved);
+                    validateOverlap = Game.GetPoint(x, moved).ship.Type == Game.Null;
+                }
+                validateInput = validateDir && validateDis && validateShip;
+
+                if (!validateInput)
+                {
+                    if (!validateDir)
+                        Console.WriteLine("入力方向が正しくないです。2, 4, 6, 8のいずれかで指示してください。");
+                    if (!validateDis)
+                        Console.WriteLine("移動距離が0以下、マップ幅以上、もしくは艦船の移動能力以上です。");
+                    if (!validateShip)
+                        Console.WriteLine("敵前逃亡は認められていません。");
+                    if(!validateOverlap)
+                        Console.WriteLine("移動先にはすでに艦船が存在します。");
+                }
+            } while (!validateInput);
+
+            Console.WriteLine("移動をキャンセルしますか？");
+            outputArrow("yes: y");
+            if (Console.ReadLine().ToLower() == "y")
+            {
+                return true;
+            }
+
+            Point past = Game.GetPoint(x, y);
+            Debug.Assert(Game.MoveShip(x, y, dir, dis));
+            var send = new MovingRequestMsg(dir, dis, past.ship.Type);
+            Messenger.Send(send.ToString());
+            Logger.WriteAndDisplay($"{send.mover}を{send.direction}方向に{send.distance}だけ移動しました。");
+            var rec =  MsgFactory.Manufact(Messenger.Recieve());
+            Debug.Assert(rec.msgId == KaisenMsgId.MovingResponse);
+            Logger.WriteAndDisplay("移動に対する応答を受け取りました。");
+
+            return false; 
         }
 
         private bool FiringRequest()
@@ -208,7 +302,6 @@ namespace GameCore
             return false;
         }
 
-        //invalid castが起きたら？
         internal override bool Recieve()
         {
             Console.WriteLine(nameof(Recieve));
@@ -219,14 +312,15 @@ namespace GameCore
                 case KaisenMsgId.None:
                     break;
                 case KaisenMsgId.FiringRequest:
-                    FiringResponse((FiringRequestMsg)recieved);
+                    FiringResponse(recieved as FiringRequestMsg );
                     break;
 
                 case KaisenMsgId.MovingRequest:
+                    MovingResponse(recieved as MovingRequestMsg);
                     break;
 
                 case KaisenMsgId.ExitingRequest:
-                    ExitingResponse( (ExitingRequestMsg)recieved);
+                    ExitingResponse( recieved as ExitingRequestMsg);
                     break;
 
                 case KaisenMsgId.FiringResponse:
@@ -237,6 +331,13 @@ namespace GameCore
             }
 
             return recieved.msgId == KaisenMsgId.ExitingRequest;
+        }
+
+        private void MovingResponse(MovingRequestMsg msg)
+        {
+            Logger.WriteAndDisplay($"{msg.mover}が{msg.direction}方向に{msg.distance}移動しました。");
+            Messenger.Send(new MovingResponseMsg().ToString());
+            Logger.WriteAndDisplay($"移動に対して応答しました。");
         }
 
         private void FiringResponse(FiringRequestMsg msg)
@@ -274,6 +375,36 @@ namespace GameCore
             Logger.WriteAndDisplay("終了通知を受け取りました。");
             Messenger.Send(new ExitingResponseMsg().ToString());
             Logger.WriteAndDisplay("終了応答を送信しました。");
+        }
+
+        private void dispMap()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"「{Name}」戦術画面");
+            sb.AppendLine();
+            sb.AppendLine("健在艦船");
+            foreach (var item in Game.battleArea.map.Where(p=>p.ship!=Game.ships.Single(s=>s.Type == Game.Null)))
+            {
+                sb.AppendLine($"{item.ship.Type}({item.x}, {item.y})：{item.ship.Durable}");
+            }
+            sb.Append(' ');
+            for (int i = 0; i < Game.width; ++i)
+            {
+               sb.Append(' ' + i.ToString());
+            }
+            sb.AppendLine();
+            for(int y = 0; y < Game.height; ++y)
+            {
+                sb.Append(y);
+                for(int x= 0; x < Game.width; ++x)
+                {
+                    string type = Game.GetPoint(x, y).ship != Game.ships.Single(s=>s.Type==Game.Null) ? Game.GetPoint(x, y).ship.Stype : "　";
+                    sb.Append(type);
+                }
+                sb.AppendLine();
+            }
+            sb.AppendLine();
+            Console.Write(sb.ToString());
         }
     }
 }
