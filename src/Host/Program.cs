@@ -103,14 +103,14 @@ namespace Host
                 {
                     Messenger.Open(enc, ns);
                     //初期通信：相互確認
-                    if (Messenger.Recieve() != initRequestMsg)
+                    if (Messenger.Recieve() != version)
                     {
-                        Logger.WriteAndDisplay("通信相手を信頼することができませんでした。");
+                        Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
                         Environment.Exit(1);
                     }
                     else
                     {
-                        Messenger.Send(initResponseMsg);
+                        Messenger.Send(version);
                     }
                     Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
                     Game.StartLoop(false);
