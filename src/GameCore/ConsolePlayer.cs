@@ -188,7 +188,7 @@ namespace GameCore
                     (0 < dis &&  dis < Game.width ) :
                     (0 < dis &&  dis <Game.height );
 
-                if(dir == 4 || dis == 6)
+                if(dir == 4 || dir == 6)
                 {
                     int movedX = dir == 4 ? (x - dis) : (x + dis);
                     validateShip =Game.ValidateX(movedX);
