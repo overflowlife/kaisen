@@ -202,6 +202,14 @@ namespace GameCore
             return new FiringResponseMsg(summary, destroyed);
         }
 
+        /// <summary>
+        /// 地点(x, y)にいる艦船を、dir方向にdis距離だけ移動させます。成功の場合にtrueを返却します。
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="dir"></param>
+        /// <param name="dis"></param>
+        /// <returns></returns>
         internal static bool MoveShip(int x, int y, int dir, int dis)
         {
             Point now = GetPoint(x, y);

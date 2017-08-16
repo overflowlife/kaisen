@@ -224,7 +224,8 @@ namespace GameCore
             }
 
             Point past = new Point(Game.GetPoint(x, y));
-            Debug.Assert(Game.MoveShip(x, y, dir, dis));
+            var moveProcess = Game.MoveShip(past.x, past.y, dir, dis);
+            Debug.Assert(moveProcess);
             var send = new MovingRequestMsg(dir, dis, past.ship.Type);
             Messenger.Send(send.ToString());
             Logger.WriteAndDisplay($"{send.mover}を{send.direction}方向に{send.distance}だけ移動しました。");
