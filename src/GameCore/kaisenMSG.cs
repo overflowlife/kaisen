@@ -3,6 +3,7 @@
     internal abstract class KaisenMsg
     {
         internal KaisenMsgId msgId { get; set; }
+        internal string Name { get; set; }
         public override abstract string ToString();
     }
 

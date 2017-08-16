@@ -12,9 +12,10 @@ namespace GameCore
         internal MovingResponseMsg()
         {
             msgId = KaisenMsgId.MovingResponse;
+            Name = "移動";
         }
 
-        internal MovingResponseMsg(string msg)
+        internal MovingResponseMsg(string msg) : this()
         {
             string[] splited = msg.Split(delimiter);
             int msgId;
@@ -22,7 +23,6 @@ namespace GameCore
             {
                 throw new ArgumentException("引数チェックの例外です");
             }
-            this.msgId = KaisenMsgId.MovingResponse;
         }
 
         public override string ToString()

@@ -16,13 +16,14 @@ namespace GameCore
         internal ExitingRequestMsg()
         {
             msgId = KaisenMsgId.ExitingRequest;
+            Name = "終了";
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="msg">形式："{(int)kaisenMsgId.Exiting}"</param>
-         internal ExitingRequestMsg(string msg)
+         internal ExitingRequestMsg(string msg) : this()
         {
             string[] splited = msg.Split(delimiter);
             int msgId;
@@ -30,7 +31,6 @@ namespace GameCore
             {
                 throw new ArgumentException("引数チェックの例外です");
             }
-            this.msgId = KaisenMsgId.ExitingRequest;
         }
 
         public override string ToString()

@@ -13,16 +13,18 @@ namespace GameCore
         internal FiringResponseSummary summary;
         internal string destroyedName;
 
-        internal FiringResponseMsg(FiringResponseSummary summary)
+        private FiringResponseMsg()
         {
             this.msgId = KaisenMsgId.FiringResponse;
-            this.summary = summary;
-            this.destroyedName = Game.Null; 
+            Name = "砲撃";
         }
 
-        internal FiringResponseMsg(FiringResponseSummary summary, string destroyed)
+        internal FiringResponseMsg(FiringResponseSummary summary) : this(summary, Game.Null)
         {
-            this.msgId = KaisenMsgId.FiringResponse;
+        }
+
+        internal FiringResponseMsg(FiringResponseSummary summary, string destroyed) : this()
+        {
             this.summary = summary;
             this.destroyedName = destroyed;
         }

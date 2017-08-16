@@ -10,9 +10,14 @@ namespace GameCore
         internal int distance;
         internal string mover;
 
-        internal MovingRequestMsg(int direction, int distance, string mover)
+        private MovingRequestMsg()
         {
             msgId = KaisenMsgId.MovingRequest;
+            Name = "移動";
+        }
+
+        internal MovingRequestMsg(int direction, int distance, string mover) : this()
+        {
             this.direction = direction;
             this.distance = distance;
             this.mover = mover;

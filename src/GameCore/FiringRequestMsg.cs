@@ -12,9 +12,14 @@ namespace GameCore
         internal int x { get; private set; }
         internal int y { get; private set; }
 
-        internal FiringRequestMsg(int x, int y)
+        private FiringRequestMsg()
         {
             msgId = KaisenMsgId.FiringRequest;
+            Name = "砲撃";
+        }
+
+        internal FiringRequestMsg(int x, int y) :this()
+        {            
             this.x = x;
             this.y = y;
         }
@@ -23,14 +28,13 @@ namespace GameCore
         /// 
         /// </summary>
         /// <param name="msg">形式：{(int)msgId}{delimiter}{x}{delimiter}{y}</param>
-        internal FiringRequestMsg(string msg)
+        internal FiringRequestMsg(string msg) :this()
         {
             string[] splited = msg.Split(delimiter);
             if ((KaisenMsgId)int.Parse(splited[0]) != KaisenMsgId.FiringRequest || splited.Length != 3)
             {
                 throw new ArgumentException("引数チェックでの例外です。");
             }
-            msgId = KaisenMsgId.FiringRequest;
             this.x = int.Parse(splited[1]);
             this.y = int.Parse(splited[2]);
         }
