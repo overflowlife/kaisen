@@ -27,6 +27,7 @@ namespace GameCore
             Logger.WriteAndDisplay("艦船配置オペレーション");
             do
             {
+                ba = new BattleArea(Game.width, Game.height);
                 foreach (var item in Game.ships.Where(ship => ship.Type != Game.Null))
                 {
                     for (int i = 0; i < Game.deployShips[item]; ++i)
@@ -34,6 +35,7 @@ namespace GameCore
                         bool validateInput = false;
                         do
                         {
+                            
                             Console.WriteLine($"{item.Type}の配置位置(x, y)を指定してください。");
                             outputArrow("x");
                             string usX = Console.ReadLine();

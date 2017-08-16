@@ -191,8 +191,8 @@ namespace GameCore
                     destroyed = GetPoint(x, y).ship.Type;
                     GetPoint(x, y).ship = ships.Single(s => s.Type == Null);
                 }
-            } else if(GetPointsaroundPoint(new Point(x, y, null, null), area).Count() != 0)
-            {//ニアミス
+            } else if(GetPointsaroundPoint(new Point(x, y, null, null), area).Where(p=>!(p.x==x && p.y == y)).Any(p=>p.ship != ships.Single(s=>s.Type==Null)))
+            {//ニアミス（砲撃地点周囲から砲撃地点を除外した8マス（射撃範囲1マス時点）中にNullObjectでない艦船を持つ地点が存在す）
                 summary = FiringResponseSummary.Nearmiss;
             }
             else
