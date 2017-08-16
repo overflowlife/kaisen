@@ -18,5 +18,13 @@
             this.obj = obj;
         }
 
+        internal Point(Point source)
+        {
+            this.x = source.x;
+            this.y = source.y;
+            this.ship = new Ship(source.ship);
+            this.obj = new KaisenObject(source.obj);
+        }
+
     }
 }

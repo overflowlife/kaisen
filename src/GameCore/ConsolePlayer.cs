@@ -192,13 +192,13 @@ namespace GameCore
                 {
                     int moved = dir == 4 ? (x - dis) : (x + dis);
                     validateShip =Game.ValidateX(moved);
-                    validateOverlap = Game.GetPoint(moved, y).ship.Type == Game.Null;
+                    validateOverlap = validateShip && Game.GetPoint(moved, y).ship.Type == Game.Null;//対応必要：範囲外を与えてはいけない
                 }
                 else
                 {
-                    int moved = dir == 2 ? (y - dis) : (y + dis);
+                    int moved = dir == 2 ? (y + dis) : (y - dis);
                     validateShip = Game.ValidateY(moved);
-                    validateOverlap = Game.GetPoint(x, moved).ship.Type == Game.Null;
+                    validateOverlap = validateShip && Game.GetPoint(x, moved).ship.Type == Game.Null;//対応必要
                 }
                 validateInput = validateDir && validateDis && validateShip;
 
@@ -210,7 +210,7 @@ namespace GameCore
                         Console.WriteLine("移動距離が0以下、マップ幅以上、もしくは艦船の移動能力以上です。");
                     if (!validateShip)
                         Console.WriteLine("敵前逃亡は認められていません。");
-                    if(!validateOverlap)
+                    if(validateShip && !validateOverlap)
                         Console.WriteLine("移動先にはすでに艦船が存在します。");
                 }
             } while (!validateInput);
@@ -222,7 +222,7 @@ namespace GameCore
                 return true;
             }
 
-            Point past = Game.GetPoint(x, y);
+            Point past = new Point(Game.GetPoint(x, y));
             Debug.Assert(Game.MoveShip(x, y, dir, dis));
             var send = new MovingRequestMsg(dir, dis, past.ship.Type);
             Messenger.Send(send.ToString());

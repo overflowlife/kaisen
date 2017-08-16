@@ -218,7 +218,7 @@ namespace GameCore
             }
             else
             {
-                int movedY = dir == 2 ? y - dis : y + dis;
+                int movedY = dir == 2 ? y + dis : y - dis;
                 moved = GetPoint(x, movedY);
             }
             if(!ValidateX(moved.x) || !ValidateY(moved.y) || moved.ship.Type != Null)

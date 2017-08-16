@@ -18,6 +18,12 @@ namespace GameCore
             Durable = durable;
         }
 
+        internal KaisenObject(KaisenObject source)
+        {
+            Type = source.Type;
+            Durable = source.Durable;
+        }
+
         /// <summary>
         /// 
         /// </summary>
