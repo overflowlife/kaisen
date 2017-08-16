@@ -304,7 +304,7 @@ namespace GameCore
 
         internal override bool Recieve()
         {
-            Console.WriteLine(nameof(Recieve));
+            Console.WriteLine("Wait..");
             string msg = Messenger.Recieve();
             KaisenMsg recieved = MsgFactory.Manufact(msg);
             switch (recieved.msgId)
