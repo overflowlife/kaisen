@@ -190,15 +190,16 @@ namespace GameCore
 
                 if(dir == 4 || dis == 6)
                 {
-                    int moved = dir == 4 ? (x - dis) : (x + dis);
-                    validateShip =Game.ValidateX(moved);
-                    validateOverlap = validateShip && Game.GetPoint(moved, y).ship.Type == Game.Null;//対応必要：範囲外を与えてはいけない
+                    int movedX = dir == 4 ? (x - dis) : (x + dis);
+                    validateShip =Game.ValidateX(movedX);
+                    validateOverlap = validateShip && Game.GetPoint(movedX, y).ship.Type == Game.Null;
+                
                 }
                 else
                 {
-                    int moved = dir == 2 ? (y + dis) : (y - dis);
-                    validateShip = Game.ValidateY(moved);
-                    validateOverlap = validateShip && Game.GetPoint(x, moved).ship.Type == Game.Null;//対応必要
+                    int movedY = dir == 2 ? (y + dis) : (y - dis);
+                    validateShip = Game.ValidateY(movedY);
+                    validateOverlap = validateShip && Game.GetPoint(x, movedY).ship.Type == Game.Null;
                 }
                 validateInput = validateDir && validateDis && validateShip;
 
