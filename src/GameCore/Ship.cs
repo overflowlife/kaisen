@@ -57,7 +57,7 @@ namespace GameCore
 
         public override int GetHashCode()
         {
-            return Type[0];
+            return Type[0]*1 + Durable*10 + AttackRange*100 + AttackSpan*1000 + MoveSpeed*10000;
         }
 
     }
