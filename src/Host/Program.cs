@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace Host
 
         static void Main(string[] args)
         {
-            Console.OutputEncoding = enc;
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Logger.Open(nameof(Host));
             Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを起動します。");
             Game.DeployShips();

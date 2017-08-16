@@ -10,7 +10,8 @@
     "Microsoft.NETCore.App": {
       "type": "default",
       "version": "1.0.0"
-    }
+    },
+    "System.Text.Encoding.CodePages": "4.0.1"
   },
 
   "frameworks": {

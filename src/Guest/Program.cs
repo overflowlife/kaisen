@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using KaisenLib;
@@ -12,7 +13,7 @@ namespace Guest
         static NetworkStream ns;
         static void Main(string[] args)
         {
-            Console.OutputEncoding = enc;
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Logger.Open(nameof(Guest));
             Logger.WriteAndDisplay("海戦ゲーム：ゲストサイドを起動します。");
             Game.DeployShips();
