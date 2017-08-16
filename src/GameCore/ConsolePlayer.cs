@@ -192,8 +192,8 @@ namespace GameCore
                 {
                     int movedX = dir == 4 ? (x - dis) : (x + dis);
                     validateShip =Game.ValidateX(movedX);
-                    validateOverlap = validateShip && Game.GetPoint(movedX, y).ship.Type == Game.Null;
-                
+                    validateOverlap = validateShip && Game.GetPoint(movedX, y).ship.Type == Game.Null;//ブロックをこれ以上増やさないため
+
                 }
                 else
                 {
@@ -201,7 +201,7 @@ namespace GameCore
                     validateShip = Game.ValidateY(movedY);
                     validateOverlap = validateShip && Game.GetPoint(x, movedY).ship.Type == Game.Null;
                 }
-                validateInput = validateDir && validateDis && validateShip;
+                validateInput = validateDir && validateDis && validateShip && validateOverlap;
 
                 if (!validateInput)
                 {
