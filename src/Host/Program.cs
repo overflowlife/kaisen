@@ -91,7 +91,7 @@ namespace Host
             }
             Console.WriteLine();
             var client = ClientTask.Result;
-            Logger.WriteAndDisplay($"{((IPEndPoint)client.Client.RemoteEndPoint).Address}:{((IPEndPoint)client.Client.RemoteEndPoint).Port}と接続しました。");
+            Logger.WriteAndDisplay($"ゲスト（{((IPEndPoint)client.Client.RemoteEndPoint).Address}:{((IPEndPoint)client.Client.RemoteEndPoint).Port}）と接続しました。");
             Console.CursorVisible = true;
 
         }

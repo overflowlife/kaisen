@@ -63,7 +63,7 @@ namespace Guest
                     Environment.Exit(1);
                 }
 
-                Logger.WriteAndDisplay($"ホスト({((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address}:{((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port})と接続しました" +
+                Logger.WriteAndDisplay($"ホスト（{((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address}:{((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port}）と接続しました" +
                     $"({((IPEndPoint)tcpClient.Client.LocalEndPoint).Address}:{((IPEndPoint)tcpClient.Client.LocalEndPoint).Port})。");
                 using (ns = tcpClient.GetStream())
                 {

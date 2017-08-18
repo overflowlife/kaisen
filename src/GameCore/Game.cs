@@ -94,7 +94,7 @@ namespace GameCore
         }
 
         /// <summary>
-        /// 
+        /// わたしのせんこうですか?
         /// </summary>
         /// <param name="isGuest"></param>
         /// <returns></returns>
@@ -127,7 +127,7 @@ namespace GameCore
         }
 
         /// <summary>
-        /// 指定地点が射程範囲内であるかを判断します。
+        /// 指定地点が友軍射程範囲内であるかを判断します。
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -142,10 +142,20 @@ namespace GameCore
                 
                 lp.AddRange(points);
             }
-            //そのうちいずれかなら射程範囲内とみなします。
+
             bool canShoot = lp.Any(p => p.x == x && p.y == y);
 
             return canShoot;
+        }
+
+        /// <summary>
+        /// 指定地点が友軍射程範囲内であるかを判断します。
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        internal static bool IsInRange(Point p)
+        {
+            return IsInRange(p.x, p.y);
         }
 
         /// <summary>
@@ -159,13 +169,13 @@ namespace GameCore
         }
 
         /// <summary>
-        /// target周辺の地点を返却します。
+        /// target周辺（範囲areaマス）の地点を返却します。
         /// </summary>
         /// <param name="target"></param>
         /// <param name="area"></param>
         /// <returns></returns>
         internal static IEnumerable<Point> GetPointsaroundPoint(Point target, int area)
-        {
+        {//Euclid距離ではなく、全体の2乗根を外した値で算出しています。
             foreach (var item in battleArea.map)
             {
                 var d = Pow(item.x - target.x, 2) + Pow(item.y - target.y, 2);
@@ -180,14 +190,13 @@ namespace GameCore
             string destroyed = Null;
             hit = ships.Single(s => s.Type == Null);
             int area = 1;
-            
 
             if(GetPoint(x, y).ship.Type != Null)
             {//直撃
                 summary = FiringResponseSummary.Hit;
                 hit = GetPoint(x, y).ship;
                 if(--GetPoint(x, y).ship.Durable == 0)
-                {//撃沈
+                {//撃沈（耐久値が最初から0以下の場合、それはゾンビ艦船です。撃沈できません。）
                     destroyed = GetPoint(x, y).ship.Type;
                     GetPoint(x, y).ship = ships.Single(s => s.Type == Null);
                 }
@@ -196,7 +205,7 @@ namespace GameCore
                 summary = FiringResponseSummary.Nearmiss;
             }
             else
-            {//ポチャン・・・のはず
+            {//残ケースはポチャン・・・のはず
                 summary = FiringResponseSummary.Water;
             }
             return new FiringResponseMsg(summary, destroyed);

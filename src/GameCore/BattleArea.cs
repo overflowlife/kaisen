@@ -5,7 +5,7 @@ using System.Linq;
 namespace GameCore
 {
     /// <summary>
-    /// 幅と高さを持ち、それぞれの座標情報を持った戦闘エリアを表現します。
+    /// 幅と高さを持ち、それぞれの座標情報を持った作戦区域を表現します。
     /// </summary>
     internal class BattleArea
     {
@@ -34,7 +34,7 @@ namespace GameCore
         /// <param name="ship"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        internal bool SetShipPointAndSuccess(Ship ship, int x, int y)
+        internal bool SetShipPointWhenNoOverlap(Ship ship, int x, int y)
         {
             if (GetPoint(x, y).ship != Game.ships.Single(s=>s.Type==Game.Null))
                 return false; //すでに艦船が存在している座標には配置しない。
@@ -70,11 +70,6 @@ namespace GameCore
                 return map[x + Width * y];
             }
             throw new ArgumentOutOfRangeException();
-        }
-
-        public static implicit operator List<object>(BattleArea v)
-        {
-            throw new NotImplementedException();
         }
     }
 }

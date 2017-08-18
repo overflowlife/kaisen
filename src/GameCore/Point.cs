@@ -10,6 +10,13 @@
         internal Ship ship;
         internal KaisenObject obj;
 
+        /// <summary>
+        /// ordinary construcor
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="ship"></param>
+        /// <param name="obj"></param>
         internal Point(int x, int y, Ship ship, KaisenObject obj)
         {
             this.x = x;
@@ -18,6 +25,10 @@
             this.obj = obj;
         }
 
+        /// <summary>
+        /// copy constructor
+        /// </summary>
+        /// <param name="source"></param>
         internal Point(Point source)
         {
             this.x = source.x;

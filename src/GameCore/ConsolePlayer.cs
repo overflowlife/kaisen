@@ -51,7 +51,7 @@ namespace GameCore
                                 continue;
                             }
 
-                            bool validateOverlap = ba.SetShipPointAndSuccess(item, x, y);
+                            bool validateOverlap = ba.SetShipPointWhenNoOverlap(item, x, y);
                             if (!validateOverlap)
                             {
                                 Console.WriteLine($"指定座標にはすでに{ba.GetPoint(x, y).ship.Type}が配置されています。");

@@ -4,6 +4,9 @@ using static KaisenLib.AppSet;
 
 namespace GameCore
 {
+    /// <summary>
+    /// Manufact(string)によるメッセージファクトリを提供します。
+    /// </summary>
     internal class MsgFactory
     {
         internal static KaisenMsg Manufact(string msg)

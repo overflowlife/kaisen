@@ -12,6 +12,14 @@ namespace GameCore
         internal int AttackSpan { get; set; }
         internal int MoveSpeed { get; set; }
 
+        /// <summary>
+        /// ordinary constructor
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="durable"></param>
+        /// <param name="attackRange"></param>
+        /// <param name="attackSpan"></param>
+        /// <param name="moveSpeed"></param>
         internal Ship(string type, int durable, int attackRange, int attackSpan, int moveSpeed)
         {
             Type = type;
@@ -23,6 +31,10 @@ namespace GameCore
             
         }
 
+        /// <summary>
+        /// copy constructor
+        /// </summary>
+        /// <param name="src"></param>
         internal Ship(Ship src)
         {
             Type = src.Type;
