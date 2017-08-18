@@ -24,7 +24,7 @@ namespace Guest
             bool validateInput = false;
             do
             {
-                Console.WriteLine($"接続先サーバアドレス、ポート番号を入力して下さい（{loopbackAddress}:{defaultPort}）。");
+                Console.WriteLine($"接続先サーバアドレス、ポート番号を入力して下さい（{IPAddress.Loopback}:{defaultPort}）。");
                 outputArrow();
                 input = Console.ReadLine();
                 var addressandPort = input.Split(':');
@@ -32,7 +32,7 @@ namespace Guest
                 {
                     if (input == "default")
                     {
-                        remoteAddress = IPAddress.Parse(loopbackAddress);
+                        remoteAddress = IPAddress.Loopback;
                         remotePort = defaultPort;
                         validateInput = true;
                     }

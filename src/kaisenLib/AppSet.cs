@@ -7,11 +7,31 @@ namespace KaisenLib
     /// </summary>
     public static class AppSet
     {
-        static public Encoding enc = Encoding.UTF8;
-        static public int defaultPort = 19690;
-        static public string loopbackAddress = "127.0.0.1";
-        static public string version = "1.1.0";
-        static public char delimiter = ',';
+        /// <summary>
+        /// C-S間通信に用いる文字エンコードを提供します。read-onlyです。
+        /// </summary>
+        static public readonly Encoding enc;
+        /// <summary>
+        /// アプリケーションで用いる標準ポート番号を提供します。read-onlyです。
+        /// </summary>
+        static public readonly int defaultPort;
+        /// <summary>
+        /// <summary>
+        /// 現在のアプリケーションバージョン番号を提供します。read-onlyです。
+        /// </summary>
+        static public readonly string version;
+        /// <summary>
+        /// 各クラスの（デ）シリアライズメソッドで用いる区切り文字を提供します。read-onlyです。
+        /// </summary>
+        static public readonly char delimiter;
+
+        static AppSet()
+        {
+            enc = Encoding.UTF8;
+            defaultPort = 19690;
+            version = "1.1.0";
+            delimiter = ',';
+        }
 
         static public void outputArrow(string fmt = "") => System.Console.Write($"{fmt}->");
     }
