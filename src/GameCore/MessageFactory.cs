@@ -7,9 +7,9 @@ namespace GameCore
     /// <summary>
     /// Manufact(string)によるメッセージファクトリを提供します。
     /// </summary>
-    internal class MsgFactory
+    internal class MessageFactory
     {
-        internal static KaisenMsg Manufact(string msg)
+        internal static SerializableMessage Manufact(string msg)
         {
             int msgId;
             string[] splited = msg.Split(delimiter);
@@ -21,21 +21,21 @@ namespace GameCore
             {
                 throw new ArgumentException("第一要素が数値ではありません。");
             }
-            switch ((KaisenMsgId)msgId)
+            switch ((MessageId)msgId)
             {
-                case KaisenMsgId.FiringRequest:
+                case MessageId.FiringRequest:
                     return new FiringRequestMsg(msg);
-                case KaisenMsgId.FiringResponse:
+                case MessageId.FiringResponse:
                     return new FiringResponseMsg(msg);
-                case KaisenMsgId.MovingRequest:
+                case MessageId.MovingRequest:
                     return new MovingRequestMsg(msg);
-                case KaisenMsgId.MovingResponse:
+                case MessageId.MovingResponse:
                     return new MovingResponseMsg(msg);
-                case KaisenMsgId.ExitingRequest:
+                case MessageId.ExitingRequest:
                     return new ExitingRequestMsg(msg);
-                case KaisenMsgId.ExitingResponse:
+                case MessageId.ExitingResponse:
                     return new ExitingResponseMsg(msg);
-                case KaisenMsgId.None:
+                case MessageId.None:
                 default:
                     throw new ArgumentException($"適切なメッセージIDではありません。:{msgId}");
             }

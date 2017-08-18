@@ -7,11 +7,11 @@ using static KaisenLib.AppSet;
 
 namespace GameCore
 {
-    internal class MovingResponseMsg : KaisenMsg
+    internal class MovingResponseMsg : SerializableMessage
     {
         internal MovingResponseMsg()
         {
-            msgId = KaisenMsgId.MovingResponse;
+            msgId = MessageId.MovingResponse;
             Name = "移動";
         }
 
@@ -19,7 +19,7 @@ namespace GameCore
         {
             string[] splited = msg.Split(delimiter);
             int msgId;
-            if (!(splited.Length == 1 && int.TryParse(splited[0], out msgId) && (KaisenMsgId)msgId == KaisenMsgId.MovingResponse))
+            if (!(splited.Length == 1 && int.TryParse(splited[0], out msgId) && (MessageId)msgId == MessageId.MovingResponse))
             {
                 throw new ArgumentException("引数チェックの例外です");
             }
@@ -27,7 +27,7 @@ namespace GameCore
 
         public override string ToString()
         {
-            Debug.Assert(msgId== KaisenMsgId.MovingResponse);
+            Debug.Assert(msgId== MessageId.MovingResponse);
             return $"{(int)msgId}";
         }
     }

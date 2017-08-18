@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace GameCore
 {
-    internal class MovingRequestMsg : KaisenMsg
+    internal class MovingRequestMsg : SerializableMessage
     {
         internal int direction;
         internal int distance;
@@ -12,7 +12,7 @@ namespace GameCore
 
         private MovingRequestMsg()
         {
-            msgId = KaisenMsgId.MovingRequest;
+            msgId = MessageId.MovingRequest;
             Name = "移動";
         }
 
@@ -30,11 +30,11 @@ namespace GameCore
         internal MovingRequestMsg(string str)
         {
             string[] splited = str.Split(delimiter);
-            if((KaisenMsgId)int.Parse(splited[0]) != KaisenMsgId.MovingRequest || splited.Length != 4)
+            if((MessageId)int.Parse(splited[0]) != MessageId.MovingRequest || splited.Length != 4)
             {
                 throw new ArgumentException("引数チェックでの例外です。");
             }
-            msgId = KaisenMsgId.MovingRequest;
+            msgId = MessageId.MovingRequest;
             direction = int.Parse (splited[1]);
             distance = int.Parse(splited[2]);
             mover = splited[3];
@@ -42,7 +42,7 @@ namespace GameCore
 
         public override string ToString()
         {
-            Debug.Assert(msgId == KaisenMsgId.MovingRequest);
+            Debug.Assert(msgId == MessageId.MovingRequest);
             return $"{(int)msgId}{delimiter}{direction}{delimiter}{distance}{delimiter}{mover}";
         }
     }

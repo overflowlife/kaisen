@@ -8,14 +8,14 @@ using static KaisenLib.AppSet;
 
 namespace GameCore
 {
-    internal class FiringResponseMsg : KaisenMsg
+    internal class FiringResponseMsg : SerializableMessage
     {
         internal FiringResponseSummary summary;
         internal string destroyedName;
 
         private FiringResponseMsg()
         {
-            this.msgId = KaisenMsgId.FiringResponse;
+            this.msgId = MessageId.FiringResponse;
             Name = "砲撃";
         }
 
@@ -38,19 +38,19 @@ namespace GameCore
             string[] splited = msg.Split(delimiter);
             int msgId;
             int summary;
-            if (!(splited.Length == 3 && int.TryParse(splited[0], out msgId) && (KaisenMsgId)msgId == KaisenMsgId.FiringResponse)
+            if (!(splited.Length == 3 && int.TryParse(splited[0], out msgId) && (MessageId)msgId == MessageId.FiringResponse)
                 || !int.TryParse(splited[1], out summary))
             {
                 throw new ArgumentException("引数チェックの例外です");
             }
-            this.msgId = KaisenMsgId.FiringResponse;
+            this.msgId = MessageId.FiringResponse;
             this.summary = (FiringResponseSummary)summary;
             this.destroyedName = splited[2];
         }
 
         public override string ToString()
         {
-            Debug.Assert(msgId == KaisenMsgId.FiringResponse);
+            Debug.Assert(msgId == MessageId.FiringResponse);
             return $"{(int)msgId}{delimiter}{(int)summary}{delimiter}{destroyedName}";
         }
     }

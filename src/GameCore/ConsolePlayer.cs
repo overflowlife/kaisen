@@ -82,9 +82,9 @@ namespace GameCore
             //発行可能なメッセージの定義と、メッセージを発行するメソッドの対応付け
             Dictionary<int, Func<bool>> MsgBinding = new Dictionary<int, Func<bool>>
             {//Dictionary.Keyにenumを使うと遅いらしい
-                { (int)KaisenMsgId.FiringRequest, FiringRequest },
-                { (int)KaisenMsgId.MovingRequest, MovingRequest },
-                { (int)KaisenMsgId.ExitingRequest, ExitingRequest },
+                { (int)MessageId.FiringRequest, FiringRequest },
+                { (int)MessageId.MovingRequest, MovingRequest },
+                { (int)MessageId.ExitingRequest, ExitingRequest },
             };
 
             
@@ -101,7 +101,7 @@ namespace GameCore
                     Console.WriteLine("コマンドを選択してください。");
                     foreach (var item in MsgBinding)
                     {
-                        Console.WriteLine($"{item.Key}: {(KaisenMsgId)item.Key}");
+                        Console.WriteLine($"{item.Key}: {(MessageId)item.Key}");
                     }
                     outputArrow();
 
@@ -113,7 +113,7 @@ namespace GameCore
                     }
                 } while (!validateInput);
                 cancel = cmd.Invoke();// return true if cancelled
-                exit = (KaisenMsgId)cmdId == KaisenMsgId.ExitingRequest;
+                exit = (MessageId)cmdId == MessageId.ExitingRequest;
             } while (cancel); 
 
             return exit;
@@ -127,8 +127,8 @@ namespace GameCore
             {
                 Messenger.Send(new ExitingRequestMsg().ToString());
                 Logger.WriteAndDisplay("終了通知を発行しました。");
-                var manufactedMsg = MsgFactory.Manufact(Messenger.Recieve());
-                Debug.Assert(manufactedMsg.msgId == KaisenMsgId.ExitingResponse, "終了通知に対して異常な応答が返却されました。");
+                var manufactedMsg = MessageFactory.Manufact(Messenger.Recieve());
+                Debug.Assert(manufactedMsg.msgId == MessageId.ExitingResponse, "終了通知に対して異常な応答が返却されました。");
                 Logger.WriteAndDisplay("応答を受け取りました。終了します。");
                 return true;
             }
@@ -231,8 +231,8 @@ namespace GameCore
             var send = new MovingRequestMsg(dir, dis, past.ship.Type);
             Messenger.Send(send.ToString());
             Logger.WriteAndDisplay($"{send.mover}を{send.direction}方向に{send.distance}だけ移動しました。");
-            var rec =  MsgFactory.Manufact(Messenger.Recieve());
-            Debug.Assert(rec.msgId == KaisenMsgId.MovingResponse);
+            var rec =  MessageFactory.Manufact(Messenger.Recieve());
+            Debug.Assert(rec.msgId == MessageId.MovingResponse);
             Logger.WriteAndDisplay("移動に対する応答を受け取りました。");
 
             return false; 
@@ -280,8 +280,8 @@ namespace GameCore
             var req = new FiringRequestMsg(x, y);
             Messenger.Send(req.ToString());
             Logger.WriteAndDisplay($"地点({x}, {y})を砲撃しました。");
-            var msg = MsgFactory.Manufact(Messenger.Recieve());
-            Debug.Assert(msg.msgId == KaisenMsgId.FiringResponse, "砲撃通知に対して異常な応答が返却されました。");
+            var msg = MessageFactory.Manufact(Messenger.Recieve());
+            Debug.Assert(msg.msgId == MessageId.FiringResponse, "砲撃通知に対して異常な応答が返却されました。");
             FiringResponseMsg res = (FiringResponseMsg)msg;
             switch (res.summary)
             {
@@ -310,31 +310,31 @@ namespace GameCore
         {
             Console.WriteLine("Wait..");
             string msg = Messenger.Recieve();
-            KaisenMsg recieved = MsgFactory.Manufact(msg);
+            SerializableMessage recieved = MessageFactory.Manufact(msg);
             switch (recieved.msgId)
             {
-                case KaisenMsgId.None:
+                case MessageId.None:
                     break;
-                case KaisenMsgId.FiringRequest:
+                case MessageId.FiringRequest:
                     FiringResponse(recieved as FiringRequestMsg );
                     break;
 
-                case KaisenMsgId.MovingRequest:
+                case MessageId.MovingRequest:
                     MovingResponse(recieved as MovingRequestMsg);
                     break;
 
-                case KaisenMsgId.ExitingRequest:
+                case MessageId.ExitingRequest:
                     ExitingResponse( recieved as ExitingRequestMsg);
                     break;
 
-                case KaisenMsgId.FiringResponse:
-                case KaisenMsgId.MovingResponse:
-                case KaisenMsgId.ExitingResponse:
+                case MessageId.FiringResponse:
+                case MessageId.MovingResponse:
+                case MessageId.ExitingResponse:
                 default:
                     break;
             }
 
-            return recieved.msgId == KaisenMsgId.ExitingRequest;
+            return recieved.msgId == MessageId.ExitingRequest;
         }
 
         private void MovingResponse(MovingRequestMsg msg)

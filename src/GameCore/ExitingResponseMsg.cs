@@ -11,11 +11,11 @@ namespace GameCore
     /// <summary>
     /// ゲーム終了に対する応答メッセージです。
     /// </summary>
-    internal class ExitingResponseMsg : KaisenMsg
+    internal class ExitingResponseMsg : SerializableMessage
     {
         internal ExitingResponseMsg()
         {
-            msgId = KaisenMsgId.ExitingResponse;
+            msgId = MessageId.ExitingResponse;
             Name = "終了";
         }
 
@@ -23,7 +23,7 @@ namespace GameCore
         {
             string[] splited = msg.Split(delimiter);
             int msgId;
-            if (!(splited.Length == 1 && int.TryParse(splited[0], out msgId) && (KaisenMsgId)msgId == KaisenMsgId.ExitingResponse))
+            if (!(splited.Length == 1 && int.TryParse(splited[0], out msgId) && (MessageId)msgId == MessageId.ExitingResponse))
             {
                 throw new ArgumentException("引数チェックの例外です");
             }
@@ -31,7 +31,7 @@ namespace GameCore
 
         public override string ToString()
         {
-            Debug.Assert(msgId == KaisenMsgId.ExitingResponse);
+            Debug.Assert(msgId == MessageId.ExitingResponse);
             return $"{(int)msgId}";
         }
     }

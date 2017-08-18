@@ -1,17 +1,17 @@
 ﻿namespace GameCore
 {
     /// <summary>
-    /// ソケットを介してC-S間でやり取りされるメッセージの基底クラスです。
+    /// ソケットを介してC-S間でやり取りされるメッセージの基底クラスです。ToString()によるシリアライズ、コンストラクタによるデシリアライズを提供します。
     /// </summary>
-    internal abstract class KaisenMsg
+    internal abstract class SerializableMessage
     {
-        internal KaisenMsgId msgId { get; set; }
+        internal MessageId msgId { get; set; }
         internal string Name { get; set; }
         public override abstract string ToString();
     }
 
 
-    internal enum KaisenMsgId
+    internal enum MessageId
     {
         None = 0,
         /// <summary>

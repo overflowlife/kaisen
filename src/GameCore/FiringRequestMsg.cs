@@ -7,14 +7,14 @@ namespace GameCore
     /// <summary>
     /// ある地点への砲撃を相手に通知するメッセージ形式です。
     /// </summary>
-    internal class FiringRequestMsg : KaisenMsg
+    internal class FiringRequestMsg : SerializableMessage
     {
         internal int x { get; private set; }
         internal int y { get; private set; }
 
         private FiringRequestMsg()
         {
-            msgId = KaisenMsgId.FiringRequest;
+            msgId = MessageId.FiringRequest;
             Name = "砲撃";
         }
 
@@ -31,7 +31,7 @@ namespace GameCore
         internal FiringRequestMsg(string msg) :this()
         {
             string[] splited = msg.Split(delimiter);
-            if ((KaisenMsgId)int.Parse(splited[0]) != KaisenMsgId.FiringRequest || splited.Length != 3)
+            if ((MessageId)int.Parse(splited[0]) != MessageId.FiringRequest || splited.Length != 3)
             {
                 throw new ArgumentException("引数チェックでの例外です。");
             }
@@ -41,7 +41,7 @@ namespace GameCore
 
         public override string ToString()
         {
-            Debug.Assert(msgId == KaisenMsgId.FiringRequest);
+            Debug.Assert(msgId == MessageId.FiringRequest);
             return $"{(int)msgId}{delimiter}{x}{delimiter}{y}";
         }
     }
