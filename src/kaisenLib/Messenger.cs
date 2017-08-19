@@ -11,7 +11,6 @@ namespace KaisenLib
         internal static Encoding Enc { get; private set; }
         internal static NetworkStream Ns { get; private set; }
         internal static MemoryStream Ms { get; private set; }
-        public static bool disconnected;
         public static byte[] recBytes;
 
         public static void Open(Encoding enc, NetworkStream ns)
@@ -21,11 +20,14 @@ namespace KaisenLib
                 IsOpen = true;
                 Enc = enc;
                 Ns = ns;
-                disconnected = false;
                 recBytes = new byte[256];
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static string Recieve()
         {
             using (Ms = new MemoryStream())
@@ -33,12 +35,14 @@ namespace KaisenLib
                 var recSize = 0;
                 do
                 {
-                    recSize = Ns.Read(recBytes, 0, recBytes.Length);
-                    if (recSize == 0)
+                    try
                     {
-                        disconnected = true;
-                        Logger.WriteAndDisplay("相手が切断しました。");
-                        break;
+                        recSize = Ns.Read(recBytes, 0, recBytes.Length);
+                    }
+                    catch (IOException)
+                    {
+                        Logger.WriteAndDisplay("相手が切断したためアプリケーションを終了します。");
+                        Environment.Exit(1);
                     }
                     Ms.Write(recBytes, 0, recSize);
                 } while (Ns.DataAvailable || recBytes[recSize - 1] != '\n');
@@ -51,22 +55,23 @@ namespace KaisenLib
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sendMsg"></param>
         public static void Send(string sendMsg)
         {
+            var sendBytes = Enc.GetBytes(sendMsg + '\n');
             try
             {
-                if (!disconnected)
-                {
-                    var sendBytes = Enc.GetBytes(sendMsg + '\n');
-                    Ns.Write(sendBytes, 0, sendBytes.Length);
-                    Logger.WriteLine($"送信メッセージ：{sendMsg}");
-                }
+                Ns.Write(sendBytes, 0, sendBytes.Length);
             }
-            catch (Exception)
+            catch (IOException)
             {
-
-                throw;
+                Logger.WriteAndDisplay("相手が切断したため、アプリケーションを終了します。");
+                Environment.Exit(1);
             }
+            Logger.WriteLine($"送信メッセージ：{sendMsg}");
 
             return;
         }
