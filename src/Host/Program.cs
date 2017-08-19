@@ -15,6 +15,7 @@ namespace Host
 
         static void Main(string[] args)
         {
+            Console.Title = consoleTitle;
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Logger.Open(nameof(Host));
             Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを起動します。");

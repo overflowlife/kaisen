@@ -13,6 +13,7 @@ namespace Guest
         static NetworkStream ns;
         static void Main(string[] args)
         {
+            Console.Title = consoleTitle;
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Logger.Open(nameof(Guest));
             Logger.WriteAndDisplay("海戦ゲーム：ゲストサイドを起動します。");

@@ -24,6 +24,10 @@ namespace KaisenLib
         /// 各クラスの（デ）シリアライズメソッドで用いる区切り文字を提供します。read-onlyです。
         /// </summary>
         static public readonly char delimiter;
+        /// <summary>
+        /// コンソールウィンドウのタイトル文字です。
+        /// </summary>
+        static public readonly string consoleTitle;
 
         static AppSet()
         {
@@ -31,6 +35,7 @@ namespace KaisenLib
             defaultPort = 19690;
             version = "1.1.0";
             delimiter = ',';
+            consoleTitle = $"海戦ゲーム ver.{version}";
         }
 
         static public void outputArrow(string fmt = "") => System.Console.Write($"{fmt}->");
