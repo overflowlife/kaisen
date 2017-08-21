@@ -43,13 +43,13 @@ namespace Host
 
             } while (!resultParse);
 
-            ListenHelper listenHelper;
-            listenHelper = new ListenHelper(listenPort);
+            ListenHelper helper;
+            helper = new ListenHelper(listenPort);
+            Listener = new TcpListener(helper.listenAddress, helper.listenPort);
             try
             {
                 try
                 {
-                    Listener = listenHelper.Listener;
                     Listener.Start();
                     Logger.WriteAndDisplay($"ポート番号[{listenPort}]を使用して接続要求待ち受けを開始します。");
                 }

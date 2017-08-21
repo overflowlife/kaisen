@@ -7,9 +7,8 @@ namespace Host
 {
     class ListenHelper
     {
-        private IPAddress listenAddress;
-        private int listenPort;
-        public TcpListener Listener { get; private set; }
+        public IPAddress listenAddress { get; private set; }
+        public int listenPort { get; private set; }
 
         /// <summary>
         /// Listen可能なすべてのIPv4アドレス:19690でListen開始します。
@@ -18,7 +17,6 @@ namespace Host
         {
             listenAddress = IPAddress.Any;
             listenPort = AppSet.defaultPort;
-            StartListen();
         }
 
         /// <summary>
@@ -29,7 +27,6 @@ namespace Host
         {
             listenAddress = IPAddress.Any;
             this.listenPort = listenPort;
-            StartListen();
         }
 
         /// <summary>
@@ -41,7 +38,6 @@ namespace Host
         {
             this.listenAddress = IPAddress.Parse(listenAddress);
             this.listenPort = listenPort;
-            StartListen();
         }
 
         /// <summary>
@@ -53,21 +49,6 @@ namespace Host
         {
             this.listenAddress = listenAddress;
             this.listenPort = listenPort;
-            StartListen();
         }
-
-        private void StartListen()
-        {
-            try
-            {
-                Listener = new TcpListener(listenAddress, listenPort);
-                Listener.Start();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
     }
 }
