@@ -45,7 +45,7 @@ namespace Host
 
             ListenHelper helper;
             helper = new ListenHelper(listenPort);
-            Listener = new TcpListener(helper.listenAddress, helper.listenPort);
+            Listener = new TcpListener(helper.Address, helper.Port);
             try
             {
                 try
