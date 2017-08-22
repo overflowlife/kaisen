@@ -39,9 +39,9 @@ namespace KaisenLib
                     {
                         recSize = Ns.Read(recBytes, 0, recBytes.Length);
                     }
-                    catch (IOException)
+                    catch (IOException e)
                     {
-                        Logger.WriteAndDisplay("相手が切断したためアプリケーションを終了します。");
+                        Logger.WriteAndDisplay(e.Message);
                         Environment.Exit(1);
                     }
                     Ms.Write(recBytes, 0, recSize);
@@ -66,9 +66,9 @@ namespace KaisenLib
             {
                 Ns.Write(sendBytes, 0, sendBytes.Length);
             }
-            catch (IOException)
+            catch (IOException e)
             {
-                Logger.WriteAndDisplay("相手が切断したため、アプリケーションを終了します。");
+                Logger.WriteAndDisplay(e.Message);
                 Environment.Exit(1);
             }
             Logger.WriteLine($"送信メッセージ：{sendMsg}");
