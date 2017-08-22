@@ -27,14 +27,13 @@ namespace GameCore
         /// 
         /// </summary>
         /// <param name="str">形式：{(int)msgId}{delimiter}{direction}{delimiter}{distance}{delimiter}{mover}</param>
-        internal MovingRequestMsg(string str)
+        internal MovingRequestMsg(string str) : this()
         {
             string[] splited = str.Split(delimiter);
             if((MessageId)int.Parse(splited[0]) != MessageId.MovingRequest || splited.Length != 4)
             {
                 throw new ArgumentException("引数チェックでの例外です。");
             }
-            msgId = MessageId.MovingRequest;
             direction = int.Parse (splited[1]);
             distance = int.Parse(splited[2]);
             mover = splited[3];
