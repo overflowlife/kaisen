@@ -29,7 +29,7 @@ namespace GameCore
         }
 
         /// <summary>
-        /// 指定座標に感染を配置します。すでに艦船が配置してある場合にはfalseを返却します。
+        /// 指定座標に感染を配置します。すでに艦船が配置してある場合には何もせずにfalseを返却します。
         /// </summary>
         /// <param name="ship"></param>
         /// <param name="x"></param>
@@ -46,15 +46,23 @@ namespace GameCore
         }
 
         /// <summary>
-        /// 指定座標にオブジェクトを設置します。既存チェックを実施すること
+        /// 指定座標にオブジェクトを設置します。すでに艦船が配置してある場合には何もせずにfalseを返却します。
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        internal bool SetObjectPoint(KaisenObject obj, int x ,int y)
+        internal bool SetObjectPointWhenNoOverlap(KaisenObject obj, int x ,int y)
         {
-            GetPoint(x, y).obj = obj;
-            return true;
+            if(GetPoint(x, y).obj != Game.objs.Single(o=>o.Type == Game.Null))
+            {
+                return false;
+            }
+            else
+            {
+                GetPoint(x, y).obj = obj;
+                return true;
+            }
+
         }
 
         /// <summary>
