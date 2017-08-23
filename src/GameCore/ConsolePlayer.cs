@@ -113,7 +113,7 @@ namespace GameCore
                     }
                 } while (!validateInput);
                 cancel = cmd.Invoke();// return true if cancelled
-                exit = (MessageId)cmdId == MessageId.ExitingRequest;
+                exit = !cancel && (MessageId)cmdId == MessageId.ExitingRequest;
             } while (cancel); 
 
             return exit;
@@ -130,11 +130,11 @@ namespace GameCore
                 var manufactedMsg = MessageFactory.Manufact(Messenger.Recieve());
                 Debug.Assert(manufactedMsg.msgId == MessageId.ExitingResponse, "終了通知に対して異常な応答が返却されました。");
                 Logger.WriteAndDisplay("応答を受け取りました。終了します。");
-                return true;
+                return false;
             }
             else
             {
-                return false;
+                return true;
             }
         }
 

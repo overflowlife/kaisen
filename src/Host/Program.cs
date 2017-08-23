@@ -63,6 +63,7 @@ namespace Host
             finally
             {
                 Listener.Stop();
+                Messenger.Close();
             }
 
             Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを終了します。");
