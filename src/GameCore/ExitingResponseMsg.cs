@@ -15,15 +15,14 @@ namespace GameCore
     {
         internal ExitingResponseMsg()
         {
-            msgId = MessageId.ExitingResponse;
+            MsgId = MessageId.ExitingResponse;
             Name = "終了";
         }
 
         internal ExitingResponseMsg(string msg) : this()
         {
             string[] splited = msg.Split(delimiter);
-            int msgId;
-            if (!(splited.Length == 1 && int.TryParse(splited[0], out msgId) && (MessageId)msgId == MessageId.ExitingResponse))
+            if (!(splited.Length == 1 && int.TryParse(splited[0], out int msgId) && (MessageId)msgId == MessageId.ExitingResponse))
             {
                 throw new ArgumentException("引数チェックの例外です");
             }
@@ -31,8 +30,8 @@ namespace GameCore
 
         public override string ToString()
         {
-            Debug.Assert(msgId == MessageId.ExitingResponse);
-            return $"{(int)msgId}";
+            Debug.Assert(MsgId == MessageId.ExitingResponse);
+            return $"{(int)MsgId}";
         }
     }
 }

@@ -12,7 +12,7 @@ namespace GameCore
 
         private MovingRequestMsg()
         {
-            msgId = MessageId.MovingRequest;
+            MsgId = MessageId.MovingRequest;
             Name = "移動";
         }
 
@@ -41,8 +41,8 @@ namespace GameCore
 
         public override string ToString()
         {
-            Debug.Assert(msgId == MessageId.MovingRequest);
-            return $"{(int)msgId}{delimiter}{direction}{delimiter}{distance}{delimiter}{mover}";
+            Debug.Assert(MsgId == MessageId.MovingRequest);
+            return $"{(int)MsgId}{delimiter}{direction}{delimiter}{distance}{delimiter}{mover}";
         }
     }
 }
