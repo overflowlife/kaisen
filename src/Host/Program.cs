@@ -116,6 +116,7 @@ namespace Host
                         Messenger.Send(version);
                     }
                     Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
+                    Game.me = new ConsolePlayer("You");
                     Game.StartLoop(false);
                 }
             }

@@ -7,7 +7,7 @@ namespace GameCore
     /// <summary>
     /// 機雷・デコイなど、設置物を表現します。
     /// </summary>
-    internal class KaisenObject
+    public class KaisenObject
     {
         internal string Type;
         internal int Durable;

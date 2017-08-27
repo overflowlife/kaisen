@@ -13,15 +13,15 @@ namespace GameCore
     /// <summary>
     /// コンソールからの入力によりゲームを進行するプレイヤーです。
     /// </summary>
-    internal class ConsolePlayer : IPlayer
+    public class ConsolePlayer : IPlayer
     {
         public string Name { get; set; }
-        internal ConsolePlayer(string name)
+        public ConsolePlayer(string name)
         {
             Name = name;
         }
 
-        internal override List<Point> deployShips()
+        public override List<Point> deployShips()
         {
             BattleArea ba = new BattleArea(Game.width, Game.height);
             Logger.WriteAndDisplay("艦船配置オペレーション");
@@ -77,7 +77,7 @@ namespace GameCore
         /// どうもコマンドキャンセル周りの設計が悪い気がする。
         /// </summary>
         /// <returns></returns>
-        internal override bool DoTurn()
+        public override bool DoTurn()
         {
             //発行可能なメッセージの定義と、メッセージを発行するメソッドの対応付け
             Dictionary<int, Func<bool>> MsgBinding = new Dictionary<int, Func<bool>>
@@ -306,7 +306,7 @@ namespace GameCore
             return false;
         }
 
-        internal override bool Recieve()
+        public override bool Recieve()
         {
             Console.WriteLine("Wait..");
             string msg = Messenger.Recieve();
