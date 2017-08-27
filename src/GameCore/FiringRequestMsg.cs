@@ -14,7 +14,7 @@ namespace GameCore
 
         private FiringRequestMsg()
         {
-            msgId = MessageId.FiringRequest;
+            MsgId = MessageId.FiringRequest;
             Name = "砲撃";
         }
 
@@ -41,8 +41,8 @@ namespace GameCore
 
         public override string ToString()
         {
-            Debug.Assert(msgId == MessageId.FiringRequest);
-            return $"{(int)msgId}{delimiter}{x}{delimiter}{y}";
+            Debug.Assert(MsgId == MessageId.FiringRequest);
+            return $"{(int)MsgId}{delimiter}{x}{delimiter}{y}";
         }
     }
 }

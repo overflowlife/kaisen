@@ -38,6 +38,6 @@ namespace KaisenLib
             consoleTitle = $"海戦ゲーム ver.{version}";
         }
 
-        static public void outputArrow(string fmt = "") => System.Console.Write($"{fmt}->");
+        static public void OutputArrow(string fmt = "") => System.Console.Write($"{fmt}->");
     }
 }

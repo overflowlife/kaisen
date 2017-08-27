@@ -26,7 +26,7 @@ namespace Guest
             do
             {
                 Console.WriteLine($"接続先サーバアドレス、ポート番号を入力して下さい（{IPAddress.Loopback}:{defaultPort}）。");
-                outputArrow();
+                OutputArrow();
                 input = Console.ReadLine();
                 var addressandPort = input.Split(':');
                 if (addressandPort.Length != 2)

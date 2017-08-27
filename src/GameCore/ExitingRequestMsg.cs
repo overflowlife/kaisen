@@ -15,7 +15,7 @@ namespace GameCore
     {
         internal ExitingRequestMsg()
         {
-            msgId = MessageId.ExitingRequest;
+            MsgId = MessageId.ExitingRequest;
             Name = "終了";
         }
 
@@ -26,8 +26,7 @@ namespace GameCore
          internal ExitingRequestMsg(string msg) : this()
         {
             string[] splited = msg.Split(delimiter);
-            int msgId;
-            if( !(splited.Length == 1 && int.TryParse(splited[0], out msgId) && (MessageId)msgId == MessageId.ExitingRequest))
+            if (!(splited.Length == 1 && int.TryParse(splited[0], out int msgId) && (MessageId)msgId == MessageId.ExitingRequest))
             {
                 throw new ArgumentException("引数チェックの例外です");
             }
@@ -35,8 +34,8 @@ namespace GameCore
 
         public override string ToString()
         {
-            Debug.Assert(msgId == MessageId.ExitingRequest);
-            return $"{(int)msgId}";
+            Debug.Assert(MsgId == MessageId.ExitingRequest);
+            return $"{(int)MsgId}";
         }
     }
 }

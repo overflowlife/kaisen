@@ -11,13 +11,12 @@ namespace GameCore
     {
         internal static SerializableMessage Manufact(string msg)
         {
-            int msgId;
             string[] splited = msg.Split(delimiter);
-            if(splited.Length == 0)
+            if (splited.Length == 0)
             {
                 throw new ArgumentException("要素がありません");
             }
-            if(!int.TryParse(splited[0], out msgId))
+            if(!int.TryParse(splited[0], out int msgId))
             {
                 throw new ArgumentException("第一要素が数値ではありません。");
             }

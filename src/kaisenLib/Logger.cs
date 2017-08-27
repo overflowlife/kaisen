@@ -8,16 +8,16 @@ namespace KaisenLib
     /// </summary>
     public static class Logger
     {
-        internal static bool isOpened { get; set; }
+        internal static bool IsOpened { get; set; }
         private static StreamWriter sw;
         private static string logDirectory = "log";
         private static string logFileName;
 
         public static void Open(string caller)
         {
-            if (!isOpened)
+            if (!IsOpened)
             {
-                isOpened = true;
+                IsOpened = true;
                 if (!Directory.Exists(logDirectory))
                 {
                     Directory.CreateDirectory(logDirectory);
@@ -34,9 +34,9 @@ namespace KaisenLib
         /// </summary>
         public static void Close()
         {
-            if (isOpened)
+            if (IsOpened)
             {
-                isOpened = false;
+                IsOpened = false;
                 if (sw != null)
                 {
                     sw.Dispose();
