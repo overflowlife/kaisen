@@ -22,6 +22,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameCore", "src\GameCore\GameCore.csproj", "{9211D187-A94C-4E21-B49F-F358B2D6A1B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoHost01", "AutoHost01\AutoHost01.csproj", "{3ABD224B-F6C2-4676-A002-66E5F719ED01}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3D0BF02B-A2E1-42C5-AC9F-C1508B0F616F} = {3D0BF02B-A2E1-42C5-AC9F-C1508B0F616F}
+		{9211D187-A94C-4E21-B49F-F358B2D6A1B8} = {9211D187-A94C-4E21-B49F-F358B2D6A1B8}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
