@@ -5,7 +5,7 @@
     /// </summary>
     internal abstract class SerializableMessage
     {
-        internal MessageId msgId { get; set; }
+        internal MessageId MsgId { get; set; }
         internal string Name { get; set; }
         public override abstract string ToString();
     }

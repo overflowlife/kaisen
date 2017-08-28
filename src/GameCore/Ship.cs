@@ -3,14 +3,14 @@ using static KaisenLib.AppSet;
 
 namespace GameCore
 {
-    internal class Ship
+    public class Ship
     {
-        internal string Type { get; set; }
-        internal string Stype { get; set; }
-        internal int Durable { get; set; }
-        internal int AttackRange { get; set; }
-        internal int AttackSpan { get; set; }
-        internal int MoveSpeed { get; set; }
+        public string Type { get; set; }
+        public string Stype { get; set; }
+        public int Durable { get; set; }
+        public int AttackRange { get; set; }
+        public int AttackSpan { get; set; }
+        public int MoveSpeed { get; set; }
 
         /// <summary>
         /// ordinary constructor
@@ -27,8 +27,7 @@ namespace GameCore
             Durable = durable;
             AttackRange = attackRange;
             AttackSpan = attackSpan;
-            MoveSpeed = moveSpeed;
-            
+            MoveSpeed = moveSpeed; 
         }
 
         /// <summary>

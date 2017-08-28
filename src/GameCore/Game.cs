@@ -27,7 +27,7 @@ namespace GameCore
         /// 設置物ごとの配置数です。
         /// </summary>
         internal static Dictionary<KaisenObject, int> deployObjs { get; }
-        internal static IPlayer me;
+        public static IPlayer me;
         internal static string BB = "戦艦";
         internal static string DD = "駆逐艦";
         internal static string SS = "潜水艦";
@@ -66,8 +66,9 @@ namespace GameCore
             };
 
             battleArea = new BattleArea(height, width);//登場艦船を生成する前に呼び出してはいけない/悪い設計
-            me = new ConsolePlayer("You");//登場艦船を生成する前に呼び出してはいけない/悪い設計
         }
+
+
 
         public static void DeployShips()
         {

@@ -7,7 +7,7 @@ namespace GameCore
     /// <summary>
     /// 機雷・デコイなど、設置物を表現します。
     /// </summary>
-    internal class KaisenObject
+    public class KaisenObject
     {
         internal string Type;
         internal int Durable;
@@ -31,8 +31,7 @@ namespace GameCore
         internal KaisenObject(string str)
         {
             string[] split = str.Split(delimiter);
-            int durable;
-            if (!(split.Length == 2 && int.TryParse(split[1], out durable)))
+            if (!(split.Length == 2 && int.TryParse(split[1], out int durable)))
             {
                 throw new ArgumentException("引数チェックで例外です。");
             }
