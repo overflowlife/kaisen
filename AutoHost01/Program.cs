@@ -1,4 +1,7 @@
 ﻿using System;
+using KaisenLib;
+using static KaisenLib.AppSet;
+using System.Text;
 
 namespace AutoHost01
 {
@@ -6,7 +9,10 @@ namespace AutoHost01
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Logger.Open(nameof(AutoHost01));
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを起動します。");
+            
         }
     }
 }
