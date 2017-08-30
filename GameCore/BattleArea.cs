@@ -23,7 +23,7 @@ namespace GameCore
                 for(int x = 0; x < Width; ++x)
                 {
                     int i = Width * y + x;
-                    map.Add(new Point(x, y, Game.ships.Single(ship=>ship.Type==Game.Null)  , Game.objs.Single(obj=>obj.Type==Game.Null) ));
+                    map.Add(new Point(x, y, Game.ShipType.Single(ship=>ship.Type==Game.Null)  , Game.ObjType.Single(obj=>obj.Type==Game.Null) ));
                 }
             }
         }
@@ -34,15 +34,36 @@ namespace GameCore
         /// <param name="ship"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        internal bool SetShipPointWhenNoOverlap(Ship ship, int x, int y)
+        internal bool SetShipToPointWhenNoOverlap(Ship ship, int x, int y)
         {
-            if (GetPoint(x, y).ship != Game.ships.Single(s=>s.Type==Game.Null))
+            if(ship == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (GetPoint(x, y).ship != Game.ShipType.Single(s=>s.Type==Game.Null))
                 return false; //すでに艦船が存在している座標には配置しない。
             else
             {
                 GetPoint(x, y).ship = ship;
                 return true;
             }
+        }
+
+        /// <summary>
+        /// 指定座標に艦船を強制的に配置します。既存の艦船を上書きします。
+        /// </summary>
+        /// <param name="ship"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        internal void SetShipToPointForcibly(Ship ship, int x, int y)
+        {
+            if (ship == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            GetPoint(x, y).ship = ship;
         }
 
         /// <summary>
@@ -53,7 +74,7 @@ namespace GameCore
         /// <param name="y"></param>
         internal bool SetObjectPointWhenNoOverlap(KaisenObject obj, int x ,int y)
         {
-            if(GetPoint(x, y).obj != Game.objs.Single(o=>o.Type == Game.Null))
+            if(GetPoint(x, y).obj != Game.ObjType.Single(o=>o.Type == Game.Null))
             {
                 return false;
             }

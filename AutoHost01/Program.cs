@@ -25,7 +25,6 @@ namespace AutoHost01
             var cts = new CancellationTokenSource();
             ListenWorker listenWorker = new ListenWorker(cts.Token);
             listenWorker.DoWork();
-            Console.ReadLine();
         } 
     }
 
@@ -50,7 +49,7 @@ namespace AutoHost01
                     using (var tcpClient = await tcpListener.AcceptTcpClientAsync())
                     {
                         Console.WriteLine($"{tcpClient.Client.RemoteEndPoint}を受け入れました。");
-                        Task.Run(
+                        await Task.Run(
                             () =>
                             {
                                 Service(tcpClient);

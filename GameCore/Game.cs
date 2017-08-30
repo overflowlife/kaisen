@@ -11,22 +11,26 @@ namespace GameCore
         internal static int height;
         internal static int width;
         /// <summary>
-        /// 本作登場の艦船リストです。リストからの検索にはEnumerable.Single(Func<ship, bool> pred)を利用します。
+        /// 本作登場の艦種リストです。リストからの検索にはEnumerable.Single(Func<ship, bool> pred)を利用します。
         /// </summary>
-        internal static List<Ship> ships { get; }
+        internal static List<Ship> ShipType { get; }
 
         /// <summary>
         /// 本作登場の設置物リストです。
         /// </summary>
-        internal static List<KaisenObject> objs {get;}
+        internal static List<KaisenObject> ObjType {get;}
         /// <summary>
-        /// 艦船ごとの配置数です。
+        /// 艦種ごとの配置数です。
         /// </summary>
-        internal static Dictionary<Ship, int> deployShips { get; }
+        internal static Dictionary<Ship, int> NumDeployShips { get; }
+        /// <summary>
+        /// 艦種リストおよびそれらの配置数から展開した、配置される艦船のリストです。
+        /// </summary>
+        internal static List<Ship> ShipsToDeploy { get; }
         /// <summary>
         /// 設置物ごとの配置数です。
         /// </summary>
-        internal static Dictionary<KaisenObject, int> deployObjs { get; }
+        internal static Dictionary<KaisenObject, int> NumDeployObjs { get; }
         internal static IPlayer me;
         internal static string BB = "戦艦";
         internal static string DD = "駆逐艦";
@@ -40,29 +44,37 @@ namespace GameCore
             width = 5;
             
             //登場艦船を生成します。
-            ships = new List<Ship> {
+            ShipType = new List<Ship> {
                 new Ship(BB, 3, 1, 1, int.MaxValue), //戦艦
                 new Ship(DD, 2, 1, 1, int.MaxValue), //駆逐艦
                 new Ship(SS, 1, 1, 1, int.MaxValue), //潜水艦
                 new Ship(Null, 0, 0, 0, 0)
             };
             //艦船配置数を決定します
-            deployShips = new Dictionary<Ship, int>
+            NumDeployShips = new Dictionary<Ship, int>
             {
-                {ships.Single( ship => ship.Type == BB), 1 },
-                {ships.Single( ship => ship.Type == DD), 1 },
-                {ships.Single( ship => ship.Type == SS), 1 },
+                {ShipType.Single( ship => ship.Type == BB), 1 },
+                {ShipType.Single( ship => ship.Type == DD), 1 },
+                {ShipType.Single( ship => ship.Type == SS), 1 },
             };
 
+            foreach (var item in ShipType.Where(ship => ship.Type != Null))
+            {
+                for (int i = 0; i < NumDeployShips[item]; ++i)
+                {
+                    ShipsToDeploy.Add(item);
+                }
+            }
+
             //登場設置物を生成します。
-            objs = new List<KaisenObject> {
+            ObjType = new List<KaisenObject> {
                 new KaisenObject(mine, 0),
                 new KaisenObject(Null, 0),
             };
             //設置上限数を決定します。
-            deployObjs = new Dictionary<KaisenObject, int>
+            NumDeployObjs = new Dictionary<KaisenObject, int>
             {
-                {objs.Single( obj=> obj.Type==mine), 1 },
+                {ObjType.Single( obj=> obj.Type==mine), 1 },
             };
 
             battleArea = new BattleArea(height, width);//登場艦船を生成する前に呼び出してはいけない/悪い設計
@@ -75,12 +87,12 @@ namespace GameCore
 
         public static void DeployShips()
         {
-            battleArea.map = me.deployShips(); //プレイヤに艦船を配置させます。
+            battleArea.map = me.DeployShips(); //プレイヤに艦船を配置させます。
         }
 
         public static void StartLoop(bool isGuest)
         {
-            bool myturn = isMyInitiative(isGuest);
+            bool myturn = IsMyInitiative(isGuest);
             bool isEnd = false;
             //to fix : infinity loop is dangerous
             while (!isEnd)
@@ -91,7 +103,7 @@ namespace GameCore
                 }
                 else
                 {
-                    isEnd = me.Recieve();
+                    isEnd = me.DoResponse();
                 }
                 myturn = !myturn;
             }
@@ -103,7 +115,7 @@ namespace GameCore
         /// <param name="isGuest"></param>
         /// <returns></returns>
         /// <remarks>改善の余地あり</remarks>
-        private static bool isMyInitiative(bool isGuest)
+        private static bool IsMyInitiative(bool isGuest)
         {
             if (isGuest)
             {
@@ -192,7 +204,7 @@ namespace GameCore
         {
             FiringResponseSummary summary = FiringResponseSummary.None;
             string destroyed = Null;
-            hit = ships.Single(s => s.Type == Null);
+            hit = ShipType.Single(s => s.Type == Null);
             int area = 1;
 
             if(GetPoint(x, y).ship.Type != Null)
@@ -202,9 +214,9 @@ namespace GameCore
                 if(--GetPoint(x, y).ship.Durable == 0)
                 {//撃沈（耐久値が最初から0以下の場合、それはゾンビ艦船です。撃沈できません。）
                     destroyed = GetPoint(x, y).ship.Type;
-                    GetPoint(x, y).ship = ships.Single(s => s.Type == Null);
+                    GetPoint(x, y).ship = ShipType.Single(s => s.Type == Null);
                 }
-            } else if(GetPointsaroundPoint(new Point(x, y, null, null), area).Where(p=>!(p.x==x && p.y == y)).Any(p=>p.ship != ships.Single(s=>s.Type==Null)))
+            } else if(GetPointsaroundPoint(new Point(x, y, null, null), area).Where(p=>!(p.x==x && p.y == y)).Any(p=>p.ship != ShipType.Single(s=>s.Type==Null)))
             {//ニアミス（砲撃地点周囲から砲撃地点を除外した8マス（射撃範囲1マス時点）中にNullObjectでない艦船を持つ地点が存在す）
                 summary = FiringResponseSummary.Nearmiss;
             }
@@ -248,7 +260,7 @@ namespace GameCore
             }
 
             moved.ship = new Ship(now.ship);
-            now.ship = ships.Single(s => s.Type == Null);
+            now.ship = ShipType.Single(s => s.Type == Null);
             return true;
         }
     }

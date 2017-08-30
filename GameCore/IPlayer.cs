@@ -8,7 +8,7 @@ namespace GameCore
         /// 艦船を配置し、配置したあとの座標リストを返却します。
         /// </summary>
         /// <returns></returns>
-        public abstract List<Point> deployShips();
+        public abstract List<Point> DeployShips();
         /// <summary>
         /// こちら側のコマンドを発信し、相手側の応答を受け取ります。
         /// </summary>
@@ -19,6 +19,6 @@ namespace GameCore
         /// </summary>
         /// <param name="msg"></param>
         /// <returns>終了フラグ</returns>
-        public abstract bool Recieve();
+        public abstract bool DoResponse();
     }
 }

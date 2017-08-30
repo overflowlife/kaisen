@@ -21,43 +21,39 @@ namespace GameCore
             Name = name;
         }
 
-        public override List<Point> deployShips()
+        public override List<Point> DeployShips()
         {
             BattleArea ba = new BattleArea(Game.width, Game.height);
             Logger.WriteAndDisplay("艦船配置オペレーション");
             do
             {
                 ba = new BattleArea(Game.width, Game.height);
-                foreach (var item in Game.ships.Where(ship => ship.Type != Game.Null))
+                foreach (var item in Game.ShipsToDeploy)
                 {
-                    for (int i = 0; i < Game.deployShips[item]; ++i)
+                    bool validateInput = false;
+                    do
                     {
-                        bool validateInput = false;
-                        do
+                        Console.WriteLine($"{item.Type}の配置位置(x, y)を指定してください。");
+                        OutputArrow("x");
+                        string usX = Console.ReadLine();
+                        OutputArrow("y");
+                        string usY = Console.ReadLine();
+                        bool validateX = int.TryParse(usX, out int x) && 0 <= x && x < Game.width;
+                        bool validateY = int.TryParse(usY, out int y) && 0 <= y && y < Game.height;
+                        if(!validateX || !validateY)
                         {
-                            
-                            Console.WriteLine($"{item.Type}の配置位置(x, y)を指定してください。");
-                            OutputArrow("x");
-                            string usX = Console.ReadLine();
-                            OutputArrow("y");
-                            string usY = Console.ReadLine();
-                            bool validateX = int.TryParse(usX, out int x) && 0 <= x && x < Game.width;
-                            bool validateY = int.TryParse(usY, out int y) && 0 <= y && y < Game.height;
-                            if(!validateX || !validateY)
-                            {
-                                Console.WriteLine($"指定位置がマップ境界(0, 0)～（{Game.width}, {Game.height}）を超えています。");
-                                continue;
-                            }
+                            Console.WriteLine($"指定位置がマップ境界(0, 0)～（{Game.width}, {Game.height}）を超えています。");
+                            continue;
+                        }
 
-                            bool validateOverlap = ba.SetShipPointWhenNoOverlap(item, x, y);
-                            if (!validateOverlap)
-                            {
-                                Console.WriteLine($"指定座標にはすでに{ba.GetPoint(x, y).ship.Type}が配置されています。");
-                            }
+                        bool validateOverlap = ba.SetShipToPointWhenNoOverlap(item, x, y);
+                        if (!validateOverlap)
+                        {
+                            Console.WriteLine($"指定座標にはすでに{ba.GetPoint(x, y).ship.Type}が配置されています。");
+                        }
 
-                            validateInput = validateX && validateY && validateOverlap;
-                        } while (!validateInput);
-                    }
+                        validateInput = validateX && validateY && validateOverlap;
+                    } while (!validateInput);
                 }
                 Console.WriteLine("配置完了しました。最初からやり直しますか？");
                 OutputArrow("yes: y");
@@ -93,7 +89,7 @@ namespace GameCore
                 int cmdId;
                 Func<bool> cmd = () => false;
                 bool validateInput;
-                dispMap();
+                DispMap();
                 do
                 {
                     Console.WriteLine("コマンドを選択してください。");
@@ -304,7 +300,7 @@ namespace GameCore
             return false;
         }
 
-        public override bool Recieve()
+        public override bool DoResponse()
         {
             Console.WriteLine("Wait..");
             string msg = Messenger.Recieve();
@@ -378,13 +374,13 @@ namespace GameCore
             Logger.WriteAndDisplay("終了応答を送信しました。");
         }
 
-        private void dispMap()
+        private void DispMap()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"「{Name}」戦術画面");
             sb.AppendLine();
             sb.AppendLine("健在艦船");
-            foreach (var item in Game.battleArea.map.Where(p=>p.ship!=Game.ships.Single(s=>s.Type == Game.Null)))
+            foreach (var item in Game.battleArea.map.Where(p=>p.ship!=Game.ShipType.Single(s=>s.Type == Game.Null)))
             {
                 sb.AppendLine($"{item.ship.Type}({item.x}, {item.y})：{item.ship.Durable}");
             }
@@ -399,7 +395,7 @@ namespace GameCore
                 sb.Append(y);
                 for(int x= 0; x < Game.width; ++x)
                 {
-                    string type = Game.GetPoint(x, y).ship != Game.ships.Single(s=>s.Type==Game.Null) ? Game.GetPoint(x, y).ship.Stype : "　";
+                    string type = Game.GetPoint(x, y).ship != Game.ShipType.Single(s=>s.Type==Game.Null) ? Game.GetPoint(x, y).ship.Stype : "　";
                     sb.Append(type);
                 }
                 sb.AppendLine();
