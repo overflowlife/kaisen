@@ -3,9 +3,9 @@ using System.Net;
 using System.Net.Sockets;
 using KaisenLib;
 
-namespace Host
+namespace KaisenLib
 {
-    class ListenHelper
+   public  class ListenHelper
     {
         public IPAddress Address { get; private set; }
         public int Port { get; private set; }

@@ -39,7 +39,7 @@ namespace Host
                 }
                 else
                 {
-                    resultParse = resultParse && (IPEndPoint.MinPort <= listenPort && listenPort <= IPEndPoint.MaxPort);
+                    resultParse = resultParse && (IPEndPoint.MinPort <= listenPort/* :0 wont be used */ && listenPort <= IPEndPoint.MaxPort);
                 }
 
             } while (!resultParse);
