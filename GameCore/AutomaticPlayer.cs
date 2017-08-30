@@ -13,10 +13,9 @@ namespace GameCore
     /// </summary>
     public class AutomaticPlayer : IPlayer
     {
-        internal MessageId prevRcvCmd;
+        internal SerializableMessage prevRcvCmd;
         public AutomaticPlayer()
         {
-            prevRcvCmd = MessageId.None;
         }
 
         public override List<Point> DeployShips()
@@ -41,6 +40,27 @@ namespace GameCore
                 var manufactedMsg = MessageFactory.Manufact(Messenger.Recieve());
                 Debug.Assert(manufactedMsg.MsgId == MessageId.ExitingResponse, "終了通知に対して異常な応答が返却されました。");
                 return true;
+            }
+
+           //コマンド選択率設定
+            Dictionary<MessageId, double> electionProb = new Dictionary<MessageId, double> {
+               { MessageId.FiringRequest, 0.9 },
+               {MessageId.MovingRequest, 0.1 },
+           };
+
+            SerializableMessage sendMsg;
+
+            if(prevRcvCmd.MsgId == MessageId.FiringRequest)
+            {//直前に射撃通知を受け取っていて、その地点が射程範囲内なら撃ち返す。
+                var prevFirReq = (FiringRequestMsg)prevRcvCmd;
+                if( Game.IsInRange(prevFirReq.x, prevFirReq.y ) )
+                {
+                    sendMsg = new FiringRequestMsg(prevFirReq.x, prevFirReq.y);
+                }
+            }
+            else
+            {
+                MessageId selected;
             }
 
             throw new NotImplementedException();

@@ -191,11 +191,10 @@ namespace GameCore
         /// <param name="area"></param>
         /// <returns></returns>
         internal static IEnumerable<Point> GetPointsaroundPoint(Point target, int area)
-        {//Euclid距離ではなく、全体の2乗根を外した値で算出しています。
+        {
             foreach (var item in battleArea.map)
             {
-                var d = Pow(item.x - target.x, 2) + Pow(item.y - target.y, 2);
-                if (d < Pow(area+1, 2))
+                if ( Max( Abs(item.x - target.x), Abs(item.y - target.y)) <= area )
                    yield return item;
             }
         }
