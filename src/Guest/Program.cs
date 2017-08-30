@@ -17,6 +17,7 @@ namespace Guest
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Logger.Open(nameof(Guest));
             Logger.WriteAndDisplay("海戦ゲーム：ゲストサイドを起動します。");
+            Game.me = new ConsolePlayer("You");
             Game.DeployShips();
 
             string input;
