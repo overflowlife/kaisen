@@ -11,7 +11,9 @@ namespace AutoHost01
         {
             Logger.Open(nameof(AutoHost01));
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを起動します。");
+            Logger.WriteAndDisplay("海戦ゲーム：自動ホスト01を起動します。");
+
+
             
         }
     }

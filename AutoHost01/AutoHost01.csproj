@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\GameCore\GameCore.csproj" />
-    <ProjectReference Include="..\src\kaisenLib\kaisenLib.csproj" />
+    <ProjectReference Include="..\GameCore\GameCore.csproj" />
+    <ProjectReference Include="..\kaisenLib\kaisenLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
