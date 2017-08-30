@@ -19,7 +19,7 @@ namespace Host
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Logger.Open(nameof(Host));
             Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを起動します。");
-            Game.me = new ConsolePlayer("You");
+            Game.RegisterPlayer(new ConsolePlayer("You"));
             Game.DeployShips();
 
             string input;
@@ -117,7 +117,6 @@ namespace Host
                         Messenger.Send(version);
                     }
                     Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
-                    Game.me = new ConsolePlayer("You");
                     Game.StartLoop(false);
                 }
             }
