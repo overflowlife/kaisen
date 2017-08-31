@@ -26,11 +26,11 @@ namespace GameCore
 
         public override List<Point> DeployShips()
         {
-            BattleArea ba = new BattleArea(rs.Game.width, rs.Game.height, rs);
+            BattleArea ba = new BattleArea(rs.Game.width, rs.Game.height);
             rs.Logger.WriteAndDisplay("艦船配置オペレーション");
             do
             {
-                ba = new BattleArea(rs.Game.width, rs.Game.height, rs);
+                ba = new BattleArea(rs.Game.width, rs.Game.height);
                 foreach (var item in rs.Game.ShipsToDeploy)
                 {
                     bool validateInput = false;
@@ -62,7 +62,7 @@ namespace GameCore
                 OutputArrow("yes: y");
             } while (Console.ReadLine().Trim().ToLower() == "y");
 
-            foreach (var item in ba.map.Where(p => p.ship.Type != rs.Game.Null))
+            foreach (var item in ba.map.Where(p => p.ship != null))
             {
                 rs.Logger.WriteAndDisplay($"({item.x}, {item.y})に{item.ship.Type}を配置しました。");
             }
@@ -154,7 +154,7 @@ namespace GameCore
                 usY = Console.ReadLine();
                 validateX = int.TryParse(usX, out x) && rs.Game.ValidateX(x);
                 validateY = int.TryParse(usY, out y) && rs.Game.ValidateX(y);
-                validateShip = rs.Game.GetPoint(x, y).ship.Type != rs.Game.Null;
+                validateShip = rs.Game.GetPoint(x, y).ship != null;
                 validateInput = validateX && validateY && validateShip;
                 if (!validateInput)
                 {
@@ -191,14 +191,14 @@ namespace GameCore
                 {
                     int movedX = dir == 4 ? (x - dis) : (x + dis);
                     validateShip = rs.Game.ValidateX(movedX);
-                    validateOverlap = validateShip && rs.Game.GetPoint(movedX, y).ship.Type == rs.Game.Null;//ブロックをこれ以上増やさないため
+                    validateOverlap = validateShip && rs.Game.GetPoint(movedX, y).ship == null;//ブロックをこれ以上増やさないため
 
                 }
                 else
                 {
                     int movedY = dir == 2 ? (y + dis) : (y - dis);
                     validateShip = rs.Game.ValidateY(movedY);
-                    validateOverlap = validateShip && rs.Game.GetPoint(x, movedY).ship.Type == rs.Game.Null;
+                    validateOverlap = validateShip && rs.Game.GetPoint(x, movedY).ship == null;
                 }
                 validateInput = validateDir && validateDis && validateShip && validateOverlap;
 
@@ -283,7 +283,7 @@ namespace GameCore
             switch (res.summary)
             {
                 case FiringResponseSummary.Hit:
-                    if(res.destroyedName != rs.Game.Null){
+                    if(res.destroyedName != ""){
                         rs.Logger.WriteAndDisplay($"{res.destroyedName}を撃沈しました！");
                     }else{
                         rs.Logger.WriteAndDisplay("敵艦船に直撃しました。");
@@ -350,7 +350,7 @@ namespace GameCore
             switch (send.summary)
             {
                 case FiringResponseSummary.Hit:
-                    if(send.destroyedName != rs.Game.Null)
+                    if(send.destroyedName != "")
                     {
                         rs.Logger.WriteAndDisplay($"{send.destroyedName}が撃沈されました..");
                     }
@@ -383,7 +383,7 @@ namespace GameCore
             sb.AppendLine($"「{Name}」戦術画面");
             sb.AppendLine();
             sb.AppendLine("健在艦船");
-            foreach (var item in rs.Game.battleArea.map.Where(p=>p.ship!= rs.Game.ShipType.Single(s=>s.Type == rs.Game.Null)))
+            foreach (var item in rs.Game.battleArea.map.Where(p=>p.ship != null))
             {
                 sb.AppendLine($"{item.ship.Type}({item.x}, {item.y})：{item.ship.Durable}");
             }
@@ -398,7 +398,7 @@ namespace GameCore
                 sb.Append(y);
                 for(int x= 0; x < rs.Game.width; ++x)
                 {
-                    string type = rs.Game.GetPoint(x, y).ship != rs.Game.ShipType.Single(s=>s.Type== rs.Game.Null) ? rs.Game.GetPoint(x, y).ship.Stype : "　";
+                    string type = rs.Game.GetPoint(x, y).ship != null ? rs.Game.GetPoint(x, y).ship.Stype : "　";
                     sb.Append(type);
                 }
                 sb.AppendLine();

@@ -72,10 +72,10 @@ namespace Guest
                     $"({((IPEndPoint)tcpClient.Client.LocalEndPoint).Address}:{((IPEndPoint)tcpClient.Client.LocalEndPoint).Port})。");
                 using (ns = tcpClient.GetStream())
                 {
-                    Messenger messenger =  new Messenger(enc, ns, rs.Logger);
+                    rs.Inject(new Messenger(enc, ns, rs.Logger));
                     //初期通信：相互確認
-                    messenger.Send(version);
-                    if (messenger.Recieve() != version)
+                    rs.Messenger.Send(version);
+                    if (rs.Messenger.Recieve() != version)
                     {
                         rs.Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
                         Environment.Exit(1);

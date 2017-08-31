@@ -9,23 +9,21 @@ namespace GameCore
     /// </summary>
     internal class BattleArea
     {
-        internal ResourceSupplier rs;
         internal List<Point> map;
         internal int Width { get; private set; }
         internal int Height { get; private set; }
 
-        internal BattleArea(int width, int height, ResourceSupplier rs)
+        internal BattleArea(int width, int height)
         {
-            this.rs = rs;
             Width = width;
             Height = height;
             map = new List<Point>(Width * Height);
-            for(int y = 0; y < Height; ++y)
+            for (int y = 0; y < height; ++y)
             {
-                for(int x = 0; x < Width; ++x)
+                for (int x = 0; x < width; ++x)
                 {
-                    int i = Width * y + x;
-                    map.Add(new Point(x, y, rs.Game.ShipType.Single(ship=>ship.Type== rs.Game.Null)  , rs.Game.ObjType.Single(obj=>obj.Type== rs.Game.Null) ));
+                    int i = width * y + x;
+                    map.Add(new Point(x, y, null, null));
                 }
             }
         }
@@ -43,7 +41,7 @@ namespace GameCore
                 throw new ArgumentNullException();
             }
 
-            if (GetPoint(x, y).ship != rs.Game.ShipType.Single(s=>s.Type== rs.Game.Null))
+            if (GetPoint(x, y).ship != null)
                 return false; //すでに艦船が存在している座標には配置しない。
             else
             {
@@ -76,7 +74,7 @@ namespace GameCore
         /// <param name="y"></param>
         internal bool SetObjectPointWhenNoOverlap(KaisenObject obj, int x ,int y)
         {
-            if(GetPoint(x, y).obj != rs.Game.ObjType.Single(o=>o.Type == rs.Game.Null))
+            if(GetPoint(x, y).obj != null)
             {
                 return false;
             }

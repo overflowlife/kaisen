@@ -37,7 +37,6 @@ namespace GameCore
         internal  string DD = "駆逐艦";
         internal  string SS = "潜水艦";
         internal  string mine = "機雷";
-        internal  string Null = "Null";//Nullオブジェクトは必要か？
 
         public Game(ResourceSupplier rs)
         {
@@ -50,7 +49,6 @@ namespace GameCore
                 new Ship(BB, 3, 1, 1, int.MaxValue), //戦艦
                 new Ship(DD, 2, 1, 1, int.MaxValue), //駆逐艦
                 new Ship(SS, 1, 1, 1, int.MaxValue), //潜水艦
-                new Ship(Null, 0, 0, 0, 0)
             };
             //艦船配置数を決定します
             NumDeployShips = new Dictionary<Ship, int>
@@ -61,7 +59,7 @@ namespace GameCore
             };
 
             ShipsToDeploy = new List<Ship>();
-            foreach (var item in ShipType.Where(ship => ship.Type != Null))
+            foreach (var item in ShipType.Where(ship => ship != null))
             {
                 for (int i = 0; i < NumDeployShips[item]; ++i)
                 {
@@ -72,7 +70,6 @@ namespace GameCore
             //登場設置物を生成します。
             ObjType = new List<KaisenObject> {
                 new KaisenObject(mine, 0),
-                new KaisenObject(Null, 0),
             };
             //設置上限数を決定します。
             NumDeployObjs = new Dictionary<KaisenObject, int>
@@ -80,7 +77,7 @@ namespace GameCore
                 {ObjType.Single( obj=> obj.Type==mine), 1 },
             };
 
-            battleArea = new BattleArea(height, width, rs);//登場艦船を生成する前に呼び出してはいけない/悪い設計
+            battleArea = new BattleArea(height, width);//登場艦船を生成する前に呼び出してはいけない
         }
 
         public  void RegisterPlayer(IPlayer player)
@@ -155,7 +152,7 @@ namespace GameCore
         {
             List<Point> lp = new List<Point>();
             //全ての艦船の射程範囲を結合します
-            foreach (var p in battleArea.map.Where(p => p.ship.Type != Null))
+            foreach (var p in battleArea.map.Where(p => p.ship != null))
             {
                 var points = GetPointsWhereShipOnPointCanShoot(p);
                 
@@ -184,7 +181,7 @@ namespace GameCore
         internal  IEnumerable<Point> GetPointsWhereCanShoot()
         {
             List<Point> lp = new List<Point>();
-            foreach (var item in battleArea.map.Where(p=>p.ship.Type != Null))
+            foreach (var item in battleArea.map.Where(p=>p.ship != null))
             {
                 lp.AddRange(GetPointsWhereShipOnPointCanShoot(item));
             }
@@ -219,21 +216,21 @@ namespace GameCore
         internal  FiringResponseMsg ShootFromOther(int x, int y, out Ship hit)
         {
             FiringResponseSummary summary = FiringResponseSummary.None;
-            string destroyed = Null;
-            hit = ShipType.Single(s => s.Type == Null);
+            string destroyed = "";
+            hit = null;
             int area = 1;
 
-            if(GetPoint(x, y).ship.Type != Null)
+            if(GetPoint(x, y).ship != null)
             {//直撃
                 summary = FiringResponseSummary.Hit;
                 hit = GetPoint(x, y).ship;
                 if(--GetPoint(x, y).ship.Durable == 0)
                 {//撃沈（耐久値が最初から0以下の場合、それはゾンビ艦船です。撃沈できません。）
                     destroyed = GetPoint(x, y).ship.Type;
-                    GetPoint(x, y).ship = ShipType.Single(s => s.Type == Null);
+                    GetPoint(x, y).ship = null;
                 }
-            } else if(GetPointsaroundPoint(new Point(x, y, null, null), area).Where(p=>!(p.x==x && p.y == y)).Any(p=>p.ship != ShipType.Single(s=>s.Type==Null)))
-            {//ニアミス（砲撃地点周囲から砲撃地点を除外した8マス（射撃範囲1マス時点）中にNullObjectでない艦船を持つ地点が存在す）
+            } else if(GetPointsaroundPoint(new Point(x, y, null, null), area).Where(p=>!(p.x==x && p.y == y)).Any(p=>p.ship != null))
+            {//ニアミス（砲撃地点周囲から砲撃地点を除外した8マス（射撃範囲1マス時点）中にnullでない艦船を持つ地点が存在す）
                 summary = FiringResponseSummary.Nearmiss;
             }
             else
@@ -254,7 +251,7 @@ namespace GameCore
         internal  bool MoveShip(int x, int y, int dir, int dis)
         {
             Point now = GetPoint(x, y);
-            if (now.ship.Type == Null || now.ship.Durable == 0 || now.ship.MoveSpeed < dis)
+            if (now.ship== null || now.ship.Durable == 0 || now.ship.MoveSpeed < dis)
             {//移動元に艦船が存在しないか、HPが0、もしくは艦船の移動能力を超えた移動量
                 return false;
             }
@@ -270,13 +267,13 @@ namespace GameCore
                 int movedY = dir == 2 ? y + dis : y - dis;
                 moved = GetPoint(x, movedY);
             }
-            if(!ValidateX(moved.x) || !ValidateY(moved.y) || moved.ship.Type != Null)
+            if(!ValidateX(moved.x) || !ValidateY(moved.y) || moved.ship != null)
             {//移動先がマップ範囲を超えている、もしくは移動先にすでに艦船がある
                 return false;
             }
 
             moved.ship = new Ship(now.ship);
-            now.ship = ShipType.Single(s => s.Type == Null);
+            now.ship = null;
             return true;
         }
     }

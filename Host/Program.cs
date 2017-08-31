@@ -108,16 +108,16 @@ namespace Host
             {
                 using (NetworkStream ns = client.GetStream())
                 {
-                    Messenger messenger = new Messenger(enc, ns, rs.Logger);
+                    rs.Inject(new Messenger(enc, ns, rs.Logger));
                     //初期通信：相互確認
-                    if (messenger.Recieve() != version)
+                    if (rs.Messenger.Recieve() != version)
                     {
                         rs.Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
                         Environment.Exit(1);
                     }
                     else
                     {
-                        messenger.Send(version);
+                        rs.Messenger.Send(version);
                     }
                     rs.Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
                     rs.Game.StartLoop(false);

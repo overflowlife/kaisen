@@ -24,14 +24,14 @@ namespace GameCore
 
         public override List<Point> DeployShips()
         {
-            BattleArea ba = new BattleArea(rs.Game.width, rs.Game.height, rs);
+            BattleArea ba = new BattleArea(rs.Game.width, rs.Game.height);
             Random rand = new Random();
             foreach (var item in rs.Game.ShipsToDeploy)
             {
                 while (!ba.SetShipToPointWhenNoOverlap(item, rand.Next(rs.Game.width), rand.Next(rs.Game.height)))
                     ;
             }
-            foreach (var item in ba.map.Where(p => p.ship.Type != rs.Game.Null))
+            foreach (var item in ba.map.Where(p => p.ship != null))
             {
                 rs.Logger.WriteAndDisplay($"({item.x}, {item.y})に{item.ship.Type}を配置しました。");
             }
@@ -40,7 +40,7 @@ namespace GameCore
 
         public override bool DoTurn()
         {
-           if(rs.Game.battleArea.map.All((p)=>p.ship == rs.Game.ShipType.Single(s => s.Type == rs.Game.Null)))
+           if(rs.Game.battleArea.map.All((p)=>p.ship == rs.Game.ShipType.Single(s => s == null)))
             {
                 //敗戦処理
                 rs.Logger.WriteLine("敗北しました。");
@@ -78,7 +78,7 @@ namespace GameCore
         private void FiringRequest()
         {
             List<Point> lp = new List<Point>();
-            foreach (var point in rs.Game.battleArea.map.Where(p=>p.ship != rs.Game.ShipType.Single(s=>s.Type==rs.Game.Null)))
+            foreach (var point in rs.Game.battleArea.map.Where(p=>p.ship != null))
             {
                 lp.AddRange(rs.Game.GetPointsWhereShipOnPointCanShoot(point));
             }
@@ -113,7 +113,7 @@ namespace GameCore
             switch (res.summary)
             {
                 case FiringResponseSummary.Hit:
-                    if (res.destroyedName != rs.Game.Null)
+                    if (res.destroyedName != "")
                     {
                         rs.Logger.WriteLine($"{res.destroyedName}を撃沈しました！");
                     }
@@ -216,7 +216,7 @@ namespace GameCore
             switch (send.summary)
             {
                 case FiringResponseSummary.Hit:
-                    if (send.destroyedName != rs.Game.Null)
+                    if (send.destroyedName != "")
                     {
                         rs.Logger.WriteLine($"{send.destroyedName}が撃沈されました..");
                     }
