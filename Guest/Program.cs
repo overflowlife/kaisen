@@ -11,14 +11,17 @@ namespace Guest
     class Program
     {
         static NetworkStream ns;
+        public static ResourceSupplier rs;
         static void Main(string[] args)
         {
             Console.Title = consoleTitle;
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Logger.Open(nameof(Guest));
-            Logger.WriteAndDisplay("海戦ゲーム：ゲストサイドを起動します。");
-            Game.RegisterPlayer(new ConsolePlayer("You"));
-            Game.DeployShips();
+            rs = new ResourceSupplier();
+            rs.Inject(new Logger(nameof(Guest)));
+            rs.Logger.WriteAndDisplay("海戦ゲーム：ゲストサイドを起動します。");
+            rs.Inject(new Game(rs));
+            rs.Game.RegisterPlayer(new ConsolePlayer("You", rs));
+            rs.Game.DeployShips();
 
             string input;
             IPAddress remoteAddress = null;
@@ -65,26 +68,24 @@ namespace Guest
                     Environment.Exit(1);
                 }
 
-                Logger.WriteAndDisplay($"ホスト（{((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address}:{((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port}）と接続しました" +
+                rs.Logger.WriteAndDisplay($"ホスト（{((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address}:{((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port}）と接続しました" +
                     $"({((IPEndPoint)tcpClient.Client.LocalEndPoint).Address}:{((IPEndPoint)tcpClient.Client.LocalEndPoint).Port})。");
                 using (ns = tcpClient.GetStream())
                 {
-                    Messenger.Open(enc, ns);
+                    Messenger messenger =  new Messenger(enc, ns, rs.Logger);
                     //初期通信：相互確認
-                    Messenger.Send(version);
-                    if (Messenger.Recieve() != version)
+                    messenger.Send(version);
+                    if (messenger.Recieve() != version)
                     {
-                        Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
+                        rs.Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
                         Environment.Exit(1);
                     }
-                    Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
-                    Game.StartLoop(true);
-                    Messenger.Close();
+                    rs.Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
+                    rs.Game.StartLoop(true);
                 }
             }
 
-            Logger.WriteAndDisplay("海戦ゲーム：ゲストサイドを終了します。");
-            Logger.Close();
+            rs.Logger.WriteAndDisplay("海戦ゲーム：ゲストサイドを終了します。");
         }
     }
 }

@@ -13,36 +13,39 @@ namespace GameCore
     /// </summary>
     public class AutomaticPlayer : IPlayer
     {
+        ResourceSupplier rs;
+
         internal SerializableMessage prevRcvCmd;
-        public AutomaticPlayer()
+        public AutomaticPlayer(ResourceSupplier supplier)
         {
+            rs = supplier;
             prevRcvCmd = new ExitingRequestMsg();
         }
 
         public override List<Point> DeployShips()
         {
-            BattleArea ba = new BattleArea(Game.width, Game.height);
+            BattleArea ba = new BattleArea(rs.Game.width, rs.Game.height, rs);
             Random rand = new Random();
-            foreach (var item in Game.ShipsToDeploy)
+            foreach (var item in rs.Game.ShipsToDeploy)
             {
-                while (!ba.SetShipToPointWhenNoOverlap(item, rand.Next(Game.width), rand.Next(Game.height)))
+                while (!ba.SetShipToPointWhenNoOverlap(item, rand.Next(rs.Game.width), rand.Next(rs.Game.height)))
                     ;
             }
-            foreach (var item in ba.map.Where(p => p.ship.Type != Game.Null))
+            foreach (var item in ba.map.Where(p => p.ship.Type != rs.Game.Null))
             {
-                Logger.WriteAndDisplay($"({item.x}, {item.y})に{item.ship.Type}を配置しました。");
+                rs.Logger.WriteAndDisplay($"({item.x}, {item.y})に{item.ship.Type}を配置しました。");
             }
             return ba.map;
         }
 
         public override bool DoTurn()
         {
-           if(Game.battleArea.map.All((p)=>p.ship == Game.ShipType.Single(s => s.Type == Game.Null)))
+           if(rs.Game.battleArea.map.All((p)=>p.ship == rs.Game.ShipType.Single(s => s.Type == rs.Game.Null)))
             {
                 //敗戦処理
-                Logger.WriteLine("敗北しました。");
-                Messenger.Send(new ExitingRequestMsg().ToString());
-                var manufactedMsg = MessageFactory.Manufact(Messenger.Recieve());
+                rs.Logger.WriteLine("敗北しました。");
+                rs.Messenger.Send(new ExitingRequestMsg().ToString());
+                var manufactedMsg = MessageFactory.Manufact(rs.Messenger.Recieve());
                 Debug.Assert(manufactedMsg.MsgId == MessageId.ExitingResponse);
                 return true;
             }
@@ -75,17 +78,17 @@ namespace GameCore
         private void FiringRequest()
         {
             List<Point> lp = new List<Point>();
-            foreach (var point in Game.battleArea.map.Where(p=>p.ship != Game.ShipType.Single(s=>s.Type==Game.Null)))
+            foreach (var point in rs.Game.battleArea.map.Where(p=>p.ship != rs.Game.ShipType.Single(s=>s.Type==rs.Game.Null)))
             {
-                lp.AddRange(Game.GetPointsWhereShipOnPointCanShoot(point));
+                lp.AddRange(rs.Game.GetPointsWhereShipOnPointCanShoot(point));
             }
 
             Point target;
             if(prevRcvCmd.MsgId == MessageId.FiringRequest)
             {
                 var prevFire = prevRcvCmd as FiringRequestMsg;
-                var prevPoint = Game.GetPoint(prevFire.x, prevFire.y);
-                if ( Game.IsInRange(prevPoint) )
+                var prevPoint = rs.Game.GetPoint(prevFire.x, prevFire.y);
+                if ( rs.Game.IsInRange(prevPoint) )
                 {
                     target = prevPoint;
                 }
@@ -99,31 +102,31 @@ namespace GameCore
                 target = RandomPointWhereIsInRange();
             }
 
-            Debug.Assert(Game.IsInRange(target.x, target.y));
+            Debug.Assert(rs.Game.IsInRange(target.x, target.y));
             var req = new FiringRequestMsg(target.x, target.y);
-            Messenger.Send(req.ToString());
-            Logger.WriteLine($"地点({target.x}, {target.y})を砲撃しました。");
+            rs.Messenger.Send(req.ToString());
+            rs.Logger.WriteLine($"地点({target.x}, {target.y})を砲撃しました。");
 
-            var msg = MessageFactory.Manufact(Messenger.Recieve());
+            var msg = MessageFactory.Manufact(rs.Messenger.Recieve());
             Debug.Assert(msg.MsgId == MessageId.FiringResponse);
             FiringResponseMsg res = (FiringResponseMsg)msg;
             switch (res.summary)
             {
                 case FiringResponseSummary.Hit:
-                    if (res.destroyedName != Game.Null)
+                    if (res.destroyedName != rs.Game.Null)
                     {
-                        Logger.WriteLine($"{res.destroyedName}を撃沈しました！");
+                        rs.Logger.WriteLine($"{res.destroyedName}を撃沈しました！");
                     }
                     else
                     {
-                        Logger.WriteLine("敵艦船に直撃しました。");
+                        rs.Logger.WriteLine("敵艦船に直撃しました。");
                     }
                     break;
                 case FiringResponseSummary.Nearmiss:
-                    Logger.WriteLine("ニアミスでした。");
+                    rs.Logger.WriteLine("ニアミスでした。");
                     break;
                 case FiringResponseSummary.Water:
-                    Logger.WriteLine("海に落ちました。");
+                    rs.Logger.WriteLine("海に落ちました。");
                     break;
                 default:
                     break;
@@ -132,7 +135,7 @@ namespace GameCore
 
         private Point RandomPointWhereIsInRange()
         {
-           IEnumerable<Point> lp = Game.GetPointsWhereCanShoot();
+           IEnumerable<Point> lp = rs.Game.GetPointsWhereCanShoot();
            return  lp.ElementAt(new Random().Next(lp.Count()));
         }
 
@@ -168,7 +171,7 @@ namespace GameCore
 
         public override bool DoResponse()
         {
-            string msg = Messenger.Recieve();
+            string msg = rs.Messenger.Recieve();
             SerializableMessage recieved = MessageFactory.Manufact(msg);
             prevRcvCmd = recieved;
             switch (recieved.MsgId)
@@ -199,34 +202,34 @@ namespace GameCore
 
         private void MovingResponse(MovingRequestMsg msg)
         {
-            Logger.WriteLine($"{msg.mover}が{msg.direction}方向に{msg.distance}移動しました。");
-            Messenger.Send(new MovingResponseMsg().ToString());
-            Logger.WriteLine($"移動に対して応答しました。");
+            rs.Logger.WriteLine($"{msg.mover}が{msg.direction}方向に{msg.distance}移動しました。");
+            rs.Messenger.Send(new MovingResponseMsg().ToString());
+            rs.Logger.WriteLine($"移動に対して応答しました。");
         }
 
         private void FiringResponse(FiringRequestMsg msg)
         {
-            Logger.WriteLine($"地点({msg.x}, {msg.y})が砲撃されました。");
-            Debug.Assert(Game.ValidateX(msg.x) && Game.ValidateY(msg.y));
-            var send = Game.ShootFromOther(msg.x, msg.y, out Ship hit);
-            Messenger.Send(send.ToString());
+            rs.Logger.WriteLine($"地点({msg.x}, {msg.y})が砲撃されました。");
+            Debug.Assert(rs.Game.ValidateX(msg.x) && rs.Game.ValidateY(msg.y));
+            var send = rs.Game.ShootFromOther(msg.x, msg.y, out Ship hit);
+            rs.Messenger.Send(send.ToString());
             switch (send.summary)
             {
                 case FiringResponseSummary.Hit:
-                    if (send.destroyedName != Game.Null)
+                    if (send.destroyedName != rs.Game.Null)
                     {
-                        Logger.WriteLine($"{send.destroyedName}が撃沈されました..");
+                        rs.Logger.WriteLine($"{send.destroyedName}が撃沈されました..");
                     }
                     else
                     {
-                        Logger.WriteLine($"秘匿情報：{hit.Type}に命中しました。");
+                        rs.Logger.WriteLine($"秘匿情報：{hit.Type}に命中しました。");
                     }
                     break;
                 case FiringResponseSummary.Nearmiss:
-                    Logger.WriteLine("ニアミスでした。");
+                    rs.Logger.WriteLine("ニアミスでした。");
                     break;
                 case FiringResponseSummary.Water:
-                    Logger.WriteLine("海に落ちました。");
+                    rs.Logger.WriteLine("海に落ちました。");
                     break;
                 default:
                     break;
@@ -235,9 +238,9 @@ namespace GameCore
 
         private void ExitingResponse(ExitingRequestMsg msg)
         {
-            Logger.WriteLine("終了通知を受け取りました。");
-            Messenger.Send(new ExitingResponseMsg().ToString());
-            Logger.WriteLine("終了応答を送信しました。");
+            rs.Logger.WriteLine("終了通知を受け取りました。");
+            rs.Messenger.Send(new ExitingResponseMsg().ToString());
+            rs.Logger.WriteLine("終了応答を送信しました。");
         }
     }
 }

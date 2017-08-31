@@ -5,41 +5,43 @@ using KaisenLib;
 using static System.Math;
 namespace GameCore
 {
-    public static class Game
+    public class Game
     {
-        internal static BattleArea battleArea;
-        internal static int height;
-        internal static int width;
+        internal ResourceSupplier rs;
+        internal  BattleArea battleArea;
+        internal  int height;
+        internal  int width;
         /// <summary>
         /// 本作登場の艦種リストです。リストからの検索にはEnumerable.Single(Func<ship, bool> pred)を利用します。
         /// </summary>
-        internal static List<Ship> ShipType { get; }
+        internal  List<Ship> ShipType { get; }
 
         /// <summary>
         /// 本作登場の設置物リストです。
         /// </summary>
-        internal static List<KaisenObject> ObjType {get;}
+        internal  List<KaisenObject> ObjType {get;}
         /// <summary>
         /// 艦種ごとの配置数です。
         /// </summary>
-        internal static Dictionary<Ship, int> NumDeployShips { get; }
+        internal  Dictionary<Ship, int> NumDeployShips { get; }
         /// <summary>
         /// 艦種リストおよびそれらの配置数から展開した、配置される艦船のリストです。
         /// </summary>
-        internal static List<Ship> ShipsToDeploy { get; }
+        internal  List<Ship> ShipsToDeploy { get; }
         /// <summary>
         /// 設置物ごとの配置数です。
         /// </summary>
-        internal static Dictionary<KaisenObject, int> NumDeployObjs { get; }
-        internal static IPlayer me;
-        internal static string BB = "戦艦";
-        internal static string DD = "駆逐艦";
-        internal static string SS = "潜水艦";
-        internal static string mine = "機雷";
-        internal static string Null = "Null";//Nullオブジェクトは必要か？
+        internal  Dictionary<KaisenObject, int> NumDeployObjs { get; }
+        internal  IPlayer Player;
+        internal  string BB = "戦艦";
+        internal  string DD = "駆逐艦";
+        internal  string SS = "潜水艦";
+        internal  string mine = "機雷";
+        internal  string Null = "Null";//Nullオブジェクトは必要か？
 
-        static Game()
+        public Game(ResourceSupplier rs)
         {
+            this.rs = rs;
             height = 5;
             width = 5;
             
@@ -78,20 +80,20 @@ namespace GameCore
                 {ObjType.Single( obj=> obj.Type==mine), 1 },
             };
 
-            battleArea = new BattleArea(height, width);//登場艦船を生成する前に呼び出してはいけない/悪い設計
+            battleArea = new BattleArea(height, width, rs);//登場艦船を生成する前に呼び出してはいけない/悪い設計
         }
 
-        public static void RegisterPlayer(IPlayer player)
+        public  void RegisterPlayer(IPlayer player)
         {
-            me = player;
+            Player = player;
         }
 
-        public static void DeployShips()
+        public  void DeployShips()
         {
-            battleArea.map = me.DeployShips(); //プレイヤに艦船を配置させます。
+            battleArea.map = Player.DeployShips(); //プレイヤに艦船を配置させます。
         }
 
-        public static void StartLoop(bool isGuest)
+        public  void StartLoop(bool isGuest)
         {
             bool myturn = IsMyInitiative(isGuest);
             bool isEnd = false;
@@ -100,11 +102,11 @@ namespace GameCore
             {
                 if (myturn)
                 {
-                    isEnd = me.DoTurn();
+                    isEnd = Player.DoTurn();
                 }
                 else
                 {
-                    isEnd = me.DoResponse();
+                    isEnd = Player.DoResponse();
                 }
                 myturn = !myturn;
             }
@@ -128,17 +130,17 @@ namespace GameCore
             }
         }
 
-        internal static bool ValidateX(int x)
+        internal  bool ValidateX(int x)
         {
             return 0 <= x  && x< width;
         }
 
-        internal static bool ValidateY(int y)
+        internal  bool ValidateY(int y)
         {
             return 0 <= y && y < height;
         }
 
-        internal static Point GetPoint(int x, int y)
+        internal  Point GetPoint(int x, int y)
         {
             return battleArea.GetPoint(x, y);
         }
@@ -149,7 +151,7 @@ namespace GameCore
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-       internal static bool IsInRange(int x, int y)
+       internal  bool IsInRange(int x, int y)
         {
             List<Point> lp = new List<Point>();
             //全ての艦船の射程範囲を結合します
@@ -170,7 +172,7 @@ namespace GameCore
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        internal static bool IsInRange(Point p)
+        internal  bool IsInRange(Point p)
         {
             return IsInRange(p.x, p.y);
         }
@@ -179,7 +181,7 @@ namespace GameCore
         /// 射程範囲内の地点リストを返却します。重複する要素がある可能性があります。
         /// </summary>
         /// <returns></returns>
-        internal static IEnumerable<Point> GetPointsWhereCanShoot()
+        internal  IEnumerable<Point> GetPointsWhereCanShoot()
         {
             List<Point> lp = new List<Point>();
             foreach (var item in battleArea.map.Where(p=>p.ship.Type != Null))
@@ -194,7 +196,7 @@ namespace GameCore
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        internal static IEnumerable<Point> GetPointsWhereShipOnPointCanShoot(Point point)
+        internal  IEnumerable<Point> GetPointsWhereShipOnPointCanShoot(Point point)
         {
             return GetPointsaroundPoint(point, point.ship.AttackRange);
         }
@@ -205,7 +207,7 @@ namespace GameCore
         /// <param name="target"></param>
         /// <param name="area"></param>
         /// <returns></returns>
-        internal static IEnumerable<Point> GetPointsaroundPoint(Point target, int area)
+        internal  IEnumerable<Point> GetPointsaroundPoint(Point target, int area)
         {
             foreach (var item in battleArea.map)
             {
@@ -214,7 +216,7 @@ namespace GameCore
             }
         }
 
-        internal static FiringResponseMsg ShootFromOther(int x, int y, out Ship hit)
+        internal  FiringResponseMsg ShootFromOther(int x, int y, out Ship hit)
         {
             FiringResponseSummary summary = FiringResponseSummary.None;
             string destroyed = Null;
@@ -238,7 +240,7 @@ namespace GameCore
             {//残ケースはポチャン・・・のはず
                 summary = FiringResponseSummary.Water;
             }
-            return new FiringResponseMsg(summary, destroyed);
+            return new FiringResponseMsg(summary, destroyed, rs);
         }
 
         /// <summary>
@@ -249,7 +251,7 @@ namespace GameCore
         /// <param name="dir"></param>
         /// <param name="dis"></param>
         /// <returns></returns>
-        internal static bool MoveShip(int x, int y, int dir, int dis)
+        internal  bool MoveShip(int x, int y, int dir, int dis)
         {
             Point now = GetPoint(x, y);
             if (now.ship.Type == Null || now.ship.Durable == 0 || now.ship.MoveSpeed < dis)

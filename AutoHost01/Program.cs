@@ -28,9 +28,11 @@ namespace AutoHost01
 
     internal class ListenWorker
     {
+        public ResourceSupplier rs { get; internal set; }
 
         internal ListenWorker()
         {
+
         }
 
         async internal Task DoWork()
@@ -62,26 +64,25 @@ namespace AutoHost01
         {
             using (tcpClient)
             {
-                Messenger.Open(enc, tcpClient.GetStream());
-                Logger.Open(nameof(AutoHost01));
-                Game.RegisterPlayer(new AutomaticPlayer());
-                Game.DeployShips();
+                rs = new ResourceSupplier();
+                rs.Inject(new Messenger(enc, tcpClient.GetStream(), rs.Logger));
+                rs.Inject(new Logger(nameof(AutoHost01)));
+                rs.Inject(new Game(rs));
+                rs.Game.RegisterPlayer(new AutomaticPlayer(rs));
+                rs.Game.DeployShips();
 
                 //初期通信：相互確認
-                if (Messenger.Recieve() != version)
+                if (rs.Messenger.Recieve() != version)
                 {
-                    Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
+                    rs.Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
                     Environment.Exit(1);
                 }
                 else
                 {
-                    Messenger.Send(version);
+                    rs.Messenger.Send(version);
                 }
-                Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
-                Game.StartLoop(false);
-
-                Messenger.Close();
-                Logger.Close();
+                rs.Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
+                rs.Game.StartLoop(false);
             }
         }
     }

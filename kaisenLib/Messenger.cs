@@ -5,30 +5,30 @@ using System.Net.Sockets;
 
 namespace KaisenLib
 {
-    public static class Messenger
+    public class Messenger
     {
-        internal static bool IsOpen { get; private set; }
-        internal static Encoding Enc { get; private set; }
-        internal static NetworkStream Ns { get; private set; }
-        internal static MemoryStream Ms { get; private set; }
-        internal static byte[] recBytes;
+        internal Logger logger;
 
-        public static void Open(Encoding enc, NetworkStream ns)
+        internal Encoding Enc { get; private set; }
+        internal NetworkStream Ns { get; private set; }
+        internal MemoryStream Ms { get; private set; }
+        internal byte[] recBytes;
+
+        public Messenger(Encoding enc, NetworkStream ns, Logger logger)
         {
-            if (!IsOpen)
-            {
-                IsOpen = true;
-                Enc = enc;
-                Ns = ns;
-                recBytes = new byte[256];
-            }
+            this.logger = logger;
+            Enc = enc;
+            Ns = ns;
+            recBytes = new byte[256];
         }
+
+        public void Give(Logger logger) => this.logger = logger;
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public static string Recieve()
+        public string Recieve()
         {
             using (Ms = new MemoryStream())
             {
@@ -42,7 +42,7 @@ namespace KaisenLib
                     }
                     catch (IOException e)
                     {
-                        Logger.WriteAndDisplay(e.Message);
+                        logger.WriteAndDisplay(e.Message);
                         Environment.Exit(1);
                     }
                     Ms.Write(recBytes, 0, recSize);
@@ -50,7 +50,7 @@ namespace KaisenLib
 
                 var recMsg = Enc.GetString(Ms.ToArray());
                 recMsg = recMsg.TrimEnd('\n');
-                Logger.WriteLine($"受信メッセージ：{recMsg}");
+                logger.WriteLine($"受信メッセージ：{recMsg}");
                 return recMsg;
             }
 
@@ -60,7 +60,7 @@ namespace KaisenLib
         /// 
         /// </summary>
         /// <param name="sendMsg"></param>
-        public static void Send(string sendMsg)
+        public void Send(string sendMsg)
         {
             var sendBytes = Enc.GetBytes(sendMsg + '\n');
             try
@@ -69,10 +69,10 @@ namespace KaisenLib
             }
             catch (IOException e)
             {
-                Logger.WriteAndDisplay(e.Message);
+                logger.WriteAndDisplay(e.Message);
                 Environment.Exit(1);
             }
-            Logger.WriteLine($"送信メッセージ：{sendMsg}");
+            logger.WriteLine($"送信メッセージ：{sendMsg}");
 
             return;
         }
@@ -80,23 +80,18 @@ namespace KaisenLib
         /// <summary>
         /// This is very important
         /// </summary>
-        public static void Close()
+        ~Messenger()
         {
-            if (IsOpen)
+            if (Ns != null)
             {
-                IsOpen = false;
-                if (Ns != null)
-                {
-                    Ns.Dispose();
-                    Ns = null;
-                }
-                if (Ms != null)
-                {
-                    Ms.Dispose();
-                    Ms = null;
-                }
+                Ns.Dispose();
+                Ns = null;
             }
-
+            if (Ms != null)
+            {
+                Ms.Dispose();
+                Ms = null;
+            }
         }
     }
 }

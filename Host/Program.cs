@@ -13,14 +13,19 @@ namespace Host
         public static Task<TcpClient> ClientTask;
         public static TcpListener Listener;
 
+        public static ResourceSupplier rs { get; internal set; }
+
         static void Main(string[] args)
         {
+            
             Console.Title = consoleTitle;
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Logger.Open(nameof(Host));
-            Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを起動します。");
-            Game.RegisterPlayer(new ConsolePlayer("You"));
-            Game.DeployShips();
+            rs = new ResourceSupplier();
+            rs.Inject(new Logger(nameof(Host)));
+            rs.Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを起動します。");
+            rs.Inject(new Game(rs));
+            rs.Game.RegisterPlayer(new ConsolePlayer("You", rs));
+            rs.Game.DeployShips();
 
             string input;
             int listenPort;
@@ -52,7 +57,7 @@ namespace Host
                 try
                 {
                     Listener.Start();
-                    Logger.WriteAndDisplay($"ポート番号[{listenPort}]を使用して接続要求待ち受けを開始します。");
+                    rs.Logger.WriteAndDisplay($"ポート番号[{listenPort}]を使用して接続要求待ち受けを開始します。");
                 }
                 catch (Exception)
                 {
@@ -64,11 +69,9 @@ namespace Host
             finally
             {
                 Listener.Stop();
-                Messenger.Close();
             }
 
-            Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを終了します。");
-            Logger.Close();
+            rs.Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを終了します。");
             return;
         }
 
@@ -94,7 +97,7 @@ namespace Host
             }
             Console.WriteLine();
             var client = ClientTask.Result;
-            Logger.WriteAndDisplay($"ゲスト（{((IPEndPoint)client.Client.RemoteEndPoint).Address}:{((IPEndPoint)client.Client.RemoteEndPoint).Port}）と接続しました。");
+            rs.Logger.WriteAndDisplay($"ゲスト（{((IPEndPoint)client.Client.RemoteEndPoint).Address}:{((IPEndPoint)client.Client.RemoteEndPoint).Port}）と接続しました。");
             Console.CursorVisible = true;
 
         }
@@ -105,19 +108,19 @@ namespace Host
             {
                 using (NetworkStream ns = client.GetStream())
                 {
-                    Messenger.Open(enc, ns);
+                    Messenger messenger = new Messenger(enc, ns, rs.Logger);
                     //初期通信：相互確認
-                    if (Messenger.Recieve() != version)
+                    if (messenger.Recieve() != version)
                     {
-                        Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
+                        rs.Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
                         Environment.Exit(1);
                     }
                     else
                     {
-                        Messenger.Send(version);
+                        messenger.Send(version);
                     }
-                    Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
-                    Game.StartLoop(false);
+                    rs.Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
+                    rs.Game.StartLoop(false);
                 }
             }
         }

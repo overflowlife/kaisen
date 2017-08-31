@@ -6,63 +6,53 @@ namespace KaisenLib
     /// <summary>
     /// Open()→Write*()→Close()
     /// </summary>
-    public static class Logger
+    public class Logger
     {
-        internal static bool IsOpened { get; set; }
-        private static StreamWriter sw;
-        private static string logDirectory = "log";
-        private static string logFileName;
+        private StreamWriter sw;
+        private string logDirectory = "log";
+        private string logFileName;
 
-        public static void Open(string caller)
+        public Logger(string caller)
         {
-            if (!IsOpened)
+            if (!Directory.Exists(logDirectory))
             {
-                IsOpened = true;
-                if (!Directory.Exists(logDirectory))
-                {
-                    Directory.CreateDirectory(logDirectory);
-                }
-                logFileName = logDirectory + Path.DirectorySeparatorChar + caller + DateTime.Now.ToString("_yy_MM_dd_HH_mm_ss_fff") + ".txt";
-                var fs = File.Create(logFileName);
-
-                sw = new StreamWriter(fs);
+                Directory.CreateDirectory(logDirectory);
             }
+            logFileName = logDirectory + Path.DirectorySeparatorChar + caller + DateTime.Now.ToString("_yy_MM_dd_HH_mm_ss_fff") + ".txt";
+            var fs = File.Create(logFileName);
+
+            sw = new StreamWriter(fs);
         }
 
         /// <summary>
         /// This is  vey important!!
         /// </summary>
-        public static void Close()
+       ~Logger()
         {
-            if (IsOpened)
+            if (sw != null)
             {
-                IsOpened = false;
-                if (sw != null)
-                {
-                    sw.Dispose();
-                    sw = null;
-                }
+                sw.Dispose();
+                sw = null;
             }
-
         }
 
-        public static void WriteLine(DateTime time, string data)
+        public void WriteLine(DateTime time, string data)
         {
             Logging(time, data);
         }
-        public static void WriteAndDisplay(DateTime time, string data)
+        public void WriteAndDisplay(DateTime time, string data)
         {
             var logString = MakeLogString(time, data);
             Console.WriteLine(logString);
             Logging(logString);
         }
 
-        public static void WriteLine(string data)
+        public void WriteLine(string data)
         {
             Logging(DateTime.Now, data);
         }
 
-        public static void WriteAndDisplay(string data)
+        public void WriteAndDisplay(string data)
         {
             var logString = MakeLogString(DateTime.Now, data);
             Console.WriteLine(logString);
@@ -70,13 +60,13 @@ namespace KaisenLib
         }
 
         
-        private static void Logging(DateTime time, string data)
+        private void Logging(DateTime time, string data)
         {
             Logging(MakeLogString(time, data));
         }
 
         //ファイルに書き込む。
-        private static void Logging(string data)
+        private void Logging(string data)
         {
             try
             {

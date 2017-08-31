@@ -10,20 +10,22 @@ namespace GameCore
 {
     internal class FiringResponseMsg : SerializableMessage
     {
+        internal ResourceSupplier rs;
         internal FiringResponseSummary summary;
         internal string destroyedName;
 
-        private FiringResponseMsg()
+        private FiringResponseMsg(ResourceSupplier rs)
         {
+            this.rs = rs;
             this.MsgId = MessageId.FiringResponse;
             Name = "砲撃";
         }
 
-        internal FiringResponseMsg(FiringResponseSummary summary) : this(summary, Game.Null)
+        internal FiringResponseMsg(FiringResponseSummary summary, ResourceSupplier rs) : this(summary, rs.Game.Null, rs)
         {
         }
 
-        internal FiringResponseMsg(FiringResponseSummary summary, string destroyed) : this()
+        internal FiringResponseMsg(FiringResponseSummary summary, string destroyed, ResourceSupplier rs) : this(rs)
         {
             this.summary = summary;
             this.destroyedName = destroyed;
