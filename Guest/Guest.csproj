@@ -13,6 +13,7 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <ApplicationIcon />
     <Win32Resource />
+    <StartupObject>Guest.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
