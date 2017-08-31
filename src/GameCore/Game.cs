@@ -68,10 +68,7 @@ namespace GameCore
             battleArea = new BattleArea(height, width);//登場艦船を生成する前に呼び出してはいけない/悪い設計
         }
 
-        public static void RegisterPlayer(IPlayer player)
-        {
-            Game.player = player ?? throw new ArgumentNullException();
-        }
+        public static void RegisterPlayer(IPlayer player) => Game.player = player ?? throw new ArgumentNullException();
 
 
         public static void DeployShips()

@@ -21,27 +21,23 @@ namespace AutoHost01
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Console.WriteLine("海戦ゲーム：自動ホスト01を起動します。");
-
-            var cts = new CancellationTokenSource();
-            ListenWorker listenWorker = new ListenWorker(cts.Token);
+            ListenWorker listenWorker = new ListenWorker();
             listenWorker.DoWork();
+
         } 
     }
 
     internal class ListenWorker
     {
-        CancellationToken ct;
 
-        internal ListenWorker(CancellationToken ct)
+        internal ListenWorker()
         {
-            this.ct = ct;
         }
 
         async internal Task DoWork()
         {
             var tcpListener = new TcpListener(IPAddress.Any, defaultPort);
             tcpListener.Start();
-
             try
             {
                 while (true)
@@ -59,14 +55,15 @@ namespace AutoHost01
             }
             finally
             {
-                Console.WriteLine("Listen cancelled.");
                 tcpListener.Stop();
+                Console.WriteLine("Listen cancelled.");
             }
+
         }
 
         internal void Service(TcpClient tcpClient)
         {
-            Messenger.Open(AppSet.enc, tcpClient.GetStream());
+            Messenger.Open(enc, tcpClient.GetStream());
             Logger.Open(nameof(AutoHost01));
             Game.RegisterPlayer(new AutomaticPlayer());
             Game.DeployShips();
@@ -84,8 +81,6 @@ namespace AutoHost01
             Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
             Game.StartLoop(false);
 
-            Console.WriteLine(Messenger.Recieve());
-            Messenger.Send(version);
             Messenger.Close();
             Logger.Close();
         }
