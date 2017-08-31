@@ -142,6 +142,7 @@ namespace GameCore
         {
             string msg = Messenger.Recieve();
             SerializableMessage recieved = MessageFactory.Manufact(msg);
+            prevRcvCmd = recieved;
             switch (recieved.MsgId)
             {
                 case MessageId.None:

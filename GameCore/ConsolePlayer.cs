@@ -81,12 +81,11 @@ namespace GameCore
                 { (int)MessageId.ExitingRequest, ExitingRequest },
             };
 
-            
+            int cmdId;
             bool cancel;
             bool exit;
             do
             {
-                int cmdId;
                 Func<bool> cmd = () => false;
                 bool validateInput;
                 DispMap();
@@ -107,9 +106,10 @@ namespace GameCore
                     }
                 } while (!validateInput);
                 cancel = cmd.Invoke();// return true if cancelled
-                exit = !cancel && (MessageId)cmdId == MessageId.ExitingRequest;
-            } while (cancel); 
+                
+            } while (cancel);
 
+            exit = (MessageId)cmdId == MessageId.ExitingRequest;
             return exit;
         }
 

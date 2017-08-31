@@ -23,7 +23,6 @@ namespace AutoHost01
             Console.WriteLine("海戦ゲーム：自動ホスト01を起動します。");
             ListenWorker listenWorker = new ListenWorker();
             await listenWorker.DoWork();
-
         } 
     }
 
@@ -42,15 +41,13 @@ namespace AutoHost01
             {
                 while (true)
                 {
-                    using (var tcpClient = await tcpListener.AcceptTcpClientAsync())
-                    {
-                        Console.WriteLine($"{tcpClient.Client.RemoteEndPoint}を受け入れました。");
-                        await Task.Run(
-                            () =>
-                            {
-                                Service(tcpClient);
-                            });
-                    }
+                    var tcpClient = await tcpListener.AcceptTcpClientAsync();
+                    Console.WriteLine($"{tcpClient.Client.RemoteEndPoint}を受け入れました。");
+                    Task.Run(
+                        () =>
+                        {
+                            Service(tcpClient);
+                        });
                 }
             }
             finally
@@ -63,26 +60,29 @@ namespace AutoHost01
 
         internal void Service(TcpClient tcpClient)
         {
-            Messenger.Open(enc, tcpClient.GetStream());
-            Logger.Open(nameof(AutoHost01));
-            Game.RegisterPlayer(new AutomaticPlayer());
-            Game.DeployShips();
-
-            //初期通信：相互確認
-            if (Messenger.Recieve() != version)
+            using (tcpClient)
             {
-                Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
-                Environment.Exit(1);
-            }
-            else
-            {
-                Messenger.Send(version);
-            }
-            Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
-            Game.StartLoop(false);
+                Messenger.Open(enc, tcpClient.GetStream());
+                Logger.Open(nameof(AutoHost01));
+                Game.RegisterPlayer(new AutomaticPlayer());
+                Game.DeployShips();
 
-            Messenger.Close();
-            Logger.Close();
+                //初期通信：相互確認
+                if (Messenger.Recieve() != version)
+                {
+                    Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
+                    Environment.Exit(1);
+                }
+                else
+                {
+                    Messenger.Send(version);
+                }
+                Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
+                Game.StartLoop(false);
+
+                Messenger.Close();
+                Logger.Close();
+            }
         }
     }
 }
