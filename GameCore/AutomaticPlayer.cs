@@ -28,6 +28,10 @@ namespace GameCore
                 while (!ba.SetShipToPointWhenNoOverlap(item, rand.Next(Game.width), rand.Next(Game.height)))
                     ;
             }
+            foreach (var item in ba.map.Where(p => p.ship.Type != Game.Null))
+            {
+                Logger.WriteAndDisplay($"({item.x}, {item.y})に{item.ship.Type}を配置しました。");
+            }
             return ba.map;
         }
 
@@ -73,14 +77,32 @@ namespace GameCore
             List<Point> lp = new List<Point>();
             foreach (var point in Game.battleArea.map.Where(p=>p.ship != Game.ShipType.Single(s=>s.Type==Game.Null)))
             {
-                lp.AddRange(Game.GetPointsShipInPointCanShoot(point));
+                lp.AddRange(Game.GetPointsWhereShipOnPointCanShoot(point));
             }
-            Random rand = new Random();
-            Point target =  prevRcvCmd.MsgId == MessageId.FiringRequest ? Game.GetPoint( ((FiringRequestMsg)prevRcvCmd).x, ((FiringRequestMsg)prevRcvCmd).y)  :  lp[rand.Next(lp.Count)];
+
+            Point target;
+            if(prevRcvCmd.MsgId == MessageId.FiringRequest)
+            {
+                var prevFire = prevRcvCmd as FiringRequestMsg;
+                var prevPoint = Game.GetPoint(prevFire.x, prevFire.y);
+                if ( Game.IsInRange(prevPoint) )
+                {
+                    target = prevPoint;
+                }
+                else
+                {
+                    target = RandomPointWhereIsInRange();
+                }
+            }
+            else
+            {
+                target = RandomPointWhereIsInRange();
+            }
+
             Debug.Assert(Game.IsInRange(target.x, target.y));
             var req = new FiringRequestMsg(target.x, target.y);
             Messenger.Send(req.ToString());
-            Logger.WriteAndDisplay($"地点({target.x}, {target.y})を砲撃しました。");
+            Logger.WriteLine($"地点({target.x}, {target.y})を砲撃しました。");
 
             var msg = MessageFactory.Manufact(Messenger.Recieve());
             Debug.Assert(msg.MsgId == MessageId.FiringResponse);
@@ -106,6 +128,12 @@ namespace GameCore
                 default:
                     break;
             }
+        }
+
+        private Point RandomPointWhereIsInRange()
+        {
+           IEnumerable<Point> lp = Game.GetPointsWhereCanShoot();
+           return  lp.ElementAt(new Random().Next(lp.Count()));
         }
 
         /// <summary>

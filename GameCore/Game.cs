@@ -155,7 +155,7 @@ namespace GameCore
             //全ての艦船の射程範囲を結合します
             foreach (var p in battleArea.map.Where(p => p.ship.Type != Null))
             {
-                var points = GetPointsShipInPointCanShoot(p);
+                var points = GetPointsWhereShipOnPointCanShoot(p);
                 
                 lp.AddRange(points);
             }
@@ -176,13 +176,27 @@ namespace GameCore
         }
 
         /// <summary>
+        /// 射程範囲内の地点リストを返却します。重複する要素がある可能性があります。
+        /// </summary>
+        /// <returns></returns>
+        internal static IEnumerable<Point> GetPointsWhereCanShoot()
+        {
+            List<Point> lp = new List<Point>();
+            foreach (var item in battleArea.map.Where(p=>p.ship.Type != Null))
+            {
+                lp.AddRange(GetPointsWhereShipOnPointCanShoot(item));
+            }
+            return lp;
+        }
+
+        /// <summary>
         /// target上の艦船が射程範囲に収める地点のリストを返却します。
         /// </summary>
-        /// <param name="target"></param>
+        /// <param name="point"></param>
         /// <returns></returns>
-        internal static IEnumerable<Point> GetPointsShipInPointCanShoot(Point target)
+        internal static IEnumerable<Point> GetPointsWhereShipOnPointCanShoot(Point point)
         {
-            return GetPointsaroundPoint(target, target.ship.AttackRange);
+            return GetPointsaroundPoint(point, point.ship.AttackRange);
         }
 
         /// <summary>
