@@ -11,7 +11,7 @@ namespace KaisenLib
         internal static Encoding Enc { get; private set; }
         internal static NetworkStream Ns { get; private set; }
         internal static MemoryStream Ms { get; private set; }
-        public static byte[] recBytes;
+        internal static byte[] recBytes;
 
         public static void Open(Encoding enc, NetworkStream ns)
         {

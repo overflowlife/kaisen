@@ -58,6 +58,7 @@ namespace GameCore
                 {ShipType.Single( ship => ship.Type == SS), 1 },
             };
 
+            ShipsToDeploy = new List<Ship>();
             foreach (var item in ShipType.Where(ship => ship.Type != Null))
             {
                 for (int i = 0; i < NumDeployShips[item]; ++i)

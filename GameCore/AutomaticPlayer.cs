@@ -49,38 +49,18 @@ namespace GameCore
                { MessageId.MovingRequest, 0 },
            };
 
-            if(prevRcvCmd.MsgId == MessageId.FiringRequest)
-            {//直前に射撃通知を受け取っていて、その地点が射程範囲内なら撃ち返す。
-                var prevFirReq = (FiringRequestMsg)prevRcvCmd;
-                if( Game.IsInRange(prevFirReq.x, prevFirReq.y ) )
-                {
-                    Debug.Assert(Game.IsInRange(prevFirReq.x, prevFirReq.y));
-                    Messenger.Send(new FiringRequestMsg(prevFirReq.x, prevFirReq.y).ToString());
-                }
-            }
-            else
+            MessageId selected = MessagePercentageChoice(electionProb);
+            switch (selected)
             {
-                MessageId selected = MessagePercentageChoice(electionProb);
-                switch (selected)
-                {
-                    case MessageId.FiringRequest:
-                        FiringRequest();
-                        break;
-                    case MessageId.MovingRequest:
-                        MovingRequest();
-                        break;
-                    case MessageId.None:
-                    case MessageId.FiringResponse:
-                    case MessageId.MovingResponse:
-                    case MessageId.ExitingRequest:
-                    case MessageId.ExitingResponse:
-                    default:
-                        break;
-                }
+                case MessageId.FiringRequest:
+                    FiringRequest();
+                    break;
+                case MessageId.MovingRequest:
+                    MovingRequest();
+                    break;
             }
 
-            throw new NotImplementedException();
-
+            return false;
         }
 
         private void MovingRequest()
@@ -96,7 +76,7 @@ namespace GameCore
                 lp.AddRange(Game.GetPointsShipInPointCanShoot(point));
             }
             Random rand = new Random();
-            Point target = lp[rand.Next(lp.Count)]; //範囲の被っている地点が当たりやすい、手抜きゆえの便利仕様になっている
+            Point target =  prevRcvCmd.MsgId == MessageId.FiringRequest ? Game.GetPoint( ((FiringRequestMsg)prevRcvCmd).x, ((FiringRequestMsg)prevRcvCmd).y)  :  lp[rand.Next(lp.Count)];
             Debug.Assert(Game.IsInRange(target.x, target.y));
             var req = new FiringRequestMsg(target.x, target.y);
             Messenger.Send(req.ToString());
