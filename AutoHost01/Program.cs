@@ -65,7 +65,7 @@ namespace AutoHost01
         {
             Messenger.Open(enc, tcpClient.GetStream());
             Logger.Open(nameof(AutoHost01));
-            Game.Player = (new AutomaticPlayer());
+            Game.RegisterPlayer(new AutomaticPlayer());
             Game.DeployShips();
 
             //初期通信：相互確認

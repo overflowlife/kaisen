@@ -31,7 +31,7 @@ namespace GameCore
         /// 設置物ごとの配置数です。
         /// </summary>
         internal static Dictionary<KaisenObject, int> NumDeployObjs { get; }
-        public static IPlayer Player { get; set; }
+        internal static IPlayer me;
         internal static string BB = "戦艦";
         internal static string DD = "駆逐艦";
         internal static string SS = "潜水艦";
@@ -80,9 +80,14 @@ namespace GameCore
             battleArea = new BattleArea(height, width);//登場艦船を生成する前に呼び出してはいけない/悪い設計
         }
 
+        public static void RegisterPlayer(IPlayer player)
+        {
+            me = player;
+        }
+
         public static void DeployShips()
         {
-            battleArea.map = Player.DeployShips(); //プレイヤに艦船を配置させます。
+            battleArea.map = me.DeployShips(); //プレイヤに艦船を配置させます。
         }
 
         public static void StartLoop(bool isGuest)
@@ -94,11 +99,11 @@ namespace GameCore
             {
                 if (myturn)
                 {
-                    isEnd = Player.DoTurn();
+                    isEnd = me.DoTurn();
                 }
                 else
                 {
-                    isEnd = Player.DoResponse();
+                    isEnd = me.DoResponse();
                 }
                 myturn = !myturn;
             }
