@@ -22,8 +22,6 @@ namespace KaisenLib
             recBytes = new byte[256];
         }
 
-        public void Give(Logger logger) => this.logger = logger;
-
         /// <summary>
         /// 
         /// </summary>
