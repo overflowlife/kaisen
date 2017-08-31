@@ -22,7 +22,7 @@ namespace AutoHost01
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Console.WriteLine("海戦ゲーム：自動ホスト01を起動します。");
             ListenWorker listenWorker = new ListenWorker();
-            listenWorker.DoWork();
+            await listenWorker.DoWork();
 
         } 
     }
@@ -65,7 +65,7 @@ namespace AutoHost01
         {
             Messenger.Open(enc, tcpClient.GetStream());
             Logger.Open(nameof(AutoHost01));
-            Game.RegisterPlayer(new AutomaticPlayer());
+            Game.Player = (new AutomaticPlayer());
             Game.DeployShips();
 
             //初期通信：相互確認

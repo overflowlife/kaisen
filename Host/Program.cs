@@ -19,7 +19,7 @@ namespace Host
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Logger.Open(nameof(Host));
             Logger.WriteAndDisplay("海戦ゲーム：ホストサイドを起動します。");
-            Game.RegisterPlayer(new ConsolePlayer("You"));
+            Game.Player = (new ConsolePlayer("You"));
             Game.DeployShips();
 
             string input;
