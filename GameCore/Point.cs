@@ -33,8 +33,8 @@
         {
             this.x = source.x;
             this.y = source.y;
-            this.ship = new Ship(source.ship);
-            this.obj = new KaisenObject(source.obj);
+            this.ship = source.ship != null ? new Ship(source.ship) : null;
+            this.obj = source.obj != null ?  new KaisenObject(source.obj) : null;
         }
 
     }

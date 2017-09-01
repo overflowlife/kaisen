@@ -89,7 +89,7 @@ namespace GameCore
             bool exit;
             do
             {
-                Func<bool> cmd = () => false;
+                Func<bool> cmd = () => throw new NotImplementedException();
                 bool validateInput;
                 DispMap();
                 do
