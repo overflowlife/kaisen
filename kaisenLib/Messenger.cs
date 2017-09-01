@@ -41,7 +41,7 @@ namespace KaisenLib
                     catch (IOException e)
                     {
                         logger.WriteAndDisplay(e.Message);
-                        throw new Exception("メッセージを受信できませんでした。");
+                        throw;
                     }
                     Ms.Write(recBytes, 0, recSize);
                 } while (Ns.DataAvailable || recBytes[recSize - 1] != '\n');
@@ -67,7 +67,7 @@ namespace KaisenLib
             catch (IOException e)
             {
                 logger.WriteAndDisplay(e.Message);
-                throw new Exception("メッセージを送信できませんでした。");
+                throw;
             }
             logger.WriteLine($"送信メッセージ：{Enc.GetString(sendBytes)}");
 

@@ -90,6 +90,10 @@ namespace AutoHost01
                 {
 
                 }
+                finally
+                {
+                    Console.WriteLine($"{tcpClient.Client.RemoteEndPoint}が終了しました。");
+                }
                 
             }
         }
