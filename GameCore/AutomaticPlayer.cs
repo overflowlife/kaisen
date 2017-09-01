@@ -31,10 +31,10 @@ namespace GameCore
                 while (!ba.SetShipToPointWhenNoOverlap(item, rand.Next(rs.Game.width), rand.Next(rs.Game.height)))
                     ;
             }
-            foreach (var item in ba.map.Where(p => p.ship != null))
+            /*foreach (var item in ba.map.Where(p => p.ship != null))
             {
                 rs.Logger.WriteAndDisplay($"({item.x}, {item.y})に{item.ship.Type}を配置しました。");
-            }
+            }*/
             return ba.map;
         }
 

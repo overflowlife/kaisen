@@ -40,7 +40,6 @@ namespace KaisenLib
                     }
                     catch (IOException e)
                     {
-                        logger.WriteAndDisplay(e.Message);
                         throw;
                     }
                     Ms.Write(recBytes, 0, recSize);
@@ -66,7 +65,6 @@ namespace KaisenLib
             }
             catch (IOException e)
             {
-                logger.WriteAndDisplay(e.Message);
                 throw;
             }
             logger.WriteLine($"送信メッセージ：{Enc.GetString(sendBytes)}");

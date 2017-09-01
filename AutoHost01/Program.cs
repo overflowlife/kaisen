@@ -76,19 +76,19 @@ namespace AutoHost01
                     //初期通信：相互確認
                     if (rs.Messenger.Recieve() != version)
                     {
-                        rs.Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
+                        rs.Logger.WriteAndDisplay($"{tcpClient.Client.RemoteEndPoint}を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
                         Environment.Exit(1);
                     }
                     else
                     {
                         rs.Messenger.Send(version);
                     }
-                    rs.Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
+                    rs.Logger.WriteAndDisplay($"{tcpClient.Client.RemoteEndPoint}を信頼しました。");
                     rs.Game.StartLoop(false);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-
+                    Console.WriteLine($"Exception raised in thread({tcpClient.Client.RemoteEndPoint}). {e.Message} ");
                 }
                 finally
                 {
