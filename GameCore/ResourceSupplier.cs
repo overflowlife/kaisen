@@ -6,7 +6,7 @@ using System.Text;
 namespace GameCore
 {
     /// <summary>
-    /// クラス間（およびアセンブリ間）で共有する必要のあるリソースの集合体です。リソースを生成したら即座にinject()を行い、またコンストラクタで最初に_get()を行ってください。
+    /// クラス間（およびアセンブリ間）で共有する必要のあるリソースの集合体です。
     /// </summary>
    public class ResourceSupplier
     {
