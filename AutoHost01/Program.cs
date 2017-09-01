@@ -64,25 +64,33 @@ namespace AutoHost01
         {
             using (tcpClient)
             {
-                rs = new ResourceSupplier();
-                rs.Inject(new Logger(nameof(AutoHost01)));
-                rs.Inject(new Messenger(enc, tcpClient.GetStream(), rs.Logger));
-                rs.Inject(new Game(rs));
-                rs.Game.RegisterPlayer(new AutomaticPlayer(rs));
-                rs.Game.DeployShips();
+                try
+                {
+                    rs = new ResourceSupplier();
+                    rs.Inject(new Logger(nameof(AutoHost01)));
+                    rs.Inject(new Messenger(enc, tcpClient.GetStream(), rs.Logger));
+                    rs.Inject(new Game(rs));
+                    rs.Game.RegisterPlayer(new AutomaticPlayer(rs));
+                    rs.Game.DeployShips();
 
-                //初期通信：相互確認
-                if (rs.Messenger.Recieve() != version)
-                {
-                    rs.Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
-                    Environment.Exit(1);
+                    //初期通信：相互確認
+                    if (rs.Messenger.Recieve() != version)
+                    {
+                        rs.Logger.WriteAndDisplay("通信相手を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
+                        Environment.Exit(1);
+                    }
+                    else
+                    {
+                        rs.Messenger.Send(version);
+                    }
+                    rs.Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
+                    rs.Game.StartLoop(false);
                 }
-                else
+                catch (Exception)
                 {
-                    rs.Messenger.Send(version);
+
                 }
-                rs.Logger.WriteAndDisplay("信頼できる通信相手を認識しました。");
-                rs.Game.StartLoop(false);
+                
             }
         }
     }
