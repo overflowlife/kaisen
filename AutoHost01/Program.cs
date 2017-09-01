@@ -76,8 +76,7 @@ namespace AutoHost01
                     //初期通信：相互確認
                     if (rs.Messenger.Recieve() != version)
                     {
-                        rs.Logger.WriteAndDisplay($"{tcpClient.Client.RemoteEndPoint}を信頼することができませんでした。プログラムバージョンに差異はありませんか？");
-                        Environment.Exit(1);
+                        throw new Exception("信頼されないクライアントです");
                     }
                     else
                     {
@@ -88,7 +87,7 @@ namespace AutoHost01
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Exception raised in thread({tcpClient.Client.RemoteEndPoint}). {e.Message} ");
+                    rs.Logger.WriteAndDisplay($"Exception raised in thread({tcpClient.Client.RemoteEndPoint}). {e.Message} ");
                 }
                 finally
                 {

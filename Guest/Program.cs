@@ -86,6 +86,7 @@ namespace Guest
             }
 
             rs.Logger.WriteAndDisplay("海戦ゲーム：ゲストサイドを終了します。");
+            Console.ReadLine();
         }
     }
 }

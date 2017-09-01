@@ -16,9 +16,9 @@ namespace GameCore
         ResourceSupplier rs;
 
         internal SerializableMessage prevRcvCmd;
-        public AutomaticPlayer(ResourceSupplier supplier)
+        public AutomaticPlayer(ResourceSupplier rs)
         {
-            rs = supplier;
+            this.rs = rs;
             prevRcvCmd = new ExitingRequestMsg();
         }
 
