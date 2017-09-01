@@ -5,6 +5,9 @@ using KaisenLib;
 using static System.Math;
 namespace GameCore
 {
+    /// <summary>
+    /// ゲーム進行をつかさどります。ToDo:メソッドのありかを再検討しないといけない。　
+    /// </summary>
     public class Game
     {
         internal ResourceSupplier rs;

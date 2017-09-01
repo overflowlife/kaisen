@@ -8,6 +8,9 @@ using static KaisenLib.AppSet;
 
 namespace GameCore
 {
+    /// <summary>
+    /// 砲撃応答メッセージ。ToDo:撃破艦船の返送方法を再検討
+    /// </summary>
     internal class FiringResponseMsg : SerializableMessage
     {
         internal ResourceSupplier rs;
