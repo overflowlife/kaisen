@@ -65,8 +65,8 @@ namespace AutoHost01
             using (tcpClient)
             {
                 rs = new ResourceSupplier();
-                rs.Inject(new Messenger(enc, tcpClient.GetStream(), rs.Logger));
                 rs.Inject(new Logger(nameof(AutoHost01)));
+                rs.Inject(new Messenger(enc, tcpClient.GetStream(), rs.Logger));
                 rs.Inject(new Game(rs));
                 rs.Game.RegisterPlayer(new AutomaticPlayer(rs));
                 rs.Game.DeployShips();

@@ -40,7 +40,8 @@ namespace GameCore
 
         public override bool DoTurn()
         {
-           if(rs.Game.battleArea.map.All((p)=>p.ship == rs.Game.ShipType.Single(s => s == null)))
+            System.Threading.Tasks.Task.Delay(500).Wait();//Wait
+           if(rs.Game.battleArea.map.All((p)=>p.ship == null))
             {
                 //敗戦処理
                 rs.Logger.WriteLine("敗北しました。");

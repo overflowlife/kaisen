@@ -51,7 +51,6 @@ namespace KaisenLib
                 logger.WriteLine($"受信メッセージ：{recMsg}");
                 return recMsg;
             }
-
         }
 
         /// <summary>
@@ -70,14 +69,11 @@ namespace KaisenLib
                 logger.WriteAndDisplay(e.Message);
                 Environment.Exit(1);
             }
-            logger.WriteLine($"送信メッセージ：{sendMsg}");
+            logger.WriteLine($"送信メッセージ：{Enc.GetString(sendBytes)}");
 
             return;
         }
 
-        /// <summary>
-        /// This is very important
-        /// </summary>
         ~Messenger()
         {
             if (Ns != null)
