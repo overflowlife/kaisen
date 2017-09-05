@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace GameCore
 {
     /// <summary>
-    /// コンソールからの入力によりゲームを進行するプレイヤーです。
+    /// コンソールからの入力によりゲームを進行するプレイヤーです。kopi-
     /// </summary>
     public class ConsolePlayer : IPlayer
     {
