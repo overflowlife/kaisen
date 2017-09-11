@@ -5,6 +5,7 @@ using System.Linq;
 using KaisenLib;
 using static KaisenLib.AppSet;
 using System.Diagnostics;
+using ReturnAction;
 
 namespace GameCore
 {
@@ -53,8 +54,8 @@ namespace GameCore
 
            //コマンド選択率設定
             Dictionary<MessageId, int> electionProb = new Dictionary<MessageId, int> {
-               { MessageId.FiringRequest, 1 },
-               { MessageId.MovingRequest, 0 },
+               { MessageId.FiringRequest, 90 },
+               { MessageId.MovingRequest, 10 },
            };
 
             MessageId selected = MessagePercentageChoice(electionProb);
