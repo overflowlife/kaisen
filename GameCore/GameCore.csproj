@@ -16,4 +16,8 @@
     <ProjectReference Include="..\ReturnAction\ReturnAction.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ReturnAction\" />
+  </ItemGroup>
+
 </Project>
