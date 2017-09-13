@@ -2,27 +2,31 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ReturnAction
+namespace GameCore
 {
     /// <summary>
-    /// Min-Max法に基づく思考を行います。具体的な評価関数は別途注入します。
+    /// 現在の盤面状態からMin-Max法に基づく思考を行い、最適と考えられる射撃位置を判断します。。
     /// 
     /// </summary>
     public class MinMaxBrain
     {
-        internal int SearchDepth { get; private set; }
-        internal Evaluator engine { get; private set; }
-        public MinMaxBrain()
+        internal int MaxSearchDepth { get; set; }
+        internal bool IsStartWithMyTurn { get; set; }
+        internal BattleArea InitialFriendBattleArea { get; set; }
+        internal BattleArea InitialEnemyBattleArea { get; set; }
+
+
+        public MinMaxBrain(int maxDepth, bool startWithMyTurn)
         {
-            SearchDepth = 3;
+            MaxSearchDepth = 10;
         }
 
-        public MinMaxBrain(Evaluator engine) : this()
+
+        internal double Score(BattleArea area)
         {
-            
+            int numFriendPattern = 13800;
+            int numFeePattern = 13800;
+            return numFriendPattern / numFeePattern;
         }
-
-
-
     }
-}
+} 
