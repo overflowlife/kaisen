@@ -54,8 +54,8 @@ namespace GameCore
 
            //コマンド選択率設定
             Dictionary<MessageId, int> electionProb = new Dictionary<MessageId, int> {
-               { MessageId.FiringRequest, 90 },
-               { MessageId.MovingRequest, 10 },
+               { MessageId.FiringRequest, 1 },
+               { MessageId.MovingRequest, 0 },
            };
 
             MessageId selected = MessagePercentageChoice(electionProb);
