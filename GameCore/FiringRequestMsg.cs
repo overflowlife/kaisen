@@ -25,7 +25,7 @@ namespace GameCore
         }
 
         /// <summary>
-        /// 
+        /// Deserializer
         /// </summary>
         /// <param name="msg">形式：{(int)msgId}{delimiter}{x}{delimiter}{y}</param>
         internal FiringRequestMsg(string msg) :this()
@@ -39,6 +39,10 @@ namespace GameCore
             this.y = int.Parse(splited[2]);
         }
 
+        /// <summary>
+        /// Serializer
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             Debug.Assert(MsgId == MessageId.FiringRequest);
