@@ -53,12 +53,12 @@ namespace GameCore
             }
 
             //コマンド選択率設定
-            Dictionary<MessageId, int> electionProb = new Dictionary<MessageId, int> {
-               { MessageId.FiringRequest, 1 },
-               { MessageId.MovingRequest, 0 },
+            Dictionary<int, int> electionProb = new Dictionary<int, int> {
+               { (int)MessageId.FiringRequest, 1 },
+               { (int)MessageId.MovingRequest, 0 },
            };
 
-            MessageId selected = MessagePercentageChoice(electionProb);
+            MessageId selected = (MessageId)MessagePercentageChoice(electionProb);
             switch (selected)
             {
                 case MessageId.FiringRequest:
@@ -67,6 +67,9 @@ namespace GameCore
                 case MessageId.MovingRequest:
                     MovingRequest();
                     break;
+                case (MessageId)(-1):
+                    throw new Exception("returned -1 from MessagePercentageChoice.");
+
             }
 
             return false;
@@ -130,7 +133,7 @@ namespace GameCore
         /// <param name="target"></param>
         /// <returns></returns>
         /// <see cref="http://qiita.com/haagiii/items/30c917746bc2983be511"/>
-        internal MessageId MessagePercentageChoice(Dictionary<MessageId, int> target)
+        internal int MessagePercentageChoice(Dictionary<int, int> target)
         {
             // まず、全体の合計を求める
             int total = 0;
@@ -140,7 +143,7 @@ namespace GameCore
             var _rand = (new Random()).Next(0, total);
 
             int temp = 0;
-            var res = MessageId.None;
+            int res = -1;
             foreach (var i in target)
             {
                 temp += i.Value;
