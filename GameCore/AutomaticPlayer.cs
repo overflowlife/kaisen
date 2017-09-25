@@ -14,8 +14,6 @@ namespace GameCore
     /// </summary>
     public class AutomaticPlayer : IPlayer
     {
-        ResourceSupplier rs;
-
         internal SerializableMessage prevRcvCmd;
         public AutomaticPlayer(ResourceSupplier rs)
         {
@@ -169,80 +167,6 @@ namespace GameCore
             }
 
             return res;
-        }
-
-        public override bool DoResponse()
-        {
-            string msg = rs.Messenger.Recieve();
-            SerializableMessage recieved = MessageFactory.Manufact(msg);
-            prevRcvCmd = recieved;
-            switch (recieved.MsgId)
-            {
-                case MessageId.None:
-                    break;
-                case MessageId.FiringRequest:
-                    FiringResponse(recieved as FiringRequestMsg);
-                    break;
-
-                case MessageId.MovingRequest:
-                    MovingResponse(recieved as MovingRequestMsg);
-                    break;
-
-                case MessageId.ExitingRequest:
-                    ExitingResponse(recieved as ExitingRequestMsg);
-                    break;
-
-                case MessageId.FiringResponse:
-                case MessageId.MovingResponse:
-                case MessageId.ExitingResponse:
-                default:
-                    break;
-            }
-
-            return recieved.MsgId == MessageId.ExitingRequest;
-        }
-
-        private void MovingResponse(MovingRequestMsg msg)
-        {
-            rs.Logger.WriteLine($"{msg.mover}が{msg.direction}方向に{msg.distance}移動しました。");
-            rs.Messenger.Send(new MovingResponseMsg().ToString());
-            rs.Logger.WriteLine($"移動に対して応答しました。");
-        }
-
-        private void FiringResponse(FiringRequestMsg msg)
-        {
-            rs.Logger.WriteLine($"地点({msg.x}, {msg.y})が砲撃されました。");
-            Debug.Assert(rs.Game.ValidateX(msg.x) && rs.Game.ValidateY(msg.y));
-            var send = rs.Game.ShootFromOther(msg.x, msg.y, out Ship hit);
-            rs.Messenger.Send(send.ToString());
-            switch (send.summary)
-            {
-                case FiringResponseSummary.Hit:
-                    if (send.destroyedName != "")
-                    {
-                        rs.Logger.WriteLine($"{send.destroyedName}が撃沈されました..");
-                    }
-                    else
-                    {
-                        rs.Logger.WriteLine($"秘匿情報：{hit.Type}に命中しました。");
-                    }
-                    break;
-                case FiringResponseSummary.Nearmiss:
-                    rs.Logger.WriteLine("ニアミスでした。");
-                    break;
-                case FiringResponseSummary.Water:
-                    rs.Logger.WriteLine("海に落ちました。");
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void ExitingResponse(ExitingRequestMsg msg)
-        {
-            rs.Logger.WriteLine("終了通知を受け取りました。");
-            rs.Messenger.Send(new ExitingResponseMsg().ToString());
-            rs.Logger.WriteLine("終了応答を送信しました。");
         }
     }
 }
