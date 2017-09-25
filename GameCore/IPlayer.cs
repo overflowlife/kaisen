@@ -61,7 +61,7 @@ namespace GameCore
             switch (send.summary)
             {
                 case FiringResponseSummary.Hit:
-                    if (send.destroyedName != "")
+                    if (send.destroyedName != string.Empty)
                     {
                         logging?.Invoke($"{send.destroyedName}が撃沈されました..");
                     }

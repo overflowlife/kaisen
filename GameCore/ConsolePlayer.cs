@@ -281,7 +281,7 @@ namespace GameCore
             switch (res.summary)
             {
                 case FiringResponseSummary.Hit:
-                    if(res.destroyedName != ""){
+                    if(res.destroyedName != string.Empty){
                         rs.Logger.WriteAndDisplay($"{res.destroyedName}を撃沈しました！");
                     }else{
                         rs.Logger.WriteAndDisplay("敵艦船に直撃しました。");

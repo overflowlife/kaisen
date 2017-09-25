@@ -24,7 +24,7 @@ namespace GameCore
             Name = "砲撃";
         }
 
-        internal FiringResponseMsg(FiringResponseSummary summary, ResourceSupplier rs) : this(summary, "", rs)
+        internal FiringResponseMsg(FiringResponseSummary summary, ResourceSupplier rs) : this(summary, string.Empty, rs)
         {
         }
 
