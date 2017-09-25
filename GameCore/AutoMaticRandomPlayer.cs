@@ -99,7 +99,7 @@ namespace GameCore
             switch (res.summary)
             {
                 case FiringResponseSummary.Hit:
-                    if (res.destroyedName != "")
+                    if (res.destroyedName != string.Empty)
                     {
                         rs.Logger.WriteLine($"{res.destroyedName}を撃沈しました！");
                     }
