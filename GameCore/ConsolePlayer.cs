@@ -20,6 +20,7 @@ namespace GameCore
         {
             Name = name;
             this.rs = rs;
+            logging = this.rs.Logger.WriteAndDisplay;
         }
 
         public override List<Point> DeployShips()

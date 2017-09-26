@@ -6,6 +6,7 @@ namespace GameCore
     public abstract class IPlayer
     {
         internal ResourceSupplier rs;
+        internal Action<string> logging;
         string Name { get; set; }
         /// <summary>
         /// 艦船を配置し、配置したあとの座標リストを返却します。
@@ -22,7 +23,7 @@ namespace GameCore
         /// </summary>
         /// <param name="msg"></param>
         /// <returns>終了フラグ</returns>
-        public bool DoResponse(Action<string> logging)
+        public bool DoResponse()
         {
             string msg = rs.Messenger.Recieve();
             SerializableMessage recieved = MessageFactory.Manufact(msg);

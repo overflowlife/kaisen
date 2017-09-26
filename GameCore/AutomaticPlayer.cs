@@ -19,6 +19,7 @@ namespace GameCore
         {
             this.rs = rs;
             prevRcvCmd = new ExitingRequestMsg();
+            logging = this.rs.Logger.WriteLine;
         }
 
         public override List<Point> DeployShips()
