@@ -82,7 +82,7 @@ namespace AutoHost01
                     {
                         rs.Messenger.Send(version);
                     }
-                    rs.Logger.WriteAndDisplay($"{tcpClient.Client.RemoteEndPoint}を信頼しました。");
+                    rs.Logger.WriteLine($"{tcpClient.Client.RemoteEndPoint}を信頼しました。");
                     rs.Game.StartLoop(false);
                 }
                 catch (Exception e)

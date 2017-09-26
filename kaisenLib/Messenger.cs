@@ -38,7 +38,7 @@ namespace KaisenLib
                         
                         recSize = Ns.Read(recBytes, 0, recBytes.Length);
                     }
-                    catch (IOException e)
+                    catch (IOException)
                     {
                         throw;
                     }
@@ -63,7 +63,7 @@ namespace KaisenLib
             {
                 Ns.Write(sendBytes, 0, sendBytes.Length);
             }
-            catch (IOException e)
+            catch (IOException)
             {
                 throw;
             }
