@@ -21,9 +21,9 @@ namespace GameCore
             Game = null;
         }
 
-        public void Inject(Logger logger) => this.Logger = logger;
-        public void Inject(Messenger messenger) => this.Messenger = messenger;
-        public void Inject(Game game) => this.Game = game;
+        public void Inject(Logger logger) => Logger = logger;
+        public void Inject(Messenger messenger) => Messenger = messenger;
+        public void Inject(Game game) => Game = game;
 
     }
 }

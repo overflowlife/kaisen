@@ -35,8 +35,8 @@ namespace GameCore
             {
                 throw new ArgumentException("引数チェックでの例外です。");
             }
-            this.x = int.Parse(splited[1]);
-            this.y = int.Parse(splited[2]);
+            x = int.Parse(splited[1]);
+            y = int.Parse(splited[2]);
         }
 
         /// <summary>

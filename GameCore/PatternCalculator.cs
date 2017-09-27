@@ -1,67 +1,188 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static GameCore.PatternCalculator;
+using static GameCore.PatternCalculator.Consts;
 using System.Diagnostics;
 
 namespace GameCore
 {
     /// <summary>
-    /// ハードコーディングくそコード万歳クラス
+    /// 敵と味方のパターンリストを保持し、それらを適切に操作します。
     /// </summary>
+    /// <remarks></remarks>
     internal class PatternCalculator
     {
+        internal PatternSet Friend { get; set; }
+        internal PatternSet Foe{ get; set; }
+        private PatternSet active;
+        private PatternSet passive;
 
-        internal PatternCalculator()
+        internal PatternCalculator(bool create13800sets)
         {
+            if (create13800sets)
+            {
+                Friend = new PatternSet(true);
+                Foe = new PatternSet(true);
+            }
+            else
+            {
+                Friend = null;
+                Foe = null;
+            }
+            active = null;
+            passive = null;
         }
 
-        static internal bool IsInRange()
+        internal PatternCalculator(List<Pattern> friend, List<Pattern> foe) : this(false)
+        {
+            Friend = new PatternSet(friend);
+            Foe = new PatternSet(foe);
+        }
+
+        /// <summary>
+        /// 行動者を教えてください。
+        /// </summary>
+        /// <param name="isItFriend">行動者は見方ですか？</param>
+        internal void SetActive(bool isItFriend)
+        {
+            if (isItFriend)
+            {
+                active = Friend;
+                passive = Foe;
+            }
+        }
+
+        /// <summary>
+        /// 行動者が砲撃した。
+        /// </summary>
+        /// <param name="fireTarget"></param>
+        /// <param name="summary"></param>
+        /// <param name="destroyed"></param>
+        internal void Fire(Plot fireTarget, int summary, int destroyed)
+        {
+            active.Fire(fireTarget);
+            passive.Fired(fireTarget, summary, destroyed);
+        }
+
+        /// <summary>
+        /// 行動者が移動した。
+        /// </summary>
+        /// <param name="degree"></param>
+        /// <param name="dist"></param>
+        internal void Move(int degree, int dist)
+        {
+            active.Move(degree, dist);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="calcBase"></param>
+        /// <param name="calcTarget"></param>
+        /// <returns></returns>
+        /// <remarks>これはなに？</remarks>
+        static internal bool IsInRange(Plot calcBase, Plot calcTarget)
         {
             return false;
         }
+
+        /// <summary>
+        /// パターン計算関係で便利な定数達
+        /// </summary>
+        static internal class Consts
+        {
+            internal const int BB = 0;
+            internal const int DD = 1;
+            internal const int SS = 2;
+        }
     }
 
+    /// <summary>
+    /// 味方もしくは敵のパターンリスト一式を保持し、それに対する各操作を提供します。[]によりパターンリスト中任意の要素にアクセスできます。
+    /// </summary>
     internal class PatternSet
     {
-        List<Pattern> list;
-        Queue<List<int>> diff;
+        private List<Pattern> Patterns;
+        internal Pattern this[int target]
+        {
+            get => Patterns[target];
+            private set => Patterns[target] = value; //privateでいいかな？
+        }
+        internal int Length
+        {
+            get => Patterns.Count;
+        }
+        /// <summary>
+        /// 毎回の操作で取り消されたパターン番号を保持するキュー
+        /// </summary>
+        private Queue<List<int>> diff;
         
-        internal PatternSet()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="create13800set"></param>
+        internal PatternSet(bool create13800set)
         {
-            
+            diff = new Queue<List<int>>(16);//適当、32は多いかなと
+            if (create13800set)
+            {
+                List<Pattern> initial = new List<Pattern>(13800);//メンバへの直接アクセスは確か比較的に低パフォーマンスなので
+                for(int i = 0;i < 25; ++i)
+                {
+                    for(int j = 0; j < 25; ++j)
+                    {
+                        for(int k = 0; k < 25; ++k)
+                        {
+                            if( (i-j) * (j-k) * (k-i) != 0)
+                            {
+                                initial.Add(new Pattern(new Plot(i % 5, i / 5), new Plot(j % 5, j / 5), new Plot(k % 5, k / 5)));
+                            }
+                        }
+                    }
+                }
+                Patterns = initial;
+            } else
+            {
+                Patterns = null;
+            }
         }
 
-        //コピー方法の変更必要かも
-        internal void SetPattern(List<Pattern> list)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <remarks>この実装本当にあっていますか？コピーしなくていいですか？</remarks>
+        internal PatternSet(List<Pattern> list) : this(false)
         {
-            this.list = list;
+            Patterns = list;
         }
 
+        #region パターンリストに対する操作
+        #region 砲撃された処理一式
         /// <summary>
         /// Fired!
         /// </summary>
         /// <param name="point">impact point</param>
-        /// <param name="summary">1..Hit, 2..Nearmiss, 3..Water.</param>
+        /// <param name="summary">0..Hit, 1..Nearmiss, 1..Water.</param>
         /// <param name="destroyed">-1..No, 0..BB, 1..DD, 2..SS</param>
         internal void Fired(Plot point, int summary, int destroyed)
         {
-            if(summary < 0 || summary > 3)
+            if(summary < 0 || summary > 2)
             {
-                return;
+                throw new ArgumentException();
             }
 
             List<int> dels = null;
 
             switch (summary)
             {
-                case 1:
+                case 0:
                     dels = Hit(point, destroyed);
                     break;
-                case 2:
+                case 1:
                     dels = Nearmiss(point);
                     break;
-                case 3:
+                case 2:
                     dels = Water(point);
                     break;
                 default:
@@ -97,7 +218,7 @@ namespace GameCore
             List<int> dels = new List<int>();
             for(int i = 0; i < 13800; ++i)
             {
-                Pattern target = list[i];
+                Pattern target = Patterns[i];
                 if (!target.Available)
                 {
                     continue;
@@ -112,32 +233,39 @@ namespace GameCore
             return dels;
 
         }
+#endregion
 
 
         /// <summary>
-        /// Fire!
+        /// pointを含む距離1以下の地点に1隻も配備されていないパターンを削除します。
         /// </summary>
         /// <param name="point">target</param>
-        internal void Fire(Plot point)
+        internal void  Fire(Plot point)
         {
+            List<int> dels = null;
 
+            Debug.Assert(dels != null);
+            diff.Enqueue(dels);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="degree">方向</param>
+        /// <param name="degree">方向/パラメータ案内をFired()に倣って書く</param>
         /// <param name="dist">距離</param>
         internal void Move(int degree, int dist)
         {
-            throw new NotImplementedException();
+            List<int> dels = null;
+
+            Debug.Assert(dels != null);
+            diff.Enqueue(dels);
         }
 
         /// <summary>
-        /// パターンリストへの直前の操作を取り消します。
+        /// パターンリストへの直前の操作を取り消します。複数段階の取り消しに対応しますが、Redoには対応していません。
         /// </summary>
-        /// <returns>取り戻されたパターン数。-1の場合は取り消せる操作が存在しません。</returns>
-        internal int Revert()
+        /// <returns>取り戻されたパターン数。-1の場合は取り消せる操作が存在しません（注記：必ずしも初期状態であるとは限らない）。</returns>
+        internal int Undo()
         {
             if(diff.Count == 0)
             {
@@ -148,30 +276,67 @@ namespace GameCore
                 List<int> target = diff.Dequeue();
                 for(int i = 0; i < target.Count; ++i)
                 {
-                    Debug.Assert(!list[target[i]].Available, "削除されていないパターンを復活しようとしました。");
-                    list[target[i]].Available = true;
+                    Debug.Assert(!Patterns[target[i]].Available, "削除されていないパターンを復活しようとしました。");
+                    Patterns[target[i]].Available = true;
                 }
                 return target.Count;
             }
-            
         }
+#endregion
+
     }
 
     /// <summary>
-    /// 各艦船の配置座標、残耐久値を保持し、戦術マップ1枚分のパターンを表現します。
+    /// 各艦船の配置座標、残耐久値を保持し、戦術マップ1枚分のパターンを表現します。0～2のインデクスにより戦艦、駆逐艦、潜水艦にアクセスできます。
     /// </summary>
     internal class Pattern
     {
-        internal Plot[] Plots { get; set; }
-        internal int[] Lifes { get; set; }
+        private Ship[] Ships { get; set; } = { default(Ship), default(Ship), default(Ship) };
         internal bool Available { get; set; }
 
-
-        internal Pattern(Plot[] plots)
+        /// <summary>
+        /// 規定の順に位置を与えると、規定の順にHPも割り当てます
+        /// </summary>
+        /// <param name="bb">戦艦の位置</param>
+        /// <param name="dd">駆逐艦の位置</param>
+        /// <param name="ss">潜水艦の位置</param>
+        internal Pattern(Plot bb, Plot dd, Plot ss)
         {
-            Plots = plots;
-            Lifes = new int[] { 1, 2, 3 };
+            this[BB].plot = bb;
+            this[BB].life = 3;
+            this[DD].plot = dd;
+            this[DD].life = 2;
+            this[SS].plot = ss;
+            this[SS].life = 1;
             Available = true;
         }
+
+        /// <summary>
+        /// standard indexer to get/set Ship information
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        /// 
+        internal Ship this[int target]
+        {
+            get => Ships[target];
+            set =>  Ships[target] = value;
+        }
+
+        internal class Ship
+        {
+            internal Plot plot;
+            internal int life;
+            internal int X
+            {
+                get => plot.X;
+            }
+            internal int Y
+            {
+                get => plot.Y;
+            }
+        }
     }
+
+
 }

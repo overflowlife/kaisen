@@ -53,12 +53,12 @@ namespace GameCore
             string[] split = str.Split(delimiter);
             if (split.Length != 5)
                 throw new ArgumentException("引数チェックでの例外です。");
-            this.Type = split[0];
-            this.Stype = this.Type.Substring(0, 1);
-            this.Durable = int.Parse(split[1]);
-            this.AttackRange = int.Parse(split[2]);
-            this.AttackSpan = int.Parse(split[3]);
-            this.MoveSpeed = int.Parse(split[4]);
+            Type = split[0];
+            Stype = Type.Substring(0, 1);
+            Durable = int.Parse(split[1]);
+            AttackRange = int.Parse(split[2]);
+            AttackSpan = int.Parse(split[3]);
+            MoveSpeed = int.Parse(split[4]);
         }
 
         public override string ToString()
