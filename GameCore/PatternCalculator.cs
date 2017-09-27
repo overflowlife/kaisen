@@ -12,13 +12,18 @@ namespace GameCore
     /// <remarks></remarks>
     internal class PatternCalculator
     {
-        internal PatternSet Friend { get; set; }
-        internal PatternSet Foe{ get; set; }
+        internal PatternSet Friend { get; private set; }
+        internal PatternSet Foe{ get; private set; }
         private PatternSet active;
         private PatternSet passive;
+        /// <summary>
+        /// コンストラクト以外の、各操作にかかった時間を計測するStopwatchです。各操作ごとにリセットします。
+        /// </summary>
+        internal Stopwatch LastCommand { get; }
 
         internal PatternCalculator(bool create13800sets)
         {
+            LastCommand = new Stopwatch();
             if (create13800sets)
             {
                 Friend = new PatternSet(true);
@@ -40,16 +45,32 @@ namespace GameCore
         }
 
         /// <summary>
+        /// 敵味方のパターンリストを更新します。
+        /// </summary>
+        /// <param name="friend"></param>
+        /// <param name="foe"></param>
+        /// <remarks>こんなのに計測必要ですか？</remarks>
+        internal void SetPatterns(List<Pattern> friend, List<Pattern> foe)
+        {
+            LastCommand.Restart();
+            Friend = new PatternSet(friend);
+            Foe = new PatternSet(foe);
+            LastCommand.Stop();
+        }
+
+        /// <summary>
         /// 行動者を教えてください。
         /// </summary>
         /// <param name="isItFriend">行動者は見方ですか？</param>
         internal void SetActive(bool isItFriend)
         {
+            LastCommand.Restart();
             if (isItFriend)
             {
                 active = Friend;
                 passive = Foe;
             }
+            LastCommand.Stop();
         }
 
         /// <summary>
@@ -60,8 +81,10 @@ namespace GameCore
         /// <param name="destroyed"></param>
         internal void Fire(Plot fireTarget, int summary, int destroyed)
         {
+            LastCommand.Restart();
             active.Fire(fireTarget);
             passive.Fired(fireTarget, summary, destroyed);
+            LastCommand.Stop();
         }
 
         /// <summary>
@@ -71,7 +94,17 @@ namespace GameCore
         /// <param name="dist"></param>
         internal void Move(int degree, int dist)
         {
+            LastCommand.Restart();
             active.Move(degree, dist);
+            LastCommand.Stop();
+        }
+
+        internal void Undo()
+        {
+            LastCommand.Restart();
+            active.Undo();
+            passive.Undo();
+            LastCommand.Stop();
         }
 
         /// <summary>
@@ -108,7 +141,7 @@ namespace GameCore
             get => Patterns[target];
             private set => Patterns[target] = value; //privateでいいかな？
         }
-        internal int Length
+        internal int Count
         {
             get => Patterns.Count;
         }
@@ -135,7 +168,7 @@ namespace GameCore
                         {
                             if( (i-j) * (j-k) * (k-i) != 0)
                             {
-                                initial.Add(new Pattern(new Plot(i % 5, i / 5), new Plot(j % 5, j / 5), new Plot(k % 5, k / 5)));
+                                initial.Add(new Pattern(new Plot(i % 5, i / 5), new Plot(j % 5, j / 5), new Plot(k % 5, k / 5))); //ここらへんのoperatorは比較的遅いかもしれない
                             }
                         }
                     }
@@ -215,21 +248,59 @@ namespace GameCore
         /// <returns></returns>
         private List<int> Hit(Plot point, int destroyed)
         {
-            List<int> dels = new List<int>();
-            for(int i = 0; i < 13800; ++i)
-            {
-                Pattern target = Patterns[i];
-                if (!target.Available)
+            List<int> dels = new List<int>();//確保量を考えましょう。ターン数とコマンドでおおよそ絞れるかな？
+            if(destroyed == -1)
+            {// 破壊された艦船がない
+                for (int i = 0; i < 13800; ++i)
                 {
-                    continue;
-                }
-                if(destroyed == -1) { 
-                } else
-                {
+                    Pattern target = Patterns[i];
+                    if (!target.Available)
+                    {
+                        continue;
+                    }
+                    bool kill = true;
 
+                    for (int j = 0; j < 3; ++j)
+                    {
+                        if ((target[j].plot.Equals(point)) && --target[j].life > 0)
+                        { //pointにHP2以上の艦船が配備されていないパターン
+                            kill = false;
+                        }
+                    }
+
+                    if (kill)
+                    {
+                        dels.Add(i);
+                        target.Available = false;
+                    }
                 }
             }
+            else
+            {// 破壊された艦船がある
+                for (int i = 0; i < 13800; ++i)
+                {
+                    Pattern target = Patterns[i];
+                    if (!target.Available)
+                    {
+                        continue;
+                    }
+                    bool kill = true;
 
+                    for(int j = 0; j < 3; ++j)
+                    {
+                        if ( target[j].plot.Equals(point) && j == destroyed  && --target[j].life == 0  )
+                        {//pointにHP1の特定の艦船が配備されていないパターン
+                            kill = false;
+                        }
+                    }
+
+                    if (kill)
+                    {
+                        dels.Add(i);
+                        target.Available = false;
+                    }
+                }
+            }
             return dels;
 
         }
