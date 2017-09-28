@@ -7,12 +7,12 @@ using System.Diagnostics;
 namespace GameCore
 {
     /// <summary>
-    /// 敵と味方のパターンリストを保持し、それらを適切に操作します。
+    /// 敵と味方のパターンリストを保持し、それらを適切に操作します。敵味方のパターン登録、行動者設定を行ってください。
     /// </summary>
     /// <remarks></remarks>
     internal class PatternCalculator
     {
-        internal PatternSet Friend { get; private set; }
+        internal PatternSet Friend { get; private set; } //敵味方それぞれが個別に変更されてしまうのはまずい
         internal PatternSet Foe{ get; private set; }
         private PatternSet active;
         private PatternSet passive;
@@ -50,7 +50,7 @@ namespace GameCore
         /// <param name="friend"></param>
         /// <param name="foe"></param>
         /// <remarks>こんなのに計測必要ですか？</remarks>
-        internal void SetPatterns(List<Pattern> friend, List<Pattern> foe)
+        internal void OverwritePatterns(List<Pattern> friend, List<Pattern> foe)
         {
             LastCommand.Restart();
             Friend = new PatternSet(friend);
