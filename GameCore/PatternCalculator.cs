@@ -70,6 +70,11 @@ namespace GameCore
                 active = Friend;
                 passive = Foe;
             }
+            else
+            {
+                active = Foe;
+                passive = Friend;
+            }
             LastCommand.Stop();
         }
 
