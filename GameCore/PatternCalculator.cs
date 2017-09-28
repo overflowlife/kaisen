@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using static GameCore.PatternCalculator.Consts;
+using static System.Math;
 using System.Diagnostics;
 
 namespace GameCore
@@ -232,14 +233,53 @@ namespace GameCore
         }
 
         private List<int> Water(Plot point)
-        {
+        {//point周辺9マスに1隻でも配備されているパターンを削除します。
             List<int> dels = new List<int>();
+            for (int i = 0; i < Patterns.Count; ++i)
+            {
+                var target = Patterns[i];
+                if (!target.Available)
+                {
+                    continue;
+                }
+                var kill = false;
+                for (int j = 0; j < 3; ++j)
+                {
+                    if ((Max(Abs(target[j].X - point.X), Abs(target[j].Y - point.Y)) <= 1) && target[j].life > 0)
+                    {//point周辺9マスに1隻でもHP1以上の艦船が配備されている
+                        kill = true;
+                        break;
+                    }
+                }
+
+                if (kill)
+                {
+                    dels.Add(i);
+                    target.Available = false;
+                }
+            }
             return dels; 
         }
 
         private List<int> Nearmiss(Plot point)
-        {
+        {//point周辺8マスに1隻も配備されていないパターンを削除します。
             List<int> dels = new List<int>();
+            for(int i = 0; i < Patterns.Count; ++i)
+            {
+                var target = Patterns[i];
+                if (!target.Available)
+                {
+                    continue;
+                }
+                var kill = true;
+
+                if (kill)
+                {
+                    dels.Add(i);
+                    target.Available = false;
+                }
+            }
+
 
             return dels;
         }
@@ -256,7 +296,7 @@ namespace GameCore
             List<int> dels = new List<int>();//確保量を考えましょう。ターン数とコマンドでおおよそ絞れるかな？
             if(destroyed == -1)
             {// 破壊された艦船がない
-                for (int i = 0; i < 13800; ++i)
+                for (int i = 0; i < Patterns.Count; ++i)
                 {
                     Pattern target = Patterns[i];
                     if (!target.Available)
@@ -283,7 +323,7 @@ namespace GameCore
             }
             else
             {// 破壊された艦船がある
-                for (int i = 0; i < 13800; ++i)
+                for (int i = 0; i < Patterns.Count; ++i)
                 {
                     Pattern target = Patterns[i];
                     if (!target.Available)
@@ -296,7 +336,7 @@ namespace GameCore
                     {//pointにHP1の特定の艦船が配備されているパターン
                         kill = false;
                     }
-
+                    
                     if (kill)
                     {
                         dels.Add(i);
@@ -317,6 +357,30 @@ namespace GameCore
         internal void  Fire(Plot point)
         {
             List<int> dels = null;
+
+            for(int i = 0; i < Patterns.Count; ++i)
+            {
+                var target = Patterns[i];
+                if (!target.Available)
+                {
+                    continue;
+                }
+                bool kill = true;
+
+                for(int j = 0; j < 3; ++j)
+                {
+                    if ( (Max(Abs(target[j].X - point.X), Abs(target[j].Y - point.Y)) <= 1) && target[j].life > 0  )
+                    {
+                        kill = false;
+                    }
+                }
+
+                if (kill)
+                {
+                    dels.Add(i);
+                    target.Available = false;
+                }
+            }
 
             Debug.Assert(dels != null);
             diff.Enqueue(dels);
