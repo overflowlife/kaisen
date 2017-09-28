@@ -268,8 +268,9 @@ namespace GameCore
                     for (int j = 0; j < 3; ++j)
                     {
                         if ((target[j].plot.Equals(point)) && --target[j].life > 0)
-                        { //pointにHP2以上の艦船が配備されていないパターン
+                        { //pointにHP2以上の艦船が配備されているパターン
                             kill = false;
+                            break;
                         }
                     }
 
@@ -291,12 +292,9 @@ namespace GameCore
                     }
                     bool kill = true;
 
-                    for(int j = 0; j < 3; ++j)
-                    {
-                        if ( target[j].plot.Equals(point) && j == destroyed  && --target[j].life == 0  )
-                        {//pointにHP1の特定の艦船が配備されていないパターン
-                            kill = false;
-                        }
+                    if ( target[destroyed].plot.Equals(point) && --target[destroyed].life == 0  )
+                    {//pointにHP1の特定の艦船が配備されているパターン
+                        kill = false;
                     }
 
                     if (kill)
