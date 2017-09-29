@@ -83,8 +83,8 @@ namespace GameCore
         /// 行動者が砲撃した。
         /// </summary>
         /// <param name="fireTarget"></param>
-        /// <param name="summary"></param>
-        /// <param name="destroyed"></param>
+        /// <param name="summary">0..Hit, 1..Nearmiss, 1..Water.</param>
+        /// <param name="destroyed">-1..No, 0..BB, 1..DD, 2..SS</param>
         internal void Fire(Plot fireTarget, int summary, int destroyed)
         {
             LastCommand.Restart();
@@ -149,7 +149,13 @@ namespace GameCore
         }
         internal int Count
         {
-            get => Patterns.Count;
+            get {
+                int available = 0;
+                for (int i = 0; i < Patterns.Count; ++i)
+                    if (Patterns[i].Available)
+                        ++available;
+                return available;
+            }
         }
         /// <summary>
         /// 毎回の操作で取り消されたパターン番号を保持するキュー
@@ -363,7 +369,7 @@ namespace GameCore
         /// <param name="point">target</param>
         internal void  Fire(Plot point)
         {
-            List<int> dels = null;
+            List<int> dels = new List<int>();
 
             for(int i = 0; i < Patterns.Count; ++i)
             {
@@ -400,9 +406,7 @@ namespace GameCore
         /// <param name="dist">距離</param>
         internal void Move(int degree, int dist)
         {
-            List<int> dels = null;
-
-            Debug.Assert(dels != null);
+            List<int> dels = new List<int>();
             diff.Enqueue(dels);
         }
 
@@ -436,7 +440,7 @@ namespace GameCore
     /// </summary>
     internal class Pattern
     {
-        private Ship[] Ships { get; set; } = { default(Ship), default(Ship), default(Ship) };
+        private Ship[] Ships { get; set; } = { new Ship(), new Ship(), new Ship() };
         internal bool Available { get; set; }
 
         /// <summary>
