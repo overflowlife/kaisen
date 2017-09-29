@@ -333,5 +333,79 @@ namespace GameCore
             sb.AppendLine();
             Console.Write(sb.ToString());
         }
+
+        public override bool DoResponse()
+        {
+            string msg = rs.Messenger.Recieve();
+            SerializableMessage recieved = MessageFactory.Manufact(msg);
+            switch (recieved.MsgId)
+            {
+                case MessageId.None:
+                    break;
+                case MessageId.FiringRequest:
+                    FiringResponse(recieved as FiringRequestMsg);
+                    break;
+
+                case MessageId.MovingRequest:
+                    MovingResponse(recieved as MovingRequestMsg);
+                    break;
+
+                case MessageId.ExitingRequest:
+                    ExitingResponse(recieved as ExitingRequestMsg);
+                    break;
+
+                case MessageId.FiringResponse:
+                case MessageId.MovingResponse:
+                case MessageId.ExitingResponse:
+                default:
+                    break;
+            }
+
+            return recieved.MsgId == MessageId.ExitingRequest;
+        }
+
+        internal void FiringResponse(FiringRequestMsg msg)
+        {
+            rs.Logger.WriteAndDisplay($"地点({msg.x}, {msg.y})が砲撃されました。");
+            Debug.Assert(rs.Game.ValidateX(msg.x) && rs.Game.ValidateY(msg.y));
+            var send = rs.Game.ShootFromOther(msg.x, msg.y, out Ship hit);
+            rs.Messenger.Send(send.ToString());
+            switch (send.summary)
+            {
+                case FiringResponseSummary.Hit:
+                    if (send.destroyedName != string.Empty)
+                    {
+                        rs.Logger.WriteAndDisplay($"{send.destroyedName}が撃沈されました..");
+                    }
+                    else
+                    {
+                        rs.Logger.WriteAndDisplay($"秘匿情報：{hit.Type}に命中しました。");
+                    }
+                    break;
+                case FiringResponseSummary.Nearmiss:
+                    rs.Logger.WriteAndDisplay("ニアミスでした。");
+                    break;
+                case FiringResponseSummary.Water:
+                    rs.Logger.WriteAndDisplay("海に落ちました。");
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        internal void MovingResponse(MovingRequestMsg msg)
+        {
+            rs.Logger.WriteAndDisplay($"{msg.mover}が{msg.direction}方向に{msg.distance}移動しました。");
+            rs.Messenger.Send(new MovingResponseMsg().ToString());
+            rs.Logger.WriteAndDisplay($"移動に対して応答しました。");
+        }
+
+
+        internal void ExitingResponse(ExitingRequestMsg msg)
+        {
+            rs.Logger.WriteAndDisplay("終了通知を受け取りました。");
+            rs.Messenger.Send(new ExitingResponseMsg().ToString());
+            rs.Logger.WriteAndDisplay("終了応答を送信しました。");
+        }
     }
 }
