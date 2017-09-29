@@ -273,13 +273,20 @@ namespace GameCore
                 }
                 var kill = true;
 
+                for(int j = 0; j < 3; ++j)
+                {
+                    if(( Max(Abs(target[j].X - point.X), Abs(target[j].Y - point.Y)) <= 1 && !target[j].plot.Equals(point) ) && target[j].life > 0)
+                    {//if(( 9マス範囲内 && 同位置ではない ) && HPが1以上残っている )
+                        kill = false;
+                    }
+                }
+
                 if (kill)
                 {
                     dels.Add(i);
                     target.Available = false;
                 }
             }
-
 
             return dels;
         }
