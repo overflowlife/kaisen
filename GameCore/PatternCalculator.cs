@@ -119,7 +119,6 @@ namespace GameCore
                     if ((Max(Abs(target[j].X - point.X), Abs(target[j].Y - point.Y)) <= 1) && target[j].life > 0)
                     {//point周辺9マスに1隻でもHP1以上の艦船が配備されている
                         isWater = true;
-                        break;
                     }
                     if ((Max(Abs(target[j].X - point.X), Abs(target[j].Y - point.Y)) <= 1 && !target[j].plot.Equals(point)) && target[j].life > 0)
                     {//if(( 9マス範囲内 && 同位置ではない ) && HPが1以上残っている )
@@ -128,7 +127,6 @@ namespace GameCore
                     if ((target[j].plot.Equals(point)) && --target[j].life > 0)
                     { //pointにHP2以上の艦船が配備されているパターン
                         isHitNo = false;
-                        break;
                     }
                     if (target[j].plot.Equals(point) && --target[j].life == 0)
                     {//pointにHP1の特定の艦船が配備されているパターン
