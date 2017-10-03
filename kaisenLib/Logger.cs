@@ -8,7 +8,6 @@ namespace KaisenLib
     /// </summary>
     public class Logger
     {
-        private StreamWriter sw;
         private string logDirectory = "log";
         private string logFileName;
 
@@ -19,21 +18,10 @@ namespace KaisenLib
                 Directory.CreateDirectory(logDirectory);
             }
             logFileName = logDirectory + Path.DirectorySeparatorChar + caller + DateTime.Now.ToString("_yy_MM_dd_HH_mm_ss_fff") + ".txt";
-            var fs = File.Create(logFileName);
-
-            sw = new StreamWriter(fs);
         }
 
-        /// <summary>
-        /// This is  vey important!!
-        /// </summary>
        ~Logger()
         {
-            if (sw != null)
-            {
-                sw.Dispose();
-                sw = null;
-            }
         }
 
         public void WriteLine(DateTime time, string data)
@@ -68,15 +56,22 @@ namespace KaisenLib
         //ファイルに書き込む。
         private void Logging(string data)
         {
-            try
+            using (var fs = File.Create(logFileName))
             {
-                sw.WriteLine(data);
-                sw.Flush(); //パフォーマンス問題ないかな？
+                using (var sw = new StreamWriter(fs))
+                {
+                    try
+                    {
+                        sw.WriteLine(data);
+                        sw.Flush(); //パフォーマンス問題ないかな？
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("次のデータをファイルに記録できませんでした！: " + data);
+                    }
+                }
             }
-            catch (Exception)
-            {
-                Console.WriteLine("次のデータをファイルに記録できませんでした！: " + data);
-            }
+            
         }
 
         private static string MakeLogString(DateTime time, string data)
