@@ -56,22 +56,18 @@ namespace KaisenLib
         //ファイルに書き込む。
         private void Logging(string data)
         {
-            using (var fs = File.Create(logFileName))
+            using (var fs = File.AppendText(logFileName))
             {
-                using (var sw = new StreamWriter(fs))
-                {
                     try
                     {
-                        sw.WriteLine(data);
-                        sw.Flush(); //パフォーマンス問題ないかな？
+                        fs.WriteLine(data);
+                        fs.Flush(); //パフォーマンス問題ないかな？
                     }
                     catch (Exception)
                     {
                         Console.WriteLine("次のデータをファイルに記録できませんでした！: " + data);
                     }
-                }
-            }
-            
+                }            
         }
 
         private static string MakeLogString(DateTime time, string data)
