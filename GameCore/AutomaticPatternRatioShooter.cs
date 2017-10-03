@@ -194,8 +194,25 @@ namespace GameCore
             long estimate = 0L;
             Dictionary<Plot, double> EvalVals = new Dictionary<Plot, double>();
             List<double> vals = new List<double>(rs.Game.GetPointsWhereCanShoot().Count());
+            List<Point> used = new List<Point>();
             foreach (var item in rs.Game.GetPointsWhereCanShoot())//重複があるためDictionary.Addでエラーが発生する
             {
+                bool skip = false;
+                foreach (var item2 in used)
+                {
+                    if(item.x == item2.x && item.y == item2.y)
+                    {
+                        skip = true;
+                    }
+                }
+                if (skip)
+                {
+                    continue;
+                }
+                else
+                {
+                    used.Add(item);
+                }
                 //各地点評価値の取得
                 Plot plot = new Plot(item.x, item.y);
                 (int estimatedFriend, int estimatedEnemy) = calculator.EstimateFire(plot);

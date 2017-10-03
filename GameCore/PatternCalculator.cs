@@ -98,7 +98,7 @@ namespace GameCore
         /// <returns>（行動者の残パターン数, 待機者の残パターン数）</returns>
         internal (int, int) EstimateFire(Plot point)
         {
-            LastCommand.Reset();
+            LastCommand.Restart();
             active.Fire(point);
             int friend = Friend.Count;
             active.Undo();
@@ -120,6 +120,12 @@ namespace GameCore
 
             for(int i = 0; i < 13800; ++i)
             {
+                isWater = true;
+                isNearmiss = false;
+                isHitNo = false;
+                isHitBb = false;
+                isHitDd = false;
+                isHitSs = false;
                 var target = passive[i];
                 if (!target.Available)
                 {
@@ -130,28 +136,28 @@ namespace GameCore
                 {
                     if ((Max(Abs(target[j].X - point.X), Abs(target[j].Y - point.Y)) <= 1) && target[j].life > 0)
                     {//point周辺9マスに1隻でもHP1以上の艦船が配備されている
-                        isWater = true;
+                        isWater = false;
                     }
                     if ((Max(Abs(target[j].X - point.X), Abs(target[j].Y - point.Y)) <= 1 && !target[j].plot.Equals(point)) && target[j].life > 0)
                     {//if(( 9マス範囲内 && 同位置ではない ) && HPが1以上残っている )
-                        isNearmiss = false;
+                        isNearmiss = true;
                     }
                     if ((target[j].plot.Equals(point)) && target[j].life > 1)
                     { //pointにHP2以上の艦船が配備されているパターン
-                        isHitNo = false;
+                        isHitNo = true;
                     }
                     if (target[j].plot.Equals(point) && target[j].life == 1)
                     {//pointにHP1の特定の艦船が配備されているパターン
                         switch (j)
                         {
                             case 0:
-                                isHitBb = false;
+                                isHitBb = true;
                                 break;
                             case 1:
-                                isHitDd = false;
+                                isHitDd = true;
                                 break;
                             case 2:
-                                isHitSs = false;
+                                isHitSs = true;
                                 break;
                         }
                     }
@@ -163,7 +169,7 @@ namespace GameCore
                     ++count;
                     ++water;
                 }
-                if (isNearmiss)
+                if (isNearmiss && !(isHitNo || isHitBb || isHitDd || isHitSs) )
                 {
                     ++count;
                     ++nearmiss;
@@ -189,19 +195,19 @@ namespace GameCore
                     ++hitSsDestroyed;
                 }
                 Debug.Assert(count == 1, "PatternCalculator.EstimateFire()の各条件判断に異常があります");
-
-                double enemy = ((double)water * water / passivePat)
-                    + ((double)nearmiss * nearmiss / passivePat)
-                    + ((double)hitNoDestroyed * hitNoDestroyed / passivePat)
-                    + ((double)hitBbDestroyed * hitBbDestroyed / passivePat)
-                    + ((double)hitDdDestroyed * hitDdDestroyed / passivePat)
-                    + ((double)hitSsDestroyed * hitSsDestroyed / passivePat);
-
-                return (friend, (int)enemy);
             }
+
+            double enemy = ((double)water * water / passivePat)
+            + ((double)nearmiss * nearmiss / passivePat)
+            + ((double)hitNoDestroyed * hitNoDestroyed / passivePat)
+            + ((double)hitBbDestroyed * hitBbDestroyed / passivePat)
+            + ((double)hitDdDestroyed * hitDdDestroyed / passivePat)
+            + ((double)hitSsDestroyed * hitSsDestroyed / passivePat);
+
             
+
             LastCommand.Stop();
-            return (friend, 0);
+            return (friend, (int)enemy);
         }
 
         /// <summary>
