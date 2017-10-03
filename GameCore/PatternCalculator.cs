@@ -80,6 +80,18 @@ namespace GameCore
         }
 
         /// <summary>
+        /// 行動者を解除します（パターンに対する各操作は無効になります）
+        /// </summary>
+        /// <remarks>こんなのに計測必要ですか？</remarks>
+        internal void UnSetActive()
+        {
+            LastCommand.Restart();
+            active = null;
+            passive = null;
+            LastCommand.Stop();
+        }
+
+        /// <summary>
         /// 行動者が指定位置に砲撃した後のパターン数を推測し返却します。
         /// </summary>
         /// <param name="point"></param>
