@@ -124,11 +124,11 @@ namespace GameCore
                     {//if(( 9マス範囲内 && 同位置ではない ) && HPが1以上残っている )
                         isNearmiss = false;
                     }
-                    if ((target[j].plot.Equals(point)) && --target[j].life > 0)
+                    if ((target[j].plot.Equals(point)) && target[j].life > 1)
                     { //pointにHP2以上の艦船が配備されているパターン
                         isHitNo = false;
                     }
-                    if (target[j].plot.Equals(point) && --target[j].life == 0)
+                    if (target[j].plot.Equals(point) && target[j].life == 1)
                     {//pointにHP1の特定の艦船が配備されているパターン
                         switch (j)
                         {
