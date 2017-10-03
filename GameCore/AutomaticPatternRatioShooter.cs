@@ -26,10 +26,10 @@ namespace GameCore
                 while (!ba.SetShipToPointWhenNoOverlap(item, rand.Next(rs.Game.width), rand.Next(rs.Game.height)))
                     ;
             }
-            /*foreach (var item in ba.map.Where(p => p.ship != null))
+            foreach (var item in ba.map.Where(p => p.ship != null))
             {
-                rs.Logger.WriteAndDisplay($"({item.x}, {item.y})に{item.ship.Type}を配置しました。");
-            }*/
+                rs.Logger.WriteLine($"({item.x}, {item.y})に{item.ship.Type}を配置しました。");
+            }
             return ba.map;
         }
 
@@ -196,7 +196,7 @@ namespace GameCore
             Dictionary<Plot, double> EvalVals = new Dictionary<Plot, double>();
             List<double> vals = new List<double>(rs.Game.GetPointsWhereCanShoot().Count());
             List<Point> used = new List<Point>();
-            foreach (var item in rs.Game.GetPointsWhereCanShoot())//重複があるためDictionary.Addでエラーが発生する
+            foreach (var item in rs.Game.GetPointsWhereCanShoot())
             {
                 bool skip = false;
                 foreach (var item2 in used)
