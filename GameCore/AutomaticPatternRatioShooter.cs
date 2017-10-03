@@ -8,7 +8,6 @@ namespace GameCore
 {
     public class AutomaticPatternRatioShooter : IPlayer
     {
-        StatisticFormula aa;
         private PatternCalculator calculator;
 
         public AutomaticPatternRatioShooter(ResourceSupplier rs)
