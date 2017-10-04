@@ -229,10 +229,10 @@ namespace GameCore
         /// </summary>
         /// <param name="direction"></param>
         /// <param name="dist"></param>
-        internal void Move(int degree, int dist)
+        internal void Move(int direction, int dist)
         {
             LastCommand.Restart();
-            active.Move(degree, dist);
+            active.Move(direction, dist);
             LastCommand.Stop();
         }
 
@@ -521,11 +521,15 @@ namespace GameCore
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="degree">方向/パラメータ案内をFired()に倣って書く</param>
+        /// <param name="direction">方向/パラメータ案内をFired()に倣って書く</param>
         /// <param name="dist">距離</param>
-        internal void Move(int degree, int dist)
+        internal void Move(int direction, int dist)
         {
             List<int> dels = new List<int>();
+            for(int i = 0; i < Patterns.Count, ++i)
+            {
+
+            }
             diff.Enqueue(dels);
         }
 
