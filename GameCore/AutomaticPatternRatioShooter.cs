@@ -233,7 +233,7 @@ namespace GameCore
                 }
             }           
             sw.Stop();
-            rs.Logger.WriteAndDisplay($"{sw.ElapsedMilliseconds}msで射撃位置（{choosen.Key.X}, {choosen.Key.Y}）を算出しました。（うち砲撃結果推測時間{estimate}ms）");
+            rs.Logger.WriteLine($"{sw.ElapsedMilliseconds}msで射撃位置（{choosen.Key.X}, {choosen.Key.Y}）を算出しました（評価値{choosen.Value}）。（うち砲撃結果推測時間{estimate}ms）");
             return choosen.Key;
         }
     }
