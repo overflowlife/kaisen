@@ -5,6 +5,9 @@ using System.Net.Sockets;
 
 namespace KaisenLib
 {
+    /// <summary>
+    /// 特定の相手とのTCP通信を行うクラスです。
+    /// </summary>
     public class Messenger
     {
         internal Logger logger;
@@ -14,6 +17,12 @@ namespace KaisenLib
         internal MemoryStream Ms { get; private set; }
         internal byte[] recBytes;
 
+        /// <summary>
+        /// 新たな<c>Messenger</c>クラスのインスタンスを生成します。通信時に用いるエンコード、NetworkStream、Loggerのインスタンスを与えてください。
+        /// </summary>
+        /// <param name="enc"></param>
+        /// <param name="ns"></param>
+        /// <param name="logger"></param>
         public Messenger(Encoding enc, NetworkStream ns, Logger logger)
         {
             this.logger = logger;
@@ -23,7 +32,7 @@ namespace KaisenLib
         }
 
         /// <summary>
-        /// 
+        /// 通信相手からのメッセージを同期的に受信します。
         /// </summary>
         /// <returns></returns>
         public string Recieve()
@@ -53,7 +62,7 @@ namespace KaisenLib
         }
 
         /// <summary>
-        /// 
+        /// 通信相手へメッセージを同期的に送信します。
         /// </summary>
         /// <param name="sendMsg"></param>
         public void Send(string sendMsg)
