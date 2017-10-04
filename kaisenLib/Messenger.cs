@@ -56,7 +56,7 @@ namespace KaisenLib
 
                 var recMsg = Enc.GetString(Ms.ToArray());
                 recMsg = recMsg.TrimEnd('\n');
-                logger.WriteLine($"受信メッセージ：{recMsg}");
+                //logger.WriteLine($"受信メッセージ：{recMsg}");
                 return recMsg;
             }
         }
@@ -76,7 +76,7 @@ namespace KaisenLib
             {
                 throw;
             }
-            logger.WriteLine($"送信メッセージ：{Enc.GetString(sendBytes)}");
+            //logger.WriteLine($"送信メッセージ：{Enc.GetString(sendBytes)}");
 
             return;
         }
