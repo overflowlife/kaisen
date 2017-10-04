@@ -16,7 +16,6 @@ namespace KaisenLib
         /// </summary>
         static public readonly int defaultPort;
         /// <summary>
-        /// <summary>
         /// 現在のアプリケーションバージョン番号を提供します。読み取り専用です。
         /// </summary>
         static public readonly string version;

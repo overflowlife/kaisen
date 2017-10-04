@@ -13,6 +13,10 @@
     <StartupObject>AutoHost01.Program</StartupObject>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netcoreapp1.0\AutoHost01.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\GameCore\GameCore.csproj" />
     <ProjectReference Include="..\kaisenLib\kaisenLib.csproj" />

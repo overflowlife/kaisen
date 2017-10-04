@@ -24,10 +24,6 @@ namespace KaisenLib
             logFileName = logDirectory + Path.DirectorySeparatorChar + caller + DateTime.Now.ToString("_yy_MM_dd_HH_mm_ss_fff") + ".txt";
         }
 
-       ~Logger()
-        {
-        }
-
         /// <summary>
         /// ログファイルへの追加書き込みを行います（記録時刻を指示できます）。
         /// </summary>

@@ -80,19 +80,5 @@ namespace KaisenLib
 
             return;
         }
-
-        ~Messenger()
-        {
-            if (Ns != null)
-            {
-                Ns.Dispose();
-                Ns = null;
-            }
-            if (Ms != null)
-            {
-                Ms.Dispose();
-                Ms = null;
-            }
-        }
     }
 }

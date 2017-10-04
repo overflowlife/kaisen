@@ -227,7 +227,7 @@ namespace GameCore
         /// <summary>
         /// 行動者が移動した。
         /// </summary>
-        /// <param name="degree"></param>
+        /// <param name="direction"></param>
         /// <param name="dist"></param>
         internal void Move(int degree, int dist)
         {
