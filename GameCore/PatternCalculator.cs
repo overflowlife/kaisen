@@ -229,10 +229,10 @@ namespace GameCore
         /// </summary>
         /// <param name="direction"></param>
         /// <param name="dist"></param>
-        internal void Move(int direction, int dist)
+        internal void Move(int ship, int direction, int dist)
         {
             LastCommand.Restart();
-            active.Move(direction, dist);
+            active.Move(ship, direction, dist);
             LastCommand.Stop();
         }
 
@@ -521,14 +521,42 @@ namespace GameCore
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="direction">方向/パラメータ案内をFired()に倣って書く</param>
-        /// <param name="dist">距離</param>
-        internal void Move(int direction, int dist)
+        /// <param name="ship">0..BB, 1..DD, 2..SS</param>
+        /// <param name="direction">2, 4, 6, 8</param>
+        /// <param name="dist"></param>
+        internal void Move(int ship, int direction, int dist)
         {
-            List<int> dels = new List<int>();
-            for(int i = 0; i < Patterns.Count; ++i)
+            if(!(direction==2||direction==4||direction==4||direction==8))
             {
-
+                throw new Exception("方向指定に誤りがあります。");
+            }
+            List<int> dels = new List<int>();
+            for (int i = 0; i < Patterns.Count; ++i)
+            {
+                var target = Patterns[i];
+                if (!target.Available)
+                {
+                    continue;
+                }
+                switch (direction)
+                {
+                    case 4:
+                        target[ship].plot = new Plot(target[ship].X - dist, target[ship].Y);
+                        break;
+                    case 6:
+                        target[ship].plot = new Plot(target[ship].X + dist, target[ship].Y);
+                        break;
+                    case 2:
+                        target[ship].plot = new Plot(target[ship].X, target[ship].Y + dist);
+                        break;
+                    case 8:
+                        target[ship].plot = new Plot(target[ship].X - dist, target[ship].Y - dist);
+                        break;
+                }
+                if( target[ship].X < 0 || target[ship].X > 4 || target[ship].Y < 0 || target[ship].Y > 4)
+                {
+                    dels.Add(i);
+                }
             }
             diff.Enqueue(dels);
         }
