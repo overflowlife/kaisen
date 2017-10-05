@@ -526,7 +526,7 @@ namespace GameCore
         internal void Move(int direction, int dist)
         {
             List<int> dels = new List<int>();
-            for(int i = 0; i < Patterns.Count, ++i)
+            for(int i = 0; i < Patterns.Count; ++i)
             {
 
             }
