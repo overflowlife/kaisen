@@ -112,7 +112,20 @@ namespace GameCore
         {
             rs.Logger.WriteLine($"{msg.mover}が{msg.direction}方向に{msg.distance}移動しました。");
             rs.Messenger.Send(new MovingResponseMsg().ToString());
-            calculator.Move(msg.direction, msg.distance);
+            int mover;
+            if (msg.mover == "戦艦")
+            {
+                mover = 0;
+            }
+            else if (msg.mover == "駆逐艦")
+            {
+                mover = 1;
+            }
+            else
+            {
+                mover = 2;
+            }
+            calculator.Move(mover, msg.direction, msg.distance);
             rs.Logger.WriteLine($"移動に対して応答しました。");
         }
 

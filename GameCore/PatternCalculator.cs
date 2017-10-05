@@ -526,7 +526,7 @@ namespace GameCore
         /// <param name="dist"></param>
         internal void Move(int ship, int direction, int dist)
         {
-            if(!(direction==2||direction==4||direction==4||direction==8))
+            if(!(direction==2||direction==4||direction==6||direction==8))
             {
                 throw new Exception("方向指定に誤りがあります。");
             }
