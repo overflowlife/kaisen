@@ -229,12 +229,12 @@ namespace GameCore
                 }
                 //各地点評価値の取得
                 Plot plot = new Plot(item.x, item.y);
-                (int estimatedFriend, int estimatedEnemy) = calculator.EstimateFire(plot);
                 estimate += calculator.LastCommand.ElapsedMilliseconds;
-                var EvalValue = (double)estimatedFriend / (estimatedFriend + estimatedEnemy);
+                var EvalValue = calculator.EstimateFire(plot);
                 EvalVals.Add(plot, EvalValue);
+                vals.Add(EvalValue);
             }
-            //vals.Sort();
+            vals.Sort();
              
 
             KeyValuePair<Plot, double> choosen = default(KeyValuePair<Plot, double>);

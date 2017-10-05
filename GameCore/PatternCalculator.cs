@@ -92,15 +92,15 @@ namespace GameCore
         }
 
         /// <summary>
-        /// 行動者が指定位置に砲撃した後のパターン数を推測し返却します。
+        /// 行動者が指定位置に砲撃した後のパターン状態を推測し、それに基づいて算出した評価値を返却します。
         /// </summary>
         /// <param name="point"></param>
         /// <returns>（行動者の残パターン数, 待機者の残パターン数）</returns>
-        internal (int, int) EstimateFire(Plot point)
+        internal double EstimateFire(Plot point)
         {
             LastCommand.Restart();
             active.Fire(point);
-            int friend = Friend.Count;
+            int activeEstPat = active.Count;
             active.Undo();
 
             int passivePat = passive.Count;
@@ -110,6 +110,7 @@ namespace GameCore
             int hitBbDestroyed = 0;
             int hitDdDestroyed = 0;
             int hitSsDestroyed = 0;
+            int totalLife = 0;
 
             bool isWater = false;
             bool isNearmiss = true;
@@ -194,20 +195,31 @@ namespace GameCore
                     ++count;
                     ++hitSsDestroyed;
                 }
+                totalLife += (target[BB].life + target[DD].life + target[SS].life);
+                if (isHitNo || isHitBb || isHitDd || isHitSs)
+                {
+                    --totalLife;
+                }
                 Debug.Assert(count == 1, "PatternCalculator.EstimateFire()の各条件判断に異常があります");
             }
 
-            double enemy = ((double)water * water / passivePat)
+            double passiveEstPat = ((double)water * water / passivePat)
             + ((double)nearmiss * nearmiss / passivePat)
             + ((double)hitNoDestroyed * hitNoDestroyed / passivePat)
             + ((double)hitBbDestroyed * hitBbDestroyed / passivePat)
             + ((double)hitDdDestroyed * hitDdDestroyed / passivePat)
             + ((double)hitSsDestroyed * hitSsDestroyed / passivePat);
+            double passiveEstLife = (double)totalLife / passivePat;
 
-            
-
+            Console.WriteLine($"（{point.X}, {point.Y}）への砲撃効果推測");
+            double eval = Evaluate(activeEstPat, (int)passiveEstPat, passiveEstLife);
             LastCommand.Stop();
-            return (friend, (int)enemy);
+            return eval;
+        }
+
+        private double Evaluate(int activePat, int passivePat, double passiveLife)
+        {
+            return ((double)activePat / (activePat + passivePat)) * (1.0D - passiveLife / 6.0D);
         }
 
         /// <summary>
@@ -287,7 +299,7 @@ namespace GameCore
         /// <param name="create13800set"></param>
         internal PatternSet(bool create13800set)
         {
-            diff = new Queue<List<int>>(16);//適当、32は多いかなと
+            diff = new Queue<List<int>>(32);
             if (create13800set)
             {
                 List<Pattern> initial = new List<Pattern>(13800);//メンバへの直接アクセスは確か比較的に低パフォーマンスなので
@@ -315,10 +327,9 @@ namespace GameCore
         /// 
         /// </summary>
         /// <param name="list"></param>
-        /// <remarks>この実装本当にあっていますか？コピーしなくていいですか？</remarks>
         internal PatternSet(List<Pattern> list) : this(false)
         {
-            Patterns = list;
+            Patterns = new List<Pattern>(list);
         }
 
         #region パターンリストに対する操作
