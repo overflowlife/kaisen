@@ -211,6 +211,7 @@ namespace GameCore
             + ((double)hitSsDestroyed * hitSsDestroyed / passivePat);
             double passiveEstLife = (double)totalLife / passivePat;
 
+            Console.WriteLine($"（{point.X}, {point.Y}）への砲撃効果推測");
             double eval = Evaluate(activeEstPat, (int)passiveEstPat, passiveEstLife);
             LastCommand.Stop();
             return eval;
