@@ -211,7 +211,6 @@ namespace GameCore
             + ((double)hitSsDestroyed * hitSsDestroyed / passivePat);
             double passiveEstLife = (double)totalLife / passivePat;
 
-            Console.WriteLine($"（{point.X}, {point.Y}）への砲撃効果推測");
             double eval = Evaluate(activeEstPat, (int)passiveEstPat, passiveEstLife);
             LastCommand.Stop();
             return eval;
@@ -549,6 +548,7 @@ namespace GameCore
                 {
                     continue;
                 }
+                //同位置に移動したときに削除する必要がある
                 switch (direction)
                 {
                     case 4:
@@ -561,13 +561,16 @@ namespace GameCore
                         target[ship].plot = new Plot(target[ship].X, target[ship].Y + dist);
                         break;
                     case 8:
-                        target[ship].plot = new Plot(target[ship].X - dist, target[ship].Y - dist);
+                        target[ship].plot = new Plot(target[ship].X, target[ship].Y - dist);
                         break;
                 }
                 if( target[ship].X < 0 || target[ship].X > 4 || target[ship].Y < 0 || target[ship].Y > 4)
                 {
+                    target.Available = false;
                     dels.Add(i);
                 }
+
+
             }
             diff.Enqueue(dels);
         }
