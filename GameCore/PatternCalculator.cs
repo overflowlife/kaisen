@@ -566,7 +566,7 @@ namespace GameCore
                 }
                 for (int j = 0; j < 3; j++)
                 {
-                    if(j != ship && target[j].plot.Equals(target[ship]))
+                    if(j != ship && target[j].plot.Equals(target[ship].plot))
                     {
                         target.Available = false;
                         dels.Add(i);
