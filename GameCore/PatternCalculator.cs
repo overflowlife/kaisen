@@ -211,14 +211,8 @@ namespace GameCore
             + ((double)hitSsDestroyed * hitSsDestroyed / passivePat);
             double passiveEstLife = (double)totalLife / passivePat;
 
-            double eval = Evaluate(activeEstPat, (int)passiveEstPat, passiveEstLife);
             LastCommand.Stop();
-            return eval;
-        }
-
-        private double Evaluate(int activePat, int passivePat, double passiveLife)
-        {
-            return ((double)activePat / (activePat + passivePat)) * (1.0D - passiveLife / 6.0D);
+            return (activeEstPat / (activeEstPat + passiveEstPat)) * (1.0D - passiveEstLife / 6.0D);
         }
 
         /// <summary>
@@ -548,7 +542,7 @@ namespace GameCore
                 {
                     continue;
                 }
-                //同位置に移動したときに削除する必要がある
+                
                 switch (direction)
                 {
                     case 4:
@@ -564,12 +558,20 @@ namespace GameCore
                         target[ship].plot = new Plot(target[ship].X, target[ship].Y - dist);
                         break;
                 }
-                if( target[ship].X < 0 || target[ship].X > 4 || target[ship].Y < 0 || target[ship].Y > 4)
+                if( target[ship].X < 0 || target[ship].X > 4 || target[ship].Y < 0 || target[ship].Y > 4 )
                 {
                     target.Available = false;
                     dels.Add(i);
+                    continue;
                 }
-
+                for (int j = 0; j < 3; j++)
+                {
+                    if(j != ship && target[j].plot.Equals(target[ship]))
+                    {
+                        target.Available = false;
+                        dels.Add(i);
+                    }
+                }
 
             }
             diff.Enqueue(dels);
