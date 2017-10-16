@@ -219,7 +219,7 @@ namespace GameCore
         /// 行動者が砲撃した。
         /// </summary>
         /// <param name="fireTarget"></param>
-        /// <param name="summary">0..Hit, 1..Nearmiss, 1..Water.</param>
+        /// <param name="summary">0..Hit, 1..Nearmiss, 2..Water.</param>
         /// <param name="destroyed">-1..No, 0..BB, 1..DD, 2..SS</param>
         internal void Fire(Plot fireTarget, int summary, int destroyed)
         {
@@ -282,9 +282,10 @@ namespace GameCore
             }
         }
         /// <summary>
-        /// 毎回の操作で取り消されたパターン番号を保持するキュー
+        /// 毎回の操作で取り消されたパターン番号を保持するキュー//キューじゃないが
         /// </summary>
-        private Queue<List<int>> diff;
+        //private Queue<List<int>> diff;
+        private Stack<List<int>> diff;
         
         /// <summary>
         /// 
@@ -292,7 +293,7 @@ namespace GameCore
         /// <param name="create13800set"></param>
         internal PatternSet(bool create13800set)
         {
-            diff = new Queue<List<int>>(32);
+            diff = new Stack<List<int>>(32);
             if (create13800set)
             {
                 List<Pattern> initial = new List<Pattern>(13800);//メンバへの直接アクセスは確か比較的に低パフォーマンスなので
@@ -331,7 +332,7 @@ namespace GameCore
         /// Fired!
         /// </summary>
         /// <param name="point">impact point</param>
-        /// <param name="summary">0..Hit, 1..Nearmiss, 1..Water.</param>
+        /// <param name="summary">0..Hit, 1..Nearmiss, 2..Water.</param>
         /// <param name="destroyed">-1..No, 0..BB, 1..DD, 2..SS</param>
         internal void Fired(Plot point, int summary, int destroyed)
         {
@@ -358,7 +359,7 @@ namespace GameCore
             }
 
             Debug.Assert(dels != null);
-            diff.Enqueue(dels);
+            diff.Push(dels);
         }
 
         private List<int> Water(Plot point)
@@ -519,7 +520,7 @@ namespace GameCore
             }
 
             Debug.Assert(dels != null);
-            diff.Enqueue(dels);
+            diff.Push(dels);
         }
 
         /// <summary>
@@ -542,7 +543,13 @@ namespace GameCore
                 {
                     continue;
                 }
-                
+                var kill = false;
+
+                if(target[ship].life == 0)
+                {
+                    kill = true;
+                }
+
                 switch (direction)
                 {
                     case 4:
@@ -560,21 +567,25 @@ namespace GameCore
                 }
                 if( target[ship].X < 0 || target[ship].X > 4 || target[ship].Y < 0 || target[ship].Y > 4 )
                 {
-                    target.Available = false;
-                    dels.Add(i);
-                    continue;
+                    kill = true;
                 }
                 for (int j = 0; j < 3; j++)
                 {
                     if(j != ship && target[j].plot.Equals(target[ship].plot))
                     {
-                        target.Available = false;
-                        dels.Add(i);
+                        kill = true;
+                        break;
                     }
                 }
 
+                if (kill)
+                {
+                    target.Available = false;
+                    dels.Add(i);
+                }
+
             }
-            diff.Enqueue(dels);
+            diff.Push(dels);
         }
 
         /// <summary>
@@ -589,7 +600,7 @@ namespace GameCore
             }
             else
             {
-                List<int> target = diff.Dequeue();
+                List<int> target = diff.Pop();
                 for(int i = 0; i < target.Count; ++i)
                 {
                     Debug.Assert(!Patterns[target[i]].Available, "削除されていないパターンを復活しようとしました。");
