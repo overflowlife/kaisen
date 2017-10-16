@@ -235,8 +235,8 @@ namespace GameCore
                 }
                 //各地点評価値の取得
                 Plot plot = new Plot(item.x, item.y);
-                estimate += calculator.LastCommand.ElapsedMilliseconds;
                 var EvalValue = calculator.EstimateFire(plot);
+                estimate += calculator.LastCommand.ElapsedMilliseconds;
                 EvalVals.Add(plot, EvalValue);
                 vals.Add(EvalValue);
             }
