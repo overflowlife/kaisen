@@ -32,10 +32,10 @@ namespace GameCore
                 return this.X == ((Plot)obj).X  && this.Y == ((Plot)obj).Y;
             }
 
-            // override object.GetHashCode
-            public override int GetHashCode()
-            {
-                return X*10 + Y;
-            }
+        // override object.GetHashCode
+        public override int GetHashCode()
+        {
+            return X*10 + Y;
+        }
         }
 }

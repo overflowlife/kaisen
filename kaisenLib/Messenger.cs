@@ -34,6 +34,7 @@ namespace KaisenLib
         /// <summary>
         /// 通信相手からのメッセージを同期的に受信します。
         /// </summary>
+        /// <remarks>デバッグ時のみ、受信した未デシリアライズメッセージを記録します。</remarks>
         /// <returns></returns>
         public string Recieve()
         {
@@ -56,7 +57,9 @@ namespace KaisenLib
 
                 var recMsg = Enc.GetString(Ms.ToArray());
                 recMsg = recMsg.TrimEnd('\n');
-                //logger.WriteLine($"受信メッセージ：{recMsg}");
+#if DEBUG
+                logger.WriteLine($"受信メッセージ：{recMsg}");
+#endif
                 return recMsg;
             }
         }
@@ -64,6 +67,7 @@ namespace KaisenLib
         /// <summary>
         /// 通信相手へメッセージを同期的に送信します。
         /// </summary>
+        /// <remarks>デバッグ時のみ、送信したシリアライズ済みメッセージを記録します。</remarks>
         /// <param name="sendMsg"></param>
         public void Send(string sendMsg)
         {
@@ -76,7 +80,9 @@ namespace KaisenLib
             {
                 throw;
             }
-            //logger.WriteLine($"送信メッセージ：{Enc.GetString(sendBytes)}");
+#if DEBUG
+            logger.WriteLine($"送信メッセージ：{Enc.GetString(sendBytes)}");
+#endif
 
             return;
         }

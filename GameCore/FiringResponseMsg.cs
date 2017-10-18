@@ -9,7 +9,7 @@ using static KaisenLib.AppSet;
 namespace GameCore
 {
     /// <summary>
-    /// 砲撃応答メッセージ。ToDo:撃破艦船の返送方法を再検討
+    /// 砲撃応答メッセージ。ToDo:撃破艦船の返送方法を再検討 （文字列ではなく番号を送るように）
     /// </summary>
     internal class FiringResponseMsg : SerializableMessage
     {

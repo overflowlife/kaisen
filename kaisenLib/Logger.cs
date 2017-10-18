@@ -55,7 +55,7 @@ namespace KaisenLib
         }
 
         /// <summary>
-        /// ログファイルへの追加書き込みを行います。
+        /// ログファイルへの追加書き込みを行います。（日時を改竄します）
         /// </summary>
         /// <param name="data"></param>
         public void WriteAndDisplay(string data)
