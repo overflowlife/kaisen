@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\kaisenLib\kaisenLib.csproj" />
-    <ProjectReference Include="..\ReturnAction\ReturnAction.csproj" />
   </ItemGroup>
 
 </Project>
