@@ -16,3 +16,6 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("9211d187-a94c-4e21-b49f-f358b2d6a1b8")]
+
+//This class is visible from the test class.
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("PatternCalculatorTest")]

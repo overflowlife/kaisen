@@ -132,7 +132,6 @@ namespace GameCore
             rs.Logger.WriteLine($"移動に対して応答しました。");
         }
 
-
         internal void ExitingResponse(ExitingRequestMsg msg)
         {
             rs.Logger.WriteLine("終了通知を受け取りました。");
@@ -177,9 +176,6 @@ namespace GameCore
                                 break;
                             case "潜水艦":
                                 calculator.Fire(target, 0, 2);
-                                break;
-                            case "Null":
-                                calculator.Fire(target, 0, -1);
                                 break;
                             default:
                                 throw new Exception("破壊された艦船が異常");

@@ -15,8 +15,8 @@ namespace GameCore
     {
         internal PatternSet Friend { get; private set; } //敵味方それぞれが個別に変更されてしまうのはまずい
         internal PatternSet Foe{ get; private set; }
-        private PatternSet active;
-        private PatternSet passive;
+        internal PatternSet active;
+        internal PatternSet passive;
         /// <summary>
         /// コンストラクト以外の、各操作にかかった時間を計測するStopwatchです。各操作ごとにリセットします。
         /// </summary>
@@ -265,7 +265,7 @@ namespace GameCore
     /// </summary>
     internal class PatternSet
     {
-        private List<Pattern> Patterns;
+        internal List<Pattern> Patterns;
         internal Pattern this[int target]
         {
             get => Patterns[target];
