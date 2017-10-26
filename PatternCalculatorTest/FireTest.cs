@@ -1,7 +1,8 @@
 using System;
 using Xunit;
-using GameCore;
+using KaisenLib;
 using System.Collections.Generic;
+using PatternCalculator;
 
 namespace PatternCalculatorTest
 {
@@ -23,7 +24,7 @@ namespace PatternCalculatorTest
                 }
             }
             */
-            var calc = new PatternCalculator(true);
+            var calc = new PatternCalculator.Calculator(true);
             //初期状態のテスト実施済み（13800生成）
             calc.SetActive(true);
             //SetActiveはテスト実施済み

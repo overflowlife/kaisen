@@ -9,7 +9,7 @@ namespace PatternCalculatorTest
         [Fact]
         public void SetActiveToFriend()
         {
-            var calc = new PatternCalculator(true);
+            var calc = new PatternCalculator.Calculator(true);
             calc.SetActive(true);
             Assert.True(calc.Friend == calc.active);
             Assert.True(calc.Foe == calc.passive);
@@ -19,7 +19,7 @@ namespace PatternCalculatorTest
         [Fact]
         public void SetActiveToFoe()
         {
-            var calc = new PatternCalculator(true);
+            var calc = new PatternCalculator.Calculator(true);
             calc.SetActive(false);
             Assert.True(calc.Friend == calc.passive);
             Assert.True(calc.Foe == calc.active);
@@ -29,7 +29,7 @@ namespace PatternCalculatorTest
         [Fact]
         public void UnsetActive()
         {
-            var calc = new PatternCalculator(true);
+            var calc = new PatternCalculator.Calculator(true);
             calc.UnSetActive();
             Assert.Null(calc.active);
             Assert.Null(calc.passive);

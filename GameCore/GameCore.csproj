@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\kaisenLib\kaisenLib.csproj" />
+    <ProjectReference Include="..\PatternCalculator\PatternCalculator.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Host", "Host\Host.csproj", "{5A10F400-D2C5-4DDF-B0B5-2E12B135B03E}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -16,6 +16,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kaisenLib", "kaisenLib\kaisenLib.csproj", "{3D0BF02B-A2E1-42C5-AC9F-C1508B0F616F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameCore", "GameCore\GameCore.csproj", "{9211D187-A94C-4E21-B49F-F358B2D6A1B8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{524B6011-CF8F-4534-9733-41F64B4111E6} = {524B6011-CF8F-4534-9733-41F64B4111E6}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoHost01", "AutoHost01\AutoHost01.csproj", "{3ABD224B-F6C2-4676-A002-66E5F719ED01}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -23,7 +26,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoHost01", "AutoHost01\Au
 		{9211D187-A94C-4E21-B49F-F358B2D6A1B8} = {9211D187-A94C-4E21-B49F-F358B2D6A1B8}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatternCalculatorTest", "PatternCalculatorTest\PatternCalculatorTest.csproj", "{B316CCD0-C238-40DE-8EB5-281B95A8C150}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PatternCalculatorTest", "PatternCalculatorTest\PatternCalculatorTest.csproj", "{B316CCD0-C238-40DE-8EB5-281B95A8C150}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatternCalculator", "PatternCalculator\PatternCalculator.csproj", "{524B6011-CF8F-4534-9733-41F64B4111E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +86,14 @@ Global
 		{B316CCD0-C238-40DE-8EB5-281B95A8C150}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B316CCD0-C238-40DE-8EB5-281B95A8C150}.Release|x64.ActiveCfg = Release|Any CPU
 		{B316CCD0-C238-40DE-8EB5-281B95A8C150}.Release|x64.Build.0 = Release|Any CPU
+		{524B6011-CF8F-4534-9733-41F64B4111E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{524B6011-CF8F-4534-9733-41F64B4111E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{524B6011-CF8F-4534-9733-41F64B4111E6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{524B6011-CF8F-4534-9733-41F64B4111E6}.Debug|x64.Build.0 = Debug|Any CPU
+		{524B6011-CF8F-4534-9733-41F64B4111E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{524B6011-CF8F-4534-9733-41F64B4111E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{524B6011-CF8F-4534-9733-41F64B4111E6}.Release|x64.ActiveCfg = Release|Any CPU
+		{524B6011-CF8F-4534-9733-41F64B4111E6}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

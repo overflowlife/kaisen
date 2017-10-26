@@ -9,7 +9,7 @@ namespace PatternCalculatorTest
         [Fact]
         public void ConstructCalculatorWithTrueAndAssertGenerate13800Patterns()
         {
-            var calc = new PatternCalculator(true);
+            var calc = new PatternCalculator.Calculator(true);
             Assert.True(calc.Friend.Count == 13800);
             Assert.True(calc.Foe.Count == 13800);
             calc = null;
@@ -18,7 +18,7 @@ namespace PatternCalculatorTest
         [Fact]
         public void ConstructCalculatorWithFalseAndAssertNull()
         {
-            var calc = new PatternCalculator(false);
+            var calc = new PatternCalculator.Calculator(false);
             Assert.Null(calc.Friend);
             Assert.Null(calc.Foe);
         }

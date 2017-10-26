@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using PatternCalculator;
+
 
 namespace GameCore
 {
     public class AutomaticPatternRatioShooter : IPlayer
     {
-        private PatternCalculator calculator;
+        private PatternCalculator.Calculator calculator;
 
         public AutomaticPatternRatioShooter(ResourceSupplier rs)
         {
             this.rs = rs;
-            calculator = new PatternCalculator(true);
+            calculator = new PatternCalculator.Calculator(true);
         }
 
         public override List<Point> DeployShips()
