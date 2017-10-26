@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static PatternCalculator.Calculator.Consts;
+using static PatternCalculator.Consts;
 using static System.Math;
 using System.Diagnostics;
 
@@ -244,15 +244,15 @@ namespace PatternCalculator
             passive.Undo();
             LastCommand.Stop();
         }
+    }
 
-        /// <summary>
-        /// パターン計算関係で便利な定数達
-        /// </summary>
-        static public class Consts
-        {
-            internal const int BB = 0;
-            internal const int DD = 1;
-            internal const int SS = 2;
-        }
+    /// <summary>
+    /// パターン計算関係で便利な定数達
+    /// </summary>
+    static public class Consts
+    {
+        public const int BB = 0;
+        public const int DD = 1;
+        public const int SS = 2;
     }
 }

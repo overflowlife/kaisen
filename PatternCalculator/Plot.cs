@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using static System.Math;
 
 namespace PatternCalculator
 {
@@ -14,6 +15,26 @@ namespace PatternCalculator
             Y = y;
         }
 
+        /// <summary>
+        /// return  the distance between this and another.
+        /// </summary>
+        /// <param name="another"></param>
+        /// <returns></returns>
+        public int Distance(Plot another)
+        {
+            return Max(Abs(X - another.X), Abs(Y - another.Y));
+        }
+
+        /// <summary>
+        /// return the distance between a and b.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        static public int Distance(Plot a, Plot b)
+        {
+           return  Max(Abs(a.X - b.X), Abs(a.Y - b.Y));
+        }
 
         public override bool Equals(object obj)
         {

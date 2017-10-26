@@ -10,12 +10,12 @@ namespace GameCore
 {
     public class AutomaticPatternRatioShooter : IPlayer
     {
-        private PatternCalculator.Calculator calculator;
+        private Calculator calculator;
 
         public AutomaticPatternRatioShooter(ResourceSupplier rs)
         {
             this.rs = rs;
-            calculator = new PatternCalculator.Calculator(true);
+            calculator = new Calculator(true);
         }
 
         public override List<Point> DeployShips()

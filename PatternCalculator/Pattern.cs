@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static PatternCalculator.Calculator.Consts;
+using static PatternCalculator.Consts;
 
 namespace PatternCalculator
 {
