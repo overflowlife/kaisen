@@ -16,5 +16,10 @@ namespace PatternCalculator
         {
             get => plot.Y;
         }
+
+        public override string ToString()
+        {
+            return $"Plot({X}, {Y}), Life({life})";
+        }
     }
 }

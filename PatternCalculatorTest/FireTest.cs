@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Xunit;
 using KaisenLib;
 using System.Collections.Generic;
@@ -33,11 +34,9 @@ namespace PatternCalculatorTest
             //SetActiveはテスト実施済み
             Plot target = new Plot(2, 2);
             calc.Fire(target, 1, -1);
-            Assert.All(calc.Friend.Patterns, (p)=>Assert.True(p[0].life > 0));
-
+            Assert.All(calc.Friend.Patterns.Where((p)=>p.Available), (p)=>Assert.True(AliveAll(p) && (Near(p, BB, target) || Near(p, DD, target) || Near(p, SS, target)), $"{target}へ発砲しましたが、該当位置周辺に1隻も存在しません！"));
+            Assert.All(calc.Foe.Patterns.Where(p => p.Available), p => Assert.True(AliveAll(p) && (Around(p, BB, target) || Around(p, DD, target) || Around(p, SS, target))  &&!Equal(p, BB, target) && !Equal(p, DD, target) && !Equal(p, SS, target), $"{target}へ砲撃を受けましたが、ニアミス条件に違反しています。詳細：{p}。"));
             calc = null;
         }
-
-
     }
 }

@@ -58,5 +58,10 @@ namespace PatternCalculator
         {
             return X * 10 + Y;
         }
+
+        public override string ToString()
+        {
+            return $"[{X}, {Y}]";
+        }
     }
 }

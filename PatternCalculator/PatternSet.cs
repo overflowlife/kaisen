@@ -42,6 +42,7 @@ namespace PatternCalculator
         public PatternSet(bool create13800set)
         {
             diff = new Stack<List<int>>(32);
+            int count = 0;
             if (create13800set)
             {
                 List<Pattern> initial = new List<Pattern>(13800);//メンバへの直接アクセスは確か比較的に低パフォーマンスなので
@@ -53,7 +54,7 @@ namespace PatternCalculator
                         {
                             if ((i - j) * (j - k) * (k - i) != 0)
                             {
-                                initial.Add(new Pattern(new Plot(i % 5, i / 5), new Plot(j % 5, j / 5), new Plot(k % 5, k / 5))); //ここらへんのoperatorは比較的遅いかもしれない
+                                initial.Add(new Pattern(new Plot(i % 5, i / 5), new Plot(j % 5, j / 5), new Plot(k % 5, k / 5), count++)); //ここらへんのoperatorは比較的遅いかもしれない
                             }
                         }
                     }

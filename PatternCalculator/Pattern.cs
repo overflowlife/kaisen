@@ -10,7 +10,8 @@ namespace PatternCalculator
     /// </summary>
     public class Pattern
     {
-        private Ship[] Ships { get; set; } = { new Ship(), new Ship(), new Ship() };
+        internal Ship[] Ships { get; set; } = { new Ship(), new Ship(), new Ship() };
+        public int index { get; private set; }
         public bool Available { get; set; }
 
         /// <summary>
@@ -19,7 +20,7 @@ namespace PatternCalculator
         /// <param name="bb">戦艦の位置</param>
         /// <param name="dd">駆逐艦の位置</param>
         /// <param name="ss">潜水艦の位置</param>
-          public Pattern(Plot bb, Plot dd, Plot ss)
+          public Pattern(Plot bb, Plot dd, Plot ss, int i)
         {
             this[BB].plot = bb;
             this[BB].life = 3;
@@ -27,6 +28,7 @@ namespace PatternCalculator
             this[DD].life = 2;
             this[SS].plot = ss;
             this[SS].life = 1;
+            index = i;
             Available = true;
         }
 
@@ -40,6 +42,11 @@ namespace PatternCalculator
         {
             get => Ships[target];
             set => Ships[target] = value;
+        }
+
+        public override string ToString()
+        {
+            return $"Index:{index}, Available:{Available}, BB:{this[BB]}, DD:{this[DD]}, SS:{this[SS]}";
         }
     }
 
