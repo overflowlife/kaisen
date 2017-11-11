@@ -33,7 +33,7 @@ namespace PatternCalculator
         /// 毎回の操作で取り消されたパターン番号を保持するキュー//キューじゃないが
         /// </summary>
         //private Queue<List<int>> diff;
-       internal Stack<List<int>> diff;
+       public Stack<List<int>> Diff { get; internal set; }
 
         /// <summary>
         /// 
@@ -41,7 +41,7 @@ namespace PatternCalculator
         /// <param name="create13800set"></param>
         public PatternSet(bool create13800set)
         {
-            diff = new Stack<List<int>>(32);
+            Diff = new Stack<List<int>>(32);
             int count = 0;
             if (create13800set)
             {
@@ -109,7 +109,7 @@ namespace PatternCalculator
             }
 
             Debug.Assert(dels != null);
-            diff.Push(dels);
+            Diff.Push(dels);
         }
 
         private List<int> Water(Plot point)
@@ -151,16 +151,28 @@ namespace PatternCalculator
                 {
                     continue;
                 }
-                var kill = true;
+                bool kill;
 
+                bool existAroundPoint = false;
+                bool existAtPoint = false;
                 for (int j = 0; j < 3; ++j)
                 {
-                    if ((Max(Abs(target[j].X - point.X), Abs(target[j].Y - point.Y)) <= 1 && !target[j].plot.Equals(point)) && target[j].life > 0)
-                    {//if(( 9マス範囲内 && 同位置ではない ) && HPが1以上残っている )
-                        kill = false;
+                    if (target[j].plot.Distance(point) == 1 && target[j].life > 0)
+                    {
+                        existAroundPoint = true;
+                        break;
                     }
                 }
 
+                for (int j = 0; j < 3; ++j)
+                {
+                    if(target[j].plot.Distance(point) == 0 && target[j].life > 0)
+                    {
+                        existAtPoint = true;
+                        break;
+                    }
+                }
+                kill = !existAroundPoint || existAtPoint;
                 if (kill)
                 {
                     dels.Add(i);
@@ -270,7 +282,7 @@ namespace PatternCalculator
             }
 
             Debug.Assert(dels != null);
-            diff.Push(dels);
+            Diff.Push(dels);
         }
 
         /// <summary>
@@ -335,7 +347,7 @@ namespace PatternCalculator
                 }
 
             }
-            diff.Push(dels);
+            Diff.Push(dels);
         }
 
         /// <summary>
@@ -344,13 +356,13 @@ namespace PatternCalculator
         /// <returns>取り戻されたパターン数。-1の場合は取り消せる操作が存在しません（注記：必ずしも初期状態であるとは限らない）。</returns>
         public int Undo()
         {
-            if (diff.Count == 0)
+            if (Diff.Count == 0)
             {
                 return -1;
             }
             else
             {
-                List<int> target = diff.Pop();
+                List<int> target = Diff.Pop();
                 for (int i = 0; i < target.Count; ++i)
                 {
                     Debug.Assert(!Patterns[target[i]].Available, "削除されていないパターンを復活しようとしました。");

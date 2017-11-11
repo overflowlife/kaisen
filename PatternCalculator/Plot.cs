@@ -50,7 +50,7 @@ namespace PatternCalculator
                 return false;
             }
 
-            return this.X == ((Plot)obj).X && this.Y == ((Plot)obj).Y;
+            return X == ((Plot)obj).X && Y == ((Plot)obj).Y;
         }
 
         // override object.GetHashCode

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using Xunit;
 using PatternCalculator;
 using static PatternCalculator.Consts;
 
@@ -76,6 +78,20 @@ namespace PatternCalculatorTest
         static internal bool Far(Pattern p, int ship, Plot center)
         {
             return p[ship].plot.Distance(center) > 1;
+        }
+
+
+        static internal void NearmissTest(int i, Calculator calc, Plot target)
+        {
+            //生存パターンテスト
+            Assert.All(calc.active.Patterns.Where((p) => p.Available), (p) => Assert.True(AliveAll(p) && (Near(p, BB, target) || Near(p, DD, target) || Near(p, SS, target)), $"{target}への発砲条件を満たしていませんが生存しています。詳細:{p}"));
+            Assert.All(calc.passive.Patterns.Where(p => p.Available), p => Assert.True(AliveAll(p) && (Around(p, BB, target) || Around(p, DD, target) || Around(p, SS, target)) && !Equal(p, BB, target) && !Equal(p, DD, target) && !Equal(p, SS, target), $"{target}へ砲撃を受けましたが、ニアミス条件に違反していて生存しています。。詳細：{p}。"));
+            //削除パターンテスト
+        }
+
+        static internal void HitTest(int i , Calculator calc, Plot target, int destroyShip)
+        {
+            Assert.All(calc.active.Patterns.Where(p => p.Available), p => Assert.True(true));   
         }
     }
 }
