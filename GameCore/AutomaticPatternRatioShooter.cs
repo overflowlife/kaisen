@@ -97,6 +97,7 @@ namespace GameCore
                     }
                     else
                     {
+                        calculator.Fire(new Plot(msg.x, msg.y), 0, -1);
                         rs.Logger.WriteLine($"秘匿情報：{hit.Type}に命中しました。");
                     }
                     break;

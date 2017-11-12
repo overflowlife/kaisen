@@ -22,13 +22,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameCore", "GameCore\GameCo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoHost01", "AutoHost01\AutoHost01.csproj", "{3ABD224B-F6C2-4676-A002-66E5F719ED01}"
 	ProjectSection(ProjectDependencies) = postProject
+		{524B6011-CF8F-4534-9733-41F64B4111E6} = {524B6011-CF8F-4534-9733-41F64B4111E6}
 		{3D0BF02B-A2E1-42C5-AC9F-C1508B0F616F} = {3D0BF02B-A2E1-42C5-AC9F-C1508B0F616F}
 		{9211D187-A94C-4E21-B49F-F358B2D6A1B8} = {9211D187-A94C-4E21-B49F-F358B2D6A1B8}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PatternCalculatorTest", "PatternCalculatorTest\PatternCalculatorTest.csproj", "{B316CCD0-C238-40DE-8EB5-281B95A8C150}"
+	ProjectSection(ProjectDependencies) = postProject
+		{524B6011-CF8F-4534-9733-41F64B4111E6} = {524B6011-CF8F-4534-9733-41F64B4111E6}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatternCalculator", "PatternCalculator\PatternCalculator.csproj", "{524B6011-CF8F-4534-9733-41F64B4111E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PatternCalculator", "PatternCalculator\PatternCalculator.csproj", "{524B6011-CF8F-4534-9733-41F64B4111E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -10,8 +10,8 @@ namespace PatternCalculatorTest
         public void ConstructCalculatorWithTrueAndAssertGenerate13800Patterns()
         {
             var calc = new PatternCalculator.Calculator(true);
-            Assert.True(calc.Friend.Count == 13800);
-            Assert.True(calc.Foe.Count == 13800);
+            Assert.True(calc.Friend.Availables == 13800);
+            Assert.True(calc.Foe.Availables == 13800);
             calc = null;
         }
 

@@ -96,10 +96,10 @@ namespace PatternCalculator
         {
             LastCommand.Restart();
             active.Fire(point);
-            int activeEstPat = active.Count;
+            int activeEstPat = active.Availables;
             active.Undo();
 
-            int passivePat = passive.Count;
+            int passivePat = passive.Availables;
             int water = 0;
             int nearmiss = 0;
             int hitNoDestroyed = 0;
@@ -217,7 +217,7 @@ namespace PatternCalculator
         /// <param name="fireTarget"></param>
         /// <param name="summary">0..Hit, 1..Nearmiss, 2..Water.</param>
         /// <param name="destroyed">-1..No, 0..BB, 1..DD, 2..SS</param>
-         public   void Fire(Plot fireTarget, int summary, int destroyed)
+         public void Fire(Plot fireTarget, int summary, int destroyed)
         {
             LastCommand.Restart();
             active.Fire(fireTarget);

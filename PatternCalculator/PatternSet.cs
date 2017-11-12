@@ -18,15 +18,12 @@ namespace PatternCalculator
             get => Patterns[target];
             private set => Patterns[target] = value; //privateでいいかな？
         }
-        public int Count
+        private int availables;
+        public int Availables
         {
             get
             {
-                int available = 0;
-                for (int i = 0; i < Patterns.Count; ++i)
-                    if (Patterns[i].Available)
-                        ++available;
-                return available;
+                return availables;
             }
         }
         /// <summary>
@@ -54,12 +51,13 @@ namespace PatternCalculator
                         {
                             if ((i - j) * (j - k) * (k - i) != 0)
                             {
-                                initial.Add(new Pattern(new Plot(i % 5, i / 5), new Plot(j % 5, j / 5), new Plot(k % 5, k / 5), count++)); //ここらへんのoperatorは比較的遅いかもしれない
+                                initial.Add(new Pattern(new Plot(i % 5, i / 5), new Plot(j % 5, j / 5), new Plot(k % 5, k / 5), count++));
                             }
                         }
                     }
                 }
                 Patterns = initial;
+                availables = Patterns.Count;
             }
             else
             {
@@ -136,6 +134,7 @@ namespace PatternCalculator
                 {
                     dels.Add(i);
                     target.Available = false;
+                    availables--;
                 }
             }
             return dels;
@@ -177,6 +176,7 @@ namespace PatternCalculator
                 {
                     dels.Add(i);
                     target.Available = false;
+                    availables--;
                 }
             }
 
@@ -217,6 +217,7 @@ namespace PatternCalculator
                     {
                         dels.Add(i);
                         target.Available = false;
+                        availables--;
                     }
                 }
             }
@@ -240,6 +241,7 @@ namespace PatternCalculator
                     {
                         dels.Add(i);
                         target.Available = false;
+                        availables--;
                     }
                 }
             }
@@ -278,6 +280,7 @@ namespace PatternCalculator
                 {
                     dels.Add(i);
                     target.Available = false;
+                    availables--;
                 }
             }
 
@@ -343,6 +346,7 @@ namespace PatternCalculator
                 if (kill)
                 {
                     target.Available = false;
+                    availables--;
                     dels.Add(i);
                 }
 
@@ -367,6 +371,7 @@ namespace PatternCalculator
                 {
                     Debug.Assert(!Patterns[target[i]].Available, "削除されていないパターンを復活しようとしました。");
                     Patterns[target[i]].Available = true;
+                    availables++;
                 }
                 return target.Count;
             }
