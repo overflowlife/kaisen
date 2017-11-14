@@ -70,7 +70,7 @@ namespace AutoHost01
                     rs.Inject(new Logger(nameof(AutoHost01)));
                     rs.Inject(new Messenger(enc, tcpClient.GetStream(), rs.Logger));
                     rs.Inject(new Game(rs));
-                    rs.Game.RegisterPlayer(new AutomaticPlayer(rs));
+                    rs.Game.RegisterPlayer(new AutomaticPatternRatioShooter(rs));
                     rs.Game.DeployShips();
 
                     //初期通信：相互確認
@@ -82,7 +82,7 @@ namespace AutoHost01
                     {
                         rs.Messenger.Send(version);
                     }
-                    rs.Logger.WriteAndDisplay($"{tcpClient.Client.RemoteEndPoint}を信頼しました。");
+                    rs.Logger.WriteLine($"{tcpClient.Client.RemoteEndPoint}を信頼しました。");
                     rs.Game.StartLoop(false);
                 }
                 catch (Exception e)

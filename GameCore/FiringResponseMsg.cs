@@ -9,7 +9,7 @@ using static KaisenLib.AppSet;
 namespace GameCore
 {
     /// <summary>
-    /// 砲撃応答メッセージ。ToDo:撃破艦船の返送方法を再検討
+    /// 砲撃応答メッセージ。ToDo:撃破艦船の返送方法を再検討 （文字列ではなく番号を送るように）
     /// </summary>
     internal class FiringResponseMsg : SerializableMessage
     {
@@ -20,18 +20,18 @@ namespace GameCore
         private FiringResponseMsg(ResourceSupplier rs)
         {
             this.rs = rs;
-            this.MsgId = MessageId.FiringResponse;
+            MsgId = MessageId.FiringResponse;
             Name = "砲撃";
         }
 
-        internal FiringResponseMsg(FiringResponseSummary summary, ResourceSupplier rs) : this(summary, "", rs)
+        internal FiringResponseMsg(FiringResponseSummary summary, ResourceSupplier rs) : this(summary, string.Empty, rs)
         {
         }
 
         internal FiringResponseMsg(FiringResponseSummary summary, string destroyed, ResourceSupplier rs) : this(rs)
         {
             this.summary = summary;
-            this.destroyedName = destroyed;
+            destroyedName = destroyed;
         }
 
         /// <summary>
@@ -46,9 +46,9 @@ namespace GameCore
             {
                 throw new ArgumentException("引数チェックの例外です");
             }
-            this.MsgId = MessageId.FiringResponse;
+            MsgId = MessageId.FiringResponse;
             this.summary = (FiringResponseSummary)summary;
-            this.destroyedName = splited[2];
+            destroyedName = splited[2];
         }
 
         public override string ToString()

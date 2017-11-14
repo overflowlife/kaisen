@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
 namespace GameCore
 {
     public abstract class IPlayer
     {
+        internal ResourceSupplier rs;
+        internal Action<string> logging;
         string Name { get; set; }
         /// <summary>
         /// 艦船を配置し、配置したあとの座標リストを返却します。

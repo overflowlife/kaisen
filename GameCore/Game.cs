@@ -219,7 +219,7 @@ namespace GameCore
         internal  FiringResponseMsg ShootFromOther(int x, int y, out Ship hit)
         {
             FiringResponseSummary summary = FiringResponseSummary.None;
-            string destroyed = "";
+            string destroyed = string.Empty;
             hit = null;
             int area = 1;
 

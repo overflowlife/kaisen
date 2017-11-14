@@ -9,12 +9,12 @@ using System.Diagnostics;
 namespace GameCore
 {
     /// <summary>
-    /// 自動応答するプレイヤのプロトタイプです。
+    /// ランダム射撃を行う自動応答プレイヤです。
     /// </summary>
-    public class AutomaticPlayer : IPlayer
+    public class AutomaticRandomShootPlayer : IPlayer
     {
         internal SerializableMessage prevRcvCmd;
-        public AutomaticPlayer(ResourceSupplier rs)
+        public AutomaticRandomShootPlayer(ResourceSupplier rs)
         {
             this.rs = rs;
             prevRcvCmd = new ExitingRequestMsg();
@@ -32,7 +32,7 @@ namespace GameCore
             }
             /*foreach (var item in ba.map.Where(p => p.ship != null))
             {
-                rs.Logger.WriteLine($"({item.x}, {item.y})に{item.ship.Type}を配置しました。");
+                rs.Logger.WriteAndDisplay($"({item.x}, {item.y})に{item.ship.Type}を配置しました。");
             }*/
             return ba.map;
         }
@@ -40,7 +40,7 @@ namespace GameCore
         public override bool DoTurn()
         {
             System.Threading.Tasks.Task.Delay(500).Wait();//Wait
-           if(rs.Game.battleArea.map.All((p)=>p.ship == null))
+            if (rs.Game.battleArea.map.All((p) => p.ship == null))
             {
                 //敗戦処理
                 rs.Logger.WriteLine("敗北しました。");
@@ -50,13 +50,13 @@ namespace GameCore
                 return true;
             }
 
-           //コマンド選択率設定
-            Dictionary<MessageId, int> electionProb = new Dictionary<MessageId, int> {
-               { MessageId.FiringRequest, 1 },
-               { MessageId.MovingRequest, 0 },
+            //コマンド選択率設定
+            Dictionary<int, int> electionProb = new Dictionary<int, int> {
+               { (int)MessageId.FiringRequest, 1 },
+               { (int)MessageId.MovingRequest, 0 },
            };
 
-            MessageId selected = MessagePercentageChoice(electionProb);
+            MessageId selected = (MessageId)MessagePercentageChoice(electionProb);
             switch (selected)
             {
                 case MessageId.FiringRequest:
@@ -65,6 +65,9 @@ namespace GameCore
                 case MessageId.MovingRequest:
                     MovingRequest();
                     break;
+                case (MessageId)(-1):
+                    throw new Exception("returned -1 from MessagePercentageChoice.");
+
             }
 
             return false;
@@ -78,29 +81,12 @@ namespace GameCore
         private void FiringRequest()
         {
             List<Point> lp = new List<Point>();
-            foreach (var point in rs.Game.battleArea.map.Where(p=>p.ship != null))
+            foreach (var point in rs.Game.battleArea.map.Where(p => p.ship != null))
             {
                 lp.AddRange(rs.Game.GetPointsWhereShipOnPointCanShoot(point));
             }
 
-            Point target;
-            if(prevRcvCmd.MsgId == MessageId.FiringRequest)
-            {
-                var prevFire = prevRcvCmd as FiringRequestMsg;
-                var prevPoint = rs.Game.GetPoint(prevFire.x, prevFire.y);
-                if ( rs.Game.IsInRange(prevPoint) )
-                {
-                    target = prevPoint;
-                }
-                else
-                {
-                    target = RandomPointWhereIsInRange();
-                }
-            }
-            else
-            {
-                target = RandomPointWhereIsInRange();
-            }
+            Point target = RandomPointWhereIsInRange();
 
             Debug.Assert(rs.Game.IsInRange(target.x, target.y));
             var req = new FiringRequestMsg(target.x, target.y);
@@ -135,8 +121,8 @@ namespace GameCore
 
         private Point RandomPointWhereIsInRange()
         {
-           IEnumerable<Point> lp = rs.Game.GetPointsWhereCanShoot();
-           return  lp.ElementAt(new Random().Next(lp.Count()));
+            IEnumerable<Point> lp = rs.Game.GetPointsWhereCanShoot();
+            return lp.ElementAt(new Random().Next(lp.Count()));
         }
 
         /// <summary>
@@ -145,7 +131,7 @@ namespace GameCore
         /// <param name="target"></param>
         /// <returns></returns>
         /// <see cref="http://qiita.com/haagiii/items/30c917746bc2983be511"/>
-        internal MessageId MessagePercentageChoice(Dictionary<MessageId, int> target)
+        internal int MessagePercentageChoice(Dictionary<int, int> target)
         {
             // まず、全体の合計を求める
             int total = 0;
@@ -155,7 +141,7 @@ namespace GameCore
             var _rand = (new Random()).Next(0, total);
 
             int temp = 0;
-            var res = MessageId.None;
+            int res = -1;
             foreach (var i in target)
             {
                 temp += i.Value;
@@ -201,7 +187,7 @@ namespace GameCore
 
         internal void FiringResponse(FiringRequestMsg msg)
         {
-            rs.Logger.WriteLine($"地点({msg.x}, {msg.y})が砲撃されました。");
+            rs.Logger.WriteAndDisplay($"地点({msg.x}, {msg.y})が砲撃されました。");
             Debug.Assert(rs.Game.ValidateX(msg.x) && rs.Game.ValidateY(msg.y));
             var send = rs.Game.ShootFromOther(msg.x, msg.y, out Ship hit);
             rs.Messenger.Send(send.ToString());
@@ -210,18 +196,18 @@ namespace GameCore
                 case FiringResponseSummary.Hit:
                     if (send.destroyedName != string.Empty)
                     {
-                        rs.Logger.WriteLine($"{send.destroyedName}が撃沈されました..");
+                        rs.Logger.WriteAndDisplay($"{send.destroyedName}が撃沈されました..");
                     }
                     else
                     {
-                        rs.Logger.WriteLine($"秘匿情報：{hit.Type}に命中しました。");
+                        rs.Logger.WriteAndDisplay($"秘匿情報：{hit.Type}に命中しました。");
                     }
                     break;
                 case FiringResponseSummary.Nearmiss:
-                    rs.Logger.WriteLine("ニアミスでした。");
+                    rs.Logger.WriteAndDisplay("ニアミスでした。");
                     break;
                 case FiringResponseSummary.Water:
-                    rs.Logger.WriteLine("海に落ちました。");
+                    rs.Logger.WriteAndDisplay("海に落ちました。");
                     break;
                 default:
                     break;
@@ -230,17 +216,17 @@ namespace GameCore
 
         internal void MovingResponse(MovingRequestMsg msg)
         {
-            rs.Logger.WriteLine($"{msg.mover}が{msg.direction}方向に{msg.distance}移動しました。");
+            rs.Logger.WriteAndDisplay($"{msg.mover}が{msg.direction}方向に{msg.distance}移動しました。");
             rs.Messenger.Send(new MovingResponseMsg().ToString());
-            rs.Logger.WriteLine($"移動に対して応答しました。");
+            rs.Logger.WriteAndDisplay($"移動に対して応答しました。");
         }
 
 
         internal void ExitingResponse(ExitingRequestMsg msg)
         {
-            rs.Logger.WriteLine("終了通知を受け取りました。");
+            rs.Logger.WriteAndDisplay("終了通知を受け取りました。");
             rs.Messenger.Send(new ExitingResponseMsg().ToString());
-            rs.Logger.WriteLine("終了応答を送信しました。");
+            rs.Logger.WriteAndDisplay("終了応答を送信しました。");
         }
     }
 }

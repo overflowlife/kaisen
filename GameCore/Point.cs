@@ -31,10 +31,10 @@
         /// <param name="source"></param>
         internal Point(Point source)
         {
-            this.x = source.x;
-            this.y = source.y;
-            this.ship = source.ship != null ? new Ship(source.ship) : null;
-            this.obj = source.obj != null ?  new KaisenObject(source.obj) : null;
+            x = source.x;
+            y = source.y;
+            ship = source.ship != null ? new Ship(source.ship) : null;
+            obj = source.obj != null ?  new KaisenObject(source.obj) : null;
         }
 
     }

@@ -26,7 +26,7 @@ namespace Host
         public ListenHelper(int listenPort)
         {
             Address = IPAddress.Any;
-            this.Port = listenPort;
+            Port = listenPort;
         }
 
         /// <summary>
@@ -36,8 +36,8 @@ namespace Host
         /// <param name="listenPort"></param>
         public ListenHelper(string listenAddress, int listenPort)
         {
-            this.Address = IPAddress.Parse(listenAddress);
-            this.Port = listenPort;
+            Address = IPAddress.Parse(listenAddress);
+            Port = listenPort;
         }
 
         /// <summary>
@@ -47,8 +47,8 @@ namespace Host
         /// <param name="listenPort"></param>
         public ListenHelper(IPAddress listenAddress, int listenPort)
         {
-            this.Address = listenAddress;
-            this.Port = listenPort;
+            Address = listenAddress;
+            Port = listenPort;
         }
     }
 }
