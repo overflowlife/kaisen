@@ -61,6 +61,7 @@ namespace GameCore
                 default:
                     break;
             }
+            Debug.Assert(calculator.active.Availables > 0 && calculator.passive.Availables > 0, "有効パターン数が0になりました。");
 
             return recieved.MsgId == MessageId.ExitingRequest;
         }
@@ -202,7 +203,7 @@ namespace GameCore
                 default:
                     break;
             }
-
+            Debug.Assert(calculator.active.Availables > 0 && calculator.passive.Availables > 0, "有効パターン数が0になりました。");
 
             return false;
         }
