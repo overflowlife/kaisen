@@ -45,7 +45,6 @@ namespace KaisenLib
                 {
                     try
                     {
-                        
                         recSize = Ns.Read(recBytes, 0, recBytes.Length);
                     }
                     catch (IOException)
@@ -81,9 +80,8 @@ namespace KaisenLib
                 throw;
             }
 #if DEBUG
-            logger.WriteLine($"送信メッセージ：{Enc.GetString(sendBytes)}");
+            logger.WriteLine($"送信メッセージ：{Enc.GetString(sendBytes).TrimEnd('\n')}");
 #endif
-
             return;
         }
     }
