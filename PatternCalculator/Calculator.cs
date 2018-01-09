@@ -88,11 +88,11 @@ namespace PatternCalculator
         }
 
         /// <summary>
-        /// 行動者が指定位置に砲撃した後のパターン状態を推測し、それに基づいて算出した評価値を返却します。
+        /// 行動者が指定位置に砲撃した後のパターン状態を推測し、推測結果を返却します。
         /// </summary>
         /// <param name="point"></param>
         /// <returns>（行動者の残パターン数, 待機者の残パターン数）</returns>
-        public double EstimateFire(Plot point)
+        public EstimateResult EstimateFire(Plot point)
         {
             LastCommand.Restart();
             active.Fire(point);
@@ -218,7 +218,7 @@ namespace PatternCalculator
             double activeEstLife = (double)activeTotalLife / active.Availables;
 
             LastCommand.Stop();
-            return (activeEstPat / (activeEstPat + passiveEstPat)) * Pow((activeEstLife / (passiveEstLife + activeEstLife)), 2);
+            return new EstimateResult(activeEstPat, activeEstLife, passiveEstPat, passiveEstLife);
         }
 
         /// <summary>
