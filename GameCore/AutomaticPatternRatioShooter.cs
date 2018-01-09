@@ -61,6 +61,7 @@ namespace GameCore
                 default:
                     break;
             }
+            Debug.Assert(calculator.active.Availables > 0 && calculator.passive.Availables > 0, "有効パターン数が0になりました。");
 
             return recieved.MsgId == MessageId.ExitingRequest;
         }
@@ -202,7 +203,7 @@ namespace GameCore
                 default:
                     break;
             }
-
+            Debug.Assert(calculator.active.Availables > 0 && calculator.passive.Availables > 0, "有効パターン数が0になりました。");
 
             return false;
         }
@@ -210,7 +211,7 @@ namespace GameCore
         private Plot BestRatioPoint()
         {
             var sw = Stopwatch.StartNew();
-            long estimate = 0L;
+            long estimateTime = 0L;
             Dictionary<Plot, double> EvalVals = new Dictionary<Plot, double>();
             List<double> vals = new List<double>(rs.Game.GetPointsWhereCanShoot().Count());
             List<Point> used = new List<Point>();
@@ -234,10 +235,11 @@ namespace GameCore
                 }
                 //各地点評価値の取得
                 Plot plot = new Plot(item.x, item.y);
-                var EvalValue = calculator.EstimateFire(plot);
-                estimate += calculator.LastCommand.ElapsedMilliseconds;
-                EvalVals.Add(plot, EvalValue);
-                vals.Add(EvalValue);
+                var estimateResult = calculator.EstimateFire(plot);
+                estimateTime += calculator.LastCommand.ElapsedMilliseconds;
+                var evaluateValue = Evaluate(estimateResult);
+                EvalVals.Add(plot, evaluateValue);
+                vals.Add(evaluateValue);
             }
             vals.Sort();
              
@@ -252,8 +254,13 @@ namespace GameCore
                 }
             }           
             sw.Stop();
-            rs.Logger.WriteLine($"{sw.ElapsedMilliseconds}msで射撃位置（{choosen.Key.X}, {choosen.Key.Y}）を算出しました（評価値{choosen.Value}）。（うち砲撃結果推測時間{estimate}ms）");
+            rs.Logger.WriteLine($"{sw.ElapsedMilliseconds}msで射撃位置（{choosen.Key.X}, {choosen.Key.Y}）を算出しました（評価値{choosen.Value}）。（うち砲撃結果推測時間{estimateTime}ms）");
             return choosen.Key;
+        }
+
+        private double Evaluate(EstimateResult result)
+        {
+            return (result.activePat / (result.activePat + result.passivePat)) * (result.activeLife / (result.activeLife + result.passiveLife));
         }
     }
 }

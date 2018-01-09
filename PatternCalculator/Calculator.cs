@@ -88,11 +88,11 @@ namespace PatternCalculator
         }
 
         /// <summary>
-        /// 行動者が指定位置に砲撃した後のパターン状態を推測し、それに基づいて算出した評価値を返却します。
+        /// 行動者が指定位置に砲撃した後のパターン状態を推測し、推測結果を返却します。
         /// </summary>
         /// <param name="point"></param>
         /// <returns>（行動者の残パターン数, 待機者の残パターン数）</returns>
-        public double EstimateFire(Plot point)
+        public EstimateResult EstimateFire(Plot point)
         {
             LastCommand.Restart();
             active.Fire(point);
@@ -106,7 +106,7 @@ namespace PatternCalculator
             int hitBbDestroyed = 0;
             int hitDdDestroyed = 0;
             int hitSsDestroyed = 0;
-            int totalLife = 0;
+            int passiveTotalLife = 0;
 
             bool isWater = false;
             bool isNearmiss = true;
@@ -191,10 +191,10 @@ namespace PatternCalculator
                     ++count;
                     ++hitSsDestroyed;
                 }
-                totalLife += (target[BB].life + target[DD].life + target[SS].life);
+                passiveTotalLife += (target[BB].life + target[DD].life + target[SS].life);
                 if (isHitNo || isHitBb || isHitDd || isHitSs)
                 {
-                    --totalLife;
+                    --passiveTotalLife;
                 }
                 Debug.Assert(count == 1, "PatternCalculator.EstimateFire()の各条件判断に異常があります");
             }
@@ -205,10 +205,20 @@ namespace PatternCalculator
             + ((double)hitBbDestroyed * hitBbDestroyed / passivePat)
             + ((double)hitDdDestroyed * hitDdDestroyed / passivePat)
             + ((double)hitSsDestroyed * hitSsDestroyed / passivePat);
-            double passiveEstLife = (double)totalLife / passivePat;
+            double passiveEstLife = (double)passiveTotalLife / passivePat;
+
+            int activeTotalLife = 0;
+            for (int i = 0; i < 13800; ++i)
+            {
+                var target = active.Patterns[i];
+                if (!target.Available)
+                    continue;
+                activeTotalLife += target[0].life + target[1].life + target[2].life;
+            }
+            double activeEstLife = (double)activeTotalLife / active.Availables;
 
             LastCommand.Stop();
-            return (activeEstPat / (activeEstPat + passiveEstPat)) * (1.0D - passiveEstLife / 6.0D);
+            return new EstimateResult(activeEstPat, activeEstLife, passiveEstPat, passiveEstLife);
         }
 
         /// <summary>
